@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "main": "dist/index.js",
   "license": "MIT",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "yarn jest",
     "build": "yarn build:ts",
