@@ -1,0 +1,16 @@
+{
+  "name": "cling",
+  "version": "1.0.0",
+  "description": "Mono repository for the cli project cling",
+  "main": "index.js",
+  "repository": "https://github.com/simonlovesyou/cling.git",
+  "author": "simonlovesyou <simonljohansson92@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "bootstrap": "yarn lerna bootstrap"
+  },
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  }
+}
