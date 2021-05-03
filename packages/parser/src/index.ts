@@ -208,5 +208,3 @@ function declarativeCliParser(
 }
 
 export default declarativeCliParser;
-
-const res = declarativeCliParser({ arguments: {} }, {});
