@@ -37,11 +37,11 @@ type Result = {
 
 type ParsedArguments = {
   _all?: {
-    positionals?: ReturnType<ReturnType<typeof validateItemPosition>>[]
+    __positionals__?: ReturnType<ReturnType<typeof validateItemPosition>>[]
   }
   arguments?: ReturnType<ReturnType<typeof validateType>>;
   options?: ReturnType<ReturnType<typeof validateType>>;
-  positionals?: ReturnType<ReturnType<typeof validateItemPosition>>[];
+  __positionals__?: ReturnType<ReturnType<typeof validateItemPosition>>[];
 }
 
 const mapErrorObjectToError = (errorObject: ErrorObject) => new Error(`${errorObject.keyword} ${errorObject.message}`)
@@ -125,7 +125,7 @@ function declarativeCliParser(
 
   const commandDefinition = [
     positionals && {
-      name: "positionals",
+      name: "__positionals__",
       defaultOption: true,
       multiple: true,
       type: validateItemPosition(positionals),
@@ -163,8 +163,8 @@ function declarativeCliParser(
       {}
     ),
     positionals: (
-      commandArguments.positionals ||
-      commandArguments._all?.positionals ||
+      commandArguments.__positionals__ ||
+      commandArguments._all?.__positionals__ ||
       []
     ).map(
       ({ value, errors }) => (errors ? null : value)
@@ -200,7 +200,7 @@ function declarativeCliParser(
       ),
       positionals: positionals && new Array(positionals.length).fill(null).map(
         (_, index) => {
-          const positional = commandArguments.positionals?.[index]
+          const positional = commandArguments.__positionals__?.[index]
           return positional?.errors ? positional.errors.map(mapErrorObjectToError) : null
       }),
     },
