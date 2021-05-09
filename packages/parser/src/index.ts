@@ -62,10 +62,6 @@ const validateItemPosition = (schemas: JSONSchema7[] | JSONSchema7) => {
   };
 };
 
-// function declarativeCliParser(
-//   schema: ExpandRecursively<Omit<RequiredBy<Schema, "arguments">, 'commands' | 'options' | 'positionals'>>,
-//   libOptions: Options
-// ): ExpandRecursively<RequiredBy<Result, "arguments">>;
 function declarativeCliParser(
   schema: Schema,
   libOptions: Options = {}
