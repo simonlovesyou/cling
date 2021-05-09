@@ -8,7 +8,6 @@ export type Argument = {
     | "object"
     | "array"
     | "null";
-  name?: string;
   description?: string;
   alias?: string;
 };
