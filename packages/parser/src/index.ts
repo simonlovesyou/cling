@@ -1,5 +1,5 @@
 import commandLineArgs, { OptionDefinition } from "command-line-args";
-import Schema from "./types";
+import Schema, { Argument } from "./types";
 import Ajv, { ErrorObject } from "ajv";
 import { clone, mergeRight } from "ramda";
 import expandedSchemaReferences from "./expandSchemaReferences";
@@ -193,6 +193,6 @@ function declarativeCliParser(
   };
 }
 
-export { Schema }
+export { Schema, Argument };
 
 export default declarativeCliParser;
