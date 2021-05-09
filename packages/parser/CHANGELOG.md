@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.0.5...@cling/parser@0.1.0) (2021-05-09)
+
+
+### Features
+
+* **parser:** Expose `Argument` as export ([938b6fb](https://github.com/simonlovesyou/cling/commit/938b6fbb4dd597d75e50b691d8c1fca9924881a6))
+* **parser:** Remove `name` as property of `Argument` ([ac4a3da](https://github.com/simonlovesyou/cling/commit/ac4a3da523eb1d579de518f011ebdb0572f69348))
+
+
+
+
+
 ## [0.0.5](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.0.4...@cling/parser@0.0.5) (2021-05-09)
 
 
