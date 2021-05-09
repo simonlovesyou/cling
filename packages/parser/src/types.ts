@@ -14,8 +14,6 @@ export type Argument = {
 
 export type Definitions = { [definitionName: string]: Argument };
 
-type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>
-
 type Schema = {
   $ref?: string;
   description?: string;
