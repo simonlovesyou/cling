@@ -1,6 +1,6 @@
 import commandLineArgs, { OptionDefinition } from "command-line-args";
 import Schema from "./types";
-import Ajv, {ErrorObject} from "ajv";
+import Ajv, { ErrorObject } from "ajv";
 import { clone, mergeRight } from "ramda";
 import expandedSchemaReferences from "./expandSchemaReferences";
 import { JSONSchema7 } from "json-schema";
@@ -26,14 +26,15 @@ type Result = {
 
 type ParsedArguments = {
   _all?: {
-    __positionals__?: ReturnType<ReturnType<typeof validateItemPosition>>[]
-  }
+    __positionals__?: ReturnType<ReturnType<typeof validateItemPosition>>[];
+  };
   arguments?: ReturnType<ReturnType<typeof validateType>>;
   options?: ReturnType<ReturnType<typeof validateType>>;
   __positionals__?: ReturnType<ReturnType<typeof validateItemPosition>>[];
-}
+};
 
-const mapErrorObjectToError = (errorObject: ErrorObject) => new Error(`${errorObject.keyword} ${errorObject.message}`)
+const mapErrorObjectToError = (errorObject: ErrorObject) =>
+  new Error(`${errorObject.keyword} ${errorObject.message}`);
 
 const validateType = (schema: JSONSchema7) => (value: any) => {
   const mutateableInstance = { value: clone(value) };
@@ -129,12 +130,9 @@ function declarativeCliParser(
     })),
   ].filter((definition) => definition) as OptionDefinition[];
 
-  const commandArguments = commandLineArgs(
-    commandDefinition,
-    {
-      argv: libOptions.argv,
-    }
-  ) as ParsedArguments;
+  const commandArguments = commandLineArgs(commandDefinition, {
+    argv: libOptions.argv,
+  }) as ParsedArguments;
 
   return {
     arguments: Object.entries(commandArguments.arguments || {}).reduce(
@@ -151,43 +149,46 @@ function declarativeCliParser(
       commandArguments.__positionals__ ||
       commandArguments._all?.__positionals__ ||
       []
-    ).map(
-      ({ value, errors }) => (errors ? null : value)
-    ),
+    ).map(({ value, errors }) => (errors ? null : value)),
     errors: {
       arguments: Object.entries(commandArguments.arguments || {}).reduce(
-        (acc, [key, argument]: [string, NonNullable<ParsedArguments['arguments']>]) =>
+        (
+          acc,
+          [key, argument]: [string, NonNullable<ParsedArguments["arguments"]>]
+        ) =>
           mergeRight(
             {
               [key]:
-                argument.errors &&
-                argument.errors.map(
-                  mapErrorObjectToError
-                ),
+                argument.errors && argument.errors.map(mapErrorObjectToError),
             },
             acc
           ),
         {}
       ),
-      options: commandArguments.options && Object.entries(commandArguments.options).reduce(
-        (acc, [key, argument]: [string, NonNullable<ParsedArguments['arguments']>]) =>
-          mergeRight(
-            {
-              [key]:
-                argument.errors &&
-                argument.errors.map(
-                  mapErrorObjectToError
-                ),
-            },
-            acc
-          ),
-        {}
-      ),
-      positionals: positionals && new Array(positionals.length).fill(null).map(
-        (_, index) => {
-          const positional = commandArguments.__positionals__?.[index]
-          return positional?.errors ? positional.errors.map(mapErrorObjectToError) : null
-      }),
+      options:
+        commandArguments.options &&
+        Object.entries(commandArguments.options).reduce(
+          (
+            acc,
+            [key, argument]: [string, NonNullable<ParsedArguments["arguments"]>]
+          ) =>
+            mergeRight(
+              {
+                [key]:
+                  argument.errors && argument.errors.map(mapErrorObjectToError),
+              },
+              acc
+            ),
+          {}
+        ),
+      positionals:
+        positionals &&
+        new Array(positionals.length).fill(null).map((_, index) => {
+          const positional = commandArguments.__positionals__?.[index];
+          return positional?.errors
+            ? positional.errors.map(mapErrorObjectToError)
+            : null;
+        }),
     },
   };
 }
