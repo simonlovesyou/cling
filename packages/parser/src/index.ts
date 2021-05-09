@@ -192,4 +192,6 @@ function declarativeCliParser(
   };
 }
 
+export { Schema }
+
 export default declarativeCliParser;
