@@ -5,17 +5,6 @@ import { clone, mergeRight } from "ramda";
 import expandedSchemaReferences from "./expandSchemaReferences";
 import { JSONSchema7 } from "json-schema";
 
-type RequiredBy<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
-// expands object types one level deep
-type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never;
-
-// expands object types recursively
-type ExpandRecursively<T> = T extends object
-  ? T extends infer O
-    ? { [K in keyof O]: ExpandRecursively<O[K]> }
-    : never
-  : T;
-
 type Options = {
   positionals?: boolean;
   argv?: string[];
