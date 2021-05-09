@@ -5,7 +5,10 @@
   "main": "dist/index.js",
   "author": "@simonlovesyou",
   "license": "MIT",
-  "private": true,
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "yarn test:unit",
     "test:unit": "yarn jest src/",
