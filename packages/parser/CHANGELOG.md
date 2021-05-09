@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.5](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.0.4...@cling/parser@0.0.5) (2021-05-09)
+
+
+### Bug Fixes
+
+* **parser:** Expose the internal schema type from root ([dcb513b](https://github.com/simonlovesyou/cling/commit/dcb513b1461082b69f0b1440e83687135d819c04))
+
+
+
+
+
 ## [0.0.4](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.0.3...@cling/parser@0.0.4) (2021-05-03)
 
 
