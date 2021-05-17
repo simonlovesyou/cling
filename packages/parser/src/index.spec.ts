@@ -1,9 +1,10 @@
 import declarativeCliParser from ".";
-import Schema from "./types";
+import Schema, { CommandSchema } from "./types";
 import { mergeDeepRight, pipe } from "ramda";
+import randomstring from "randomstring";
 
 type Scenario = {
-  schema: Schema;
+  schema: Schema | CommandSchema;
   argv: string[];
   testCase: (schema: Schema, argv: string[]) => any;
   name?: string;
@@ -104,50 +105,32 @@ const SCENARIOS: Record<string, Scenario> = {
     testCase: (schema, argv) => {
       describe("positional provided", () => {
         describe("correct type", () => {
-          it("should return the positional argument", () => {
+          it("should return that the positional argument is valid", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.positionals![0]).not.toBeUndefined();
+            console.log(result);
+            // @ts-expect-error
+            expect(result.positionals.valid).toBe(true);
           });
           it("should coerce the type", () => {
             const result = declarativeCliParser(schema, { argv });
             // @ts-expect-error
-            expect(result.positionals![0].value).toBe(5);
+            expect(result.positionals.value[0]).toBe(5);
           });
           it("should not return any errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
-            // @ts-ignore
-            expect(result.positionals![0].error).toBe(undefined);
+            // @ts-expect-error
+            expect(result.positionals.error).toBe(undefined);
           });
-        });
-      });
-    },
-  },
-  "single command": {
-    schema: {
-      commands: {
-        bar: {},
-      },
-    },
-    argv: ["bar"],
-    testCase: (schema, argv) => {
-      describe.skip("command provided", () => {
-        it("should return the command", () => {
-          const result = declarativeCliParser(schema, { argv });
-          // @ts-ignore
-          expect(result.commands!.bar).not.toBeUndefined();
-        });
-        it("should not return any errors for the property", () => {
-          const result = declarativeCliParser(schema, { argv });
-          // @ts-ignore
-          expect(result.commands!.bar!.error).toBe(undefined);
         });
       });
     },
   },
 };
 
-const mergeSchemas = (schemaA: Schema, schemaB: Schema) =>
-  mergeDeepRight(schemaA, schemaB);
+const mergeSchemas = (
+  schemaA: Schema | CommandSchema,
+  schemaB: Schema | CommandSchema
+) => mergeDeepRight(schemaA, schemaB);
 
 const runTestScenarios = (scenarioNames: string[]) => {
   const scenarios = Object.entries(SCENARIOS).reduce(
@@ -169,7 +152,7 @@ const runTestScenarios = (scenarioNames: string[]) => {
       acc(schema, argv);
       scenario.testCase(schema, argv);
     },
-    (schema: Schema, argv: string[]) => {}
+    (schema: Schema | CommandSchema, argv: string[]) => {}
   );
   describe(scenarioNames.join(" & "), () => {
     testCase(schema, argv);
@@ -179,6 +162,42 @@ const runTestScenarios = (scenarioNames: string[]) => {
 runTestScenarios(["single argument"]);
 runTestScenarios(["single option"]);
 runTestScenarios(["single positional"]);
-// runTestScenarios(['single command'])
+runTestScenarios(["single command"]);
 runTestScenarios(["single option", "single argument"]);
 runTestScenarios(["single positional", "single option", "single argument"]);
+
+describe("commands with positional", () => {
+  const command = "foo";
+  const value = randomstring.generate({ charset: "numeric", length: 8 });
+  const schema = {
+    commands: {
+      [command]: {
+        positionals: [
+          {
+            type: "number",
+          },
+        ] as const,
+      },
+    },
+  } as const;
+  const argv = [command, value];
+  describe("with command provided", () => {
+    describe("with valid positional provided", () => {
+      const res = declarativeCliParser(schema, { argv });
+      it("commands should be defined", () => {
+        expect(res.commands).not.toBeUndefined();
+      });
+      it("commands.bar should be defined", () => {
+        expect(res.commands[command]).not.toBeUndefined();
+      });
+      it(`commands.bar.positionals.value should be valid & ${Number(
+        value
+      )}`, () => {
+        expect(res.commands[command].positionals.valid).toBe(true);
+        expect(res.commands[command].positionals.value).toEqual([
+          Number(value),
+        ]);
+      });
+    });
+  });
+});

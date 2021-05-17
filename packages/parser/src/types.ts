@@ -25,11 +25,14 @@ export type Argument =
 
 type Schema = {
   description?: string;
-  commands?: Record<string, Schema>;
   positionals?: readonly Argument[];
   arguments?: Record<string, Argument>;
   options?: Record<string, Argument>;
-};
+}
+
+export type CommandSchema = {
+  commands: Record<string, Schema>;
+}
 
 export type Options = {
   positionals?: boolean;
