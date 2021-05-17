@@ -1,20 +1,9 @@
 {
+  "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
+    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "incremental": true,
-    "target": "es2019",
-    "module": "commonjs",
-    "declaration": true,
-    "outDir": "./dist",
-    "noEmit": false,
-    "strict": true,
-    "typeRoots": [
-      "node_modules/@types",
-      "types",
-    ],
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "typeRoots": ["node_modules/@types"]
   },
   "include": [
     "src/**/*",
