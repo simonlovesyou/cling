@@ -12,7 +12,6 @@ export type Argument = {
     | "number"
     | "integer"
     | "boolean"
-    | "object"
     | "array"
     | "null";
   description?: string;
