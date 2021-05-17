@@ -6,6 +6,7 @@
   "author": "@simonlovesyou",
   "license": "MIT",
   "private": false,
+  "files": ["dist", "README.md", "CHANGELOG.md", "package.json", "yarn.lock"],
   "publishConfig": {
     "access": "public"
   },
