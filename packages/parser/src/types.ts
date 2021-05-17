@@ -5,23 +5,28 @@ export type ExpandRecursively<T> = T extends object
     : never
   : T;
 
+type TypeName = "string" | "number" | "integer" | "boolean" | "null";
 
-export type Argument = {
-  type:
-    | "string"
-    | "number"
-    | "integer"
-    | "boolean"
-    | "array"
-    | "null";
-  description?: string;
-  alias?: string;
-};
+export type Argument =
+  | {
+      type: TypeName;
+      description?: string;
+      alias?: string;
+    }
+  | {
+      type: "array";
+      items?: readonly Argument[] | Argument;
+      description?: string
+      alias?: string
+      minItems?: number;
+      maxItems?: number;
+      uniqueItems?: boolean;
+    };
 
 type Schema = {
   description?: string;
   commands?: Record<string, Schema>;
-  positionals?: readonly Argument[] /* | Argument */;
+  positionals?: readonly Argument[];
   arguments?: Record<string, Argument>;
   options?: Record<string, Argument>;
 };

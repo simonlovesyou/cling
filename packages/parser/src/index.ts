@@ -80,37 +80,39 @@ type CoercedType<T> = {
   valid: true;
 };
 
-type CoercedTypeObject<T> = keyof T extends "type"
-  ? CoercedType<T[keyof T]> | { valid: false; error: Error; value: any }
-  : never;
+type CoerceArrayType<
+  T extends Argument & { type: "array" }
+> = T["items"] extends readonly Argument[]
+  ? CoercedTupleOf<T["items"]>
+  : T["items"] extends Argument
+  ? CoercedTypeObject<T["items"]>[]
+  : any[];
 
-type CoercedTupleOf<T> = {
+type CoercedTypeObject<T extends Argument> = T["type"] extends "array"
+  ? CoerceArrayType<T & { type: "array" }>
+  : CoercedType<T[keyof T]>;
+
+type CoercedTupleOf<T extends readonly Argument[]> = {
   [Key in keyof T]: keyof T[Key] extends "type"
-    ?
-        | CoercedType<T[Key][keyof T[Key]]>
-        | { valid: false; error: Error; value: any }
+    ? CoercedType<T[Key][keyof T[Key]]>
     : never;
 };
 
 type ParsedArguments<T> = {
   [Key in keyof T]: Key extends "options"
     ? {
-        [ArgumentKey in keyof T[Key]]?: ValueRepresentation<
-          CoercedTypeObject<T[Key][ArgumentKey]>
-        >;
+        [ArgumentKey in keyof T[Key]]?: ValueRepresentation<unknown>;
       }
     : {
-        [ArgumentKey in keyof T[Key]]: ValueRepresentation<
-          CoercedTypeObject<T[Key][ArgumentKey]>
-        >;
+        [ArgumentKey in keyof T[Key]]: ValueRepresentation<unknown>;
       };
 } &
   keyof T extends "positionals"
   ? {
       _all?: {
-        __positionals__?: ValueRepresentation<CoercedTupleOf<T[keyof T]>>;
+        __positionals__?: ValueRepresentation<unknown>;
       };
-      __positionals__?: ValueRepresentation<CoercedTupleOf<T[keyof T]>>;
+      __positionals__?: ValueRepresentation<unknown>;
     }
   : never;
 
@@ -119,10 +121,11 @@ function declarativeCliParser<T extends Schema>(
   libOptions: Options = {}
 ): ExpandRecursively<
   {
-    // This needs to be elaborated to work for more values other than 'string' & 'number'
     // Key: arguments   ArgumentKey: 'x: string'                           keyof T[Key][ArgumentKey]: type | description
     [Key in keyof T]: Key extends "positionals"
-      ? CoercedTupleOf<T[Key]>
+      ?
+          | CoercedTupleOf<NonNullable<T["positionals"]>>
+          | { valid: false; error: Error; value: any }
       : // : Key extends "commands"
       // ? {
       //     [NestedKey in keyof T[Key]]: {
@@ -133,12 +136,14 @@ function declarativeCliParser<T extends Schema>(
       //   }
       Key extends "options"
       ? {
-          [ArgumentKey in keyof T[Key]]?: CoercedTypeObject<
-            T[Key][ArgumentKey]
-          >;
+          [ArgumentKey in keyof T[Key]]?:
+            | CoercedTypeObject<NonNullable<T["options"]>[ArgumentKey]>
+            | { valid: false; error: Error; value: any };
         }
       : {
-          [ArgumentKey in keyof T[Key]]: CoercedTypeObject<T[Key][ArgumentKey]>;
+          [ArgumentKey in keyof T[Key]]:
+            | CoercedTypeObject<T[Key][ArgumentKey]>
+            | { valid: false; error: Error; value: any };
         };
   }
 > {
@@ -151,19 +156,19 @@ function declarativeCliParser<T extends Schema>(
       name: "__positionals__",
       defaultOption: true,
       multiple: true,
-      type: validateItemPosition(positionals),
+      type: validateItemPosition((positionals as unknown) as JSONSchema7),
     },
     ...Object.entries(options || {}).map(([optionName, option]) => ({
       name: optionName,
       alias: option.alias,
       group: "options",
-      type: validateType(option),
+      type: validateType((option as unknown) as JSONSchema7),
     })),
     ...Object.entries(args || {}).map(([argumentName, arg]) => ({
       name: argumentName,
       alias: arg.alias,
       group: "arguments",
-      type: validateType(arg),
+      type: validateType((arg as unknown) as JSONSchema7),
     })),
   ].filter((definition) => definition) as OptionDefinition[];
 
