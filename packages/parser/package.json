@@ -10,7 +10,7 @@
   "scripts": {
     "test": "yarn jest",
     "build": "yarn build:ts",
-    "build:ts": "yarn tsc --project tsconfig.json",
+    "build:ts": "yarn tsc --project tsconfig.build.json",
     "prepublish": "yarn build"
   },
   "dependencies": {
