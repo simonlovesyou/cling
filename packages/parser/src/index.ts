@@ -66,7 +66,17 @@ const formatValue = <TValue extends any>(
 };
 
 type CoercedType<T> = {
-  value: T extends "string" ? string : number;
+  value: T extends "string"
+    ? string
+    : T extends "number"
+    ? number
+    : T extends "integer"
+    ? number
+    : T extends "boolean"
+    ? boolean
+    : T extends "null"
+    ? null
+    : never;
   valid: true;
 };
 
