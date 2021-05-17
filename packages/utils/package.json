@@ -14,7 +14,7 @@
     "test:unit": "yarn jest src/",
     "build": "yarn build:ts",
     "build:ts": "yarn tsc --project tsconfig.build.json",
-    "prepublish": "yarn build"
+    "prepublish": "rm -rf ./dist/ && yarn build"
   },
   "devDependencies": {
     "@cling/parser": "^0.2.1",
