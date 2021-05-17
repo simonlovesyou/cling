@@ -9,7 +9,8 @@
   "private": true,
   "scripts": {
     "bootstrap": "yarn lerna bootstrap",
-    "publish": "yarn lerna publish --conventional-commits"
+    "publish": "yarn lerna publish --conventional-commits",
+    "build": "yarn lerna run build"
   },
   "devDependencies": {
     "lerna": "^4.0.0"
