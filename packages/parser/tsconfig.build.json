@@ -1,24 +1,10 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
-    "incremental": true,
-    "target": "es2019",
-    "module": "commonjs",
     "declaration": true,
     "outDir": "./dist",
-    "noEmit": false,
-    "strict": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "sourceMap": true,
   },
-  "exclude": [
-    "jest.config.ts",
-    "**/*.spec.ts"
-  ],
-  "include": [
-    "src/**/*"
-  ]
-}
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts", "examples"]
+  }

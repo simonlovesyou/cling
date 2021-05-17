@@ -20,6 +20,7 @@
     "ramda": "^0.27.1"
   },
   "devDependencies": {
+    "@tsconfig/node14": "^1.0.0",
     "@types/ajv": "^1.0.0",
     "@types/command-line-args": "^5.0.0",
     "@types/command-line-usage": "^5.0.1",
