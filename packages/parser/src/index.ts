@@ -2,7 +2,6 @@ import commandLineArgs, { OptionDefinition } from "command-line-args";
 import Schema, { Argument } from "./types";
 import Ajv, { ErrorObject } from "ajv";
 import { clone, mergeRight } from "ramda";
-import expandedSchemaReferences from "./expandSchemaReferences";
 import { JSONSchema7 } from "json-schema";
 
 type Options = {
@@ -63,15 +62,77 @@ const validateItemPosition = (schemas: JSONSchema7[] | JSONSchema7) => {
   };
 };
 
+const formatValue = <TValue extends any>(
+  value: Record<string, ValueRepresentation<TValue>>
+) => {
+  return Object.entries(value).reduce(
+    (acc: Record<string, unknown>, [key, argument]) =>
+      mergeRight(
+        {
+          [key]: argument.valid
+            ? { valid: true, value: argument.value }
+            : {
+                valid: false,
+                value: argument.value,
+                error: mapErrorObjectToError(argument.errors[0]),
+              },
+        },
+        acc
+      ),
+    {}
+  );
+};
+
+type CoercedType<T> = {
+  value: T extends "string" ? string : number;
+  valid: true;
+};
+
+type CoercedTypeObject<T> = keyof T extends "type"
+  ? CoercedType<T[keyof T]> | { valid: false; error: Error; value: any }
+  : never;
+
+type CoercedTupleOf<T> = {
+  [Key in keyof T]: keyof T[Key] extends "type"
+    ?
+        | CoercedType<T[Key][keyof T[Key]]>
+        | { valid: false; error: Error; value: any }
+    : never;
+};
+
+type ParsedArguments<T> = {
+  [Key in keyof T]: Key extends "options"
+    ? {
+        [ArgumentKey in keyof T[Key]]?: ValueRepresentation<
+          CoercedTypeObject<T[Key][ArgumentKey]>
+        >;
+      }
+    : {
+        [ArgumentKey in keyof T[Key]]: ValueRepresentation<
+          CoercedTypeObject<T[Key][ArgumentKey]>
+        >;
+      };
+} &
+  keyof T extends "positionals"
+  ? {
+      _all?: {
+        __positionals__?: ValueRepresentation<CoercedTupleOf<T[keyof T]>>;
+      };
+      __positionals__?: ValueRepresentation<CoercedTupleOf<T[keyof T]>>;
+    }
+  : never;
+
 function declarativeCliParser(
   schema: Schema,
   libOptions: Options = {}
 ): Result {
   const ajv = new Ajv({ coerceTypes: libOptions.coerceTypes, strict: false });
 
-  const expandedSchema = expandedSchemaReferences(schema);
+  const args = schema.arguments;
+  const options = schema.options;
+  const positionals = schema.positionals;
 
-  const commands = expandedSchema.commands;
+  const commands = schema.commands;
 
   if (commands) {
     const mainCommandDefinition = [{ name: "name", defaultOption: true }];
