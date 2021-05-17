@@ -5,6 +5,7 @@
   "license": "MIT",
   "private": false,
   "typings": "dist/index.d.ts",
+  "files": ["dist", "README.md", "CHANGELOG.md", "package.json", "yarn.lock"],
   "publishConfig": {
     "access": "public"
   },
