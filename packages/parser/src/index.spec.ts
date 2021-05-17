@@ -24,28 +24,38 @@ const SCENARIOS: Record<string, Scenario> = {
         describe("correct type", () => {
           it("should return the argument", () => {
             const result = declarativeCliParser(schema, { argv });
+            // @ts-ignore
             expect(result.arguments!.age).not.toBeUndefined();
+          });
+          it("should consider the argument valid", () => {
+            const result = declarativeCliParser(schema, { argv });
+            // @ts-ignore
+            expect(result.arguments!.age.valid).not.toBeUndefined();
           });
           it("should coerce the type", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.arguments!.age).toBe(25);
+            // @ts-ignore
+            expect(result.arguments!.age.value).toBe(25);
           });
           it("should not return any errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.errors.arguments!.age).toBe(null);
+            // @ts-ignore
+            expect(result.arguments!.age.error).toBe(undefined);
           });
         });
-        describe("incorrect type type", () => {
+        describe("incorrect type", () => {
           const argv = "--age lol".split(" ");
-          it("should not return the argument", () => {
+          it("should return that the argument is not valid", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.arguments!.age).toBe(null);
+            // @ts-ignore
+            expect(result.arguments!.age.valid).toBe(false);
           });
           it("should return an error for the property", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.errors.arguments!.age).toEqual([
-              new Error("type must be number"),
-            ]);
+            // @ts-ignore
+            expect(result.arguments!.age.error).toEqual(
+              new Error("type must be number")
+            );
           });
         });
       });
@@ -65,15 +75,18 @@ const SCENARIOS: Record<string, Scenario> = {
         describe("correct type", () => {
           it("should return the argument", () => {
             const result = declarativeCliParser(schema, { argv });
+            // @ts-ignore
             expect(result.options!.name).not.toBeUndefined();
           });
           it("should coerce the type", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.options!.name).toBe("Alex");
+            // @ts-ignore
+            expect(result.options!.name.value).toBe("Alex");
           });
           it("should not return any errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.errors.options!.name).toBe(null);
+            // @ts-ignore
+            expect(result.options!.name.error).toBe(undefined);
           });
         });
       });
@@ -98,11 +111,13 @@ const SCENARIOS: Record<string, Scenario> = {
           });
           it("should coerce the type", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.positionals![0]).toBe(5);
+            // @ts-expect-error
+            expect(result.positionals![0].value).toBe(5);
           });
           it("should not return any errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.errors.positionals![0]).toBe(null);
+            // @ts-ignore
+            expect(result.positionals![0].error).toBe(undefined);
           });
         });
       });
@@ -126,8 +141,8 @@ const SCENARIOS: Record<string, Scenario> = {
         });
         it("should not return any errors for the property", () => {
           const result = declarativeCliParser(schema, { argv });
-          console.log({result})
-          expect(result.errors.commands!.bar!).toBe(null);
+          // @ts-ignore
+          expect(result.commands!.bar!.error).toBe(undefined);
         });
       });
     },
@@ -157,14 +172,14 @@ const runTestScenarios = (scenarioNames: string[]) => {
     },
     (schema: Schema, argv: string[]) => {}
   );
-  describe(scenarioNames.join(' & '), () => {
+  describe(scenarioNames.join(" & "), () => {
     testCase(schema, argv);
-  })
+  });
 };
 
 runTestScenarios(["single argument"]);
 runTestScenarios(["single option"]);
-runTestScenarios(['single positional'])
-runTestScenarios(['single command'])
+runTestScenarios(["single positional"]);
+// runTestScenarios(['single command'])
 runTestScenarios(["single option", "single argument"]);
-runTestScenarios(['single positional', 'single option', 'single argument'])
+runTestScenarios(["single positional", "single option", "single argument"]);

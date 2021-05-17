@@ -1,41 +1,21 @@
 import commandLineArgs, { OptionDefinition } from "command-line-args";
-import Schema, { Argument } from "./types";
+import Schema, { Argument, Options, ExpandRecursively } from "./types";
 import Ajv, { ErrorObject } from "ajv";
 import { clone, mergeRight } from "ramda";
 import { JSONSchema7 } from "json-schema";
 
-type Options = {
-  positionals?: boolean;
-  argv?: string[];
-  coerceTypes?: boolean;
-};
-
-type Result = {
-  arguments?: Record<string, unknown>;
-  options?: Record<string, unknown>;
-  positionals?: unknown[];
-  commands?: Record<string, any>;
-  errors: {
-    arguments?: Record<string, Error[] | null>;
-    options?: Record<string, Error[] | null>;
-    positionals?: (Error[] | null)[];
-    commands?: Record<string, Error[] | null>;
-  };
-};
-
-type ParsedArguments = {
-  _all?: {
-    __positionals__?: ReturnType<ReturnType<typeof validateItemPosition>>[];
-  };
-  arguments?: ReturnType<ReturnType<typeof validateType>>;
-  options?: ReturnType<ReturnType<typeof validateType>>;
-  __positionals__?: ReturnType<ReturnType<typeof validateItemPosition>>[];
-};
-
 const mapErrorObjectToError = (errorObject: ErrorObject) =>
   new Error(`${errorObject.keyword} ${errorObject.message}`);
 
-const validateType = (schema: JSONSchema7) => (value: any) => {
+type ValueRepresentation<TValue extends any> = {
+  valid: boolean;
+  errors: ErrorObject<string, Record<string, any>, unknown>[];
+  value: TValue;
+};
+
+const validateType = <TValue extends any>(schema: JSONSchema7) => (
+  value: TValue
+): ValueRepresentation<TValue> => {
   const mutateableInstance = { value: clone(value) };
   const ajv = new Ajv({ coerceTypes: true, strict: false });
   const validate = ajv.compile({
@@ -46,12 +26,14 @@ const validateType = (schema: JSONSchema7) => (value: any) => {
 
   return {
     valid,
-    errors: validate.errors || null,
+    errors: validate.errors || [],
     value: mutateableInstance.value,
   };
 };
 
-const validateItemPosition = (schemas: JSONSchema7[] | JSONSchema7) => {
+const validateItemPosition = (
+  schemas: readonly JSONSchema7[] | JSONSchema7
+) => {
   let currentPosition = 0;
   return (value: any) => {
     const schema = Array.isArray(schemas) ? schemas[currentPosition] : schemas;
@@ -122,53 +104,37 @@ type ParsedArguments<T> = {
     }
   : never;
 
-function declarativeCliParser(
-  schema: Schema,
+function declarativeCliParser<T extends Schema>(
+  schema: T,
   libOptions: Options = {}
-): Result {
-  const ajv = new Ajv({ coerceTypes: libOptions.coerceTypes, strict: false });
-
+): ExpandRecursively<
+  {
+    // This needs to be elaborated to work for more values other than 'string' & 'number'
+    // Key: arguments   ArgumentKey: 'x: string'                           keyof T[Key][ArgumentKey]: type | description
+    [Key in keyof T]: Key extends "positionals"
+      ? CoercedTupleOf<T[Key]>
+      : // : Key extends "commands"
+      // ? {
+      //     [NestedKey in keyof T[Key]]: {
+      //       [AnotherNestedKey in keyof T[Key][NestedKey]]: CoerceSchema<
+      //         T[Key][NestedKey][AnotherNestedKey]
+      //       >;
+      //     };
+      //   }
+      Key extends "options"
+      ? {
+          [ArgumentKey in keyof T[Key]]?: CoercedTypeObject<
+            T[Key][ArgumentKey]
+          >;
+        }
+      : {
+          [ArgumentKey in keyof T[Key]]: CoercedTypeObject<T[Key][ArgumentKey]>;
+        };
+  }
+> {
   const args = schema.arguments;
   const options = schema.options;
   const positionals = schema.positionals;
-
-  const commands = schema.commands;
-
-  if (commands) {
-    const mainCommandDefinition = [{ name: "name", defaultOption: true }];
-    const mainCommand = commandLineArgs(mainCommandDefinition, {
-      stopAtFirstUnknown: true,
-      argv: libOptions.argv,
-    });
-
-    const argv = mainCommand._unknown || [];
-    console.log({ commands });
-    const subCommand = commands[mainCommand.name];
-
-    if (!subCommand) {
-      return {
-        errors: {
-          commands: {
-            [mainCommand.name]: [new Error("Unknown command")],
-          },
-        },
-      };
-    }
-    return {
-      commands: {
-        [mainCommand.name]: declarativeCliParser(subCommand, { argv }),
-      },
-      errors: {
-        commands: {
-          [mainCommand.name]: null,
-        },
-      },
-    };
-  }
-
-  const args = expandedSchema.arguments;
-  const options = expandedSchema.options;
-  const positionals = expandedSchema.positionals;
 
   const commandDefinition = [
     positionals && {
@@ -193,65 +159,36 @@ function declarativeCliParser(
 
   const commandArguments = commandLineArgs(commandDefinition, {
     argv: libOptions.argv,
-  }) as ParsedArguments;
+  }) as ParsedArguments<T>;
 
-  return {
-    arguments: Object.entries(commandArguments.arguments || {}).reduce(
-      (acc: Record<string, any>, [key, argument]: [string, any]) =>
-        mergeRight({ [key]: argument.errors ? null : argument.value }, acc),
-      {}
-    ),
-    options: Object.entries(commandArguments.options || {}).reduce(
-      (acc: Record<string, any>, [key, option]: [string, any]) =>
-        mergeRight({ [key]: option.errors ? null : option.value }, acc),
-      {}
-    ),
-    positionals: (
-      commandArguments.__positionals__ ||
-      commandArguments._all?.__positionals__ ||
-      []
-    ).map(({ value, errors }) => (errors ? null : value)),
-    errors: {
-      arguments: Object.entries(commandArguments.arguments || {}).reduce(
-        (
-          acc,
-          [key, argument]: [string, NonNullable<ParsedArguments["arguments"]>]
-        ) =>
-          mergeRight(
-            {
-              [key]:
-                argument.errors && argument.errors.map(mapErrorObjectToError),
-            },
-            acc
-          ),
-        {}
-      ),
-      options:
-        commandArguments.options &&
-        Object.entries(commandArguments.options).reduce(
-          (
-            acc,
-            [key, argument]: [string, NonNullable<ParsedArguments["arguments"]>]
-          ) =>
-            mergeRight(
-              {
-                [key]:
-                  argument.errors && argument.errors.map(mapErrorObjectToError),
-              },
-              acc
-            ),
-          {}
-        ),
-      positionals:
-        positionals &&
-        new Array(positionals.length).fill(null).map((_, index) => {
-          const positional = commandArguments.__positionals__?.[index];
-          return positional?.errors
-            ? positional.errors.map(mapErrorObjectToError)
-            : null;
-        }),
-    },
-  };
+  const schemaKeys = Object.keys(schema) as (keyof T)[];
+  // @ts-ignore
+  return (schemaKeys.reduce((acc, key) => {
+    console.log();
+    const result = {
+      ...acc,
+      [key]:
+        key !== "positionals"
+          ? // @ts-ignore
+            formatValue<CoercedType<T[typeof key]>>(commandArguments[key])
+          : (
+              commandArguments.__positionals__ ||
+              commandArguments._all?.__positionals__ ||
+              []
+            )
+              // @ts-ignore
+              .map((value) =>
+                value.valid
+                  ? { valid: true, value: value.value }
+                  : {
+                      valid: false,
+                      value: value.value,
+                      error: mapErrorObjectToError(value.errors[0]),
+                    }
+              ),
+    };
+    return result;
+  }, {}) as unknown) as ReturnType<typeof declarativeCliParser>;
 }
 
 export { Schema, Argument };
