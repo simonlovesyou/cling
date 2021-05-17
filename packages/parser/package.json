@@ -1,11 +1,17 @@
 {
   "name": "@cling/parser",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "main": "dist/index.js",
   "license": "MIT",
   "private": false,
   "typings": "dist/index.d.ts",
-  "files": ["dist", "README.md", "CHANGELOG.md", "package.json", "yarn.lock"],
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "package.json",
+    "yarn.lock"
+  ],
   "publishConfig": {
     "access": "public"
   },

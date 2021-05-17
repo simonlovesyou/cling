@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.6](https://github.com/simonlovesyou/cling/compare/@cling/utils@0.0.5...@cling/utils@0.0.6) (2021-05-17)
+
+
+### Bug Fixes
+
+* **utils:** Reduce tarball size ([e0c32ba](https://github.com/simonlovesyou/cling/commit/e0c32bab907587e63e07ef7f2402762f7879fce0))
+
+
+
+
+
 ## [0.0.5](https://github.com/simonlovesyou/cling/compare/@cling/utils@0.0.4...@cling/utils@0.0.5) (2021-05-17)
 
 

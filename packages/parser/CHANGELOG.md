@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.2](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.2.1...@cling/parser@0.2.2) (2021-05-17)
+
+
+### Bug Fixes
+
+* **parser:** Reduce tarball size ([62ab810](https://github.com/simonlovesyou/cling/commit/62ab8108cf420659ea2d89be554ee739e5baf949))
+
+
+
+
+
 ## [0.2.1](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.2.0...@cling/parser@0.2.1) (2021-05-17)
 
 
