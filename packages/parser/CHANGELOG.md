@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.1.0...@cling/parser@0.2.0) (2021-05-17)
+
+
+### Bug Fixes
+
+* **parser:** Use correct tsconfig ([8d17f0c](https://github.com/simonlovesyou/cling/commit/8d17f0cea50aeb88759ba497fd28338717c08086))
+
+
+### Features
+
+* **parser:** Add inferring of return data and update the return signature of the library ([9fdd71c](https://github.com/simonlovesyou/cling/commit/9fdd71cebba2bfef448507c99623a5a5d8cc37cc))
+* **parser:** Add support for commands & update return response API ([9d1a817](https://github.com/simonlovesyou/cling/commit/9d1a817fbbade1b867c30b100ca99ec44fcca6b0))
+* **parser:** Add support for inferring more types ([89d5b80](https://github.com/simonlovesyou/cling/commit/89d5b80f041056e60ca7df0f37cee7814b85906b))
+* **parser:** Add support for parsing array types ([e18a3b1](https://github.com/simonlovesyou/cling/commit/e18a3b110d8b30a71a5d20bacd28dd00f1fc91c3))
+* **parser:** Remove support for $ref in schema ([082a33f](https://github.com/simonlovesyou/cling/commit/082a33f6815cfaa66a2c31732921f4c23e3babdc))
+* **parser:** Remove support for object type in schema ([77e1f81](https://github.com/simonlovesyou/cling/commit/77e1f819981f1758ecd21f504b4b193bc1334286))
+
+
+
+
+
 # [0.1.0](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.0.5...@cling/parser@0.1.0) (2021-05-09)
 
 
