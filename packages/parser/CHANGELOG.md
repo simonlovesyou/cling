@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.1](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.2.0...@cling/parser@0.2.1) (2021-05-17)
+
+
+### Bug Fixes
+
+* **parser:** Add typings property in package json ([b5ef029](https://github.com/simonlovesyou/cling/commit/b5ef029a146b0ac9778dc97ca7b7f9e43f9ab4a5))
+
+
+
+
+
 # [0.2.0](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.1.0...@cling/parser@0.2.0) (2021-05-17)
 
 
