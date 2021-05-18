@@ -128,7 +128,7 @@ type CoerceSchema<T extends Schema> = {
         [ArgumentKey in keyof T[Key]]?:
           | {
               valid: true;
-              value: CoercedTypeObject<NonNullable<T["options"]>[ArgumentKey]>;
+              value?: CoercedTypeObject<NonNullable<T["options"]>[ArgumentKey]>;
             }
           | { valid: false; error: Error; value: any };
       }
