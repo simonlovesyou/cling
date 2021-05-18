@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.7](https://github.com/simonlovesyou/cling/compare/@cling/utils@0.0.6...@cling/utils@0.0.7) (2021-05-18)
+
+
+### Bug Fixes
+
+* **utils:** Fix type declaration & import for json-schema-deref-sync ([4256d97](https://github.com/simonlovesyou/cling/commit/4256d97adfcd15cbd79cc0b0482ea1d4ff5ca64f))
+
+
+
+
+
 ## [0.0.6](https://github.com/simonlovesyou/cling/compare/@cling/utils@0.0.5...@cling/utils@0.0.6) (2021-05-17)
 
 
