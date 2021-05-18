@@ -1,6 +1,6 @@
 import { JSONSchema7 } from "json-schema";
 import { Argument } from "@cling/parser";
-import { deref } from "json-schema-deref-sync";
+import deref from "json-schema-deref-sync";
 
 export const convertJSONSchemaToArgument = (
   jsonSchema: JSONSchema7

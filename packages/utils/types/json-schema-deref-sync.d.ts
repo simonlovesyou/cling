@@ -1,5 +1,5 @@
 declare module 'json-schema-deref-sync' {
   import { JSONSchema7 } from "json-schema";
 
-  export function deref(object: JSONSchema7): JSONSchema7
+  export default function deref(object: JSONSchema7): JSONSchema7
 }
