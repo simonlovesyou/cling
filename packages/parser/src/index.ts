@@ -8,6 +8,7 @@ import Schema, {
 import Ajv, { ErrorObject } from "ajv";
 import { clone, mergeRight } from "ramda";
 import { JSONSchema7 } from "json-schema";
+import addFormats from "ajv-formats";
 
 const mapErrorObjectToError = (errorObject: ErrorObject) =>
   new Error(`${errorObject.keyword} ${errorObject.message}`);
@@ -22,12 +23,13 @@ const validateType = <TValue extends any>(schema: JSONSchema7) => (
   value: TValue
 ): ValueRepresentation<TValue> => {
   const mutateableInstance = { value: clone(value) };
-  const ajv = new Ajv({ coerceTypes: true, strict: false });
+  const ajv = new Ajv({ coerceTypes: true });
+  addFormats(ajv);
   const validate = ajv.compile({
     type: "object",
     properties: { value: schema },
   });
-  const valid = validate(mutateableInstance);
+  const valid = validate(mutateableInstance) as boolean;
 
   return {
     valid,
