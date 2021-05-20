@@ -187,7 +187,28 @@ const TEST_CASES = {
         });
       });
     },
-    "not provided": () => {},
+    "not provided": (
+      schema: typeof SCHEMAS["single positional"],
+      argv: string[]
+    ) => {
+      describe("positional not provided", () => {
+        it("should return the positional result", () => {
+          const result = declarativeCliParser(schema, { argv });
+          expect(result.positionals).not.toBeUndefined();
+        });
+        it("the argument should not be valid", () => {
+          const result = declarativeCliParser(schema, { argv });
+          expect(result.positionals.valid).toBe(false);
+        });
+        it("has an argument error", () => {
+          const result = declarativeCliParser(schema, { argv });
+          // @ts-expect-error
+          expect(result.positionals.error).toEqual(
+            new Error("value not provided")
+          );
+        });
+      });
+    },
   },
 };
 

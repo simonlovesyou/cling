@@ -6,7 +6,7 @@ import Schema, {
   CommandSchema,
 } from "./types";
 import Ajv, { ErrorObject } from "ajv";
-import { clone, mergeRight } from "ramda";
+import { clone } from "ramda";
 import { JSONSchema7 } from "json-schema";
 import addFormats from "ajv-formats";
 
@@ -51,26 +51,28 @@ const validateItemPosition = (
   };
 };
 
+type ResultValue<TValue extends any> =
+  | {
+      valid: true;
+      value: TValue;
+      error?: undefined;
+    }
+  | {
+      valid: false;
+      value: TValue;
+      error: Error;
+    };
+
 const formatValue = <TValue extends any>(
-  value: Record<string, ValueRepresentation<TValue>>
-) => {
-  return Object.entries(value).reduce(
-    (acc: Record<string, unknown>, [key, argument]) =>
-      mergeRight(
-        {
-          [key]: argument.valid
-            ? { valid: true, value: argument.value }
-            : {
-                valid: false,
-                value: argument.value,
-                error: mapErrorObjectToError(argument.errors[0]),
-              },
-        },
-        acc
-      ),
-    {}
-  );
-};
+  argument: ValueRepresentation<TValue>
+): ResultValue<TValue> =>
+  argument.valid
+    ? { valid: true as const, value: argument.value }
+    : {
+        valid: false as const,
+        value: argument.value,
+        error: mapErrorObjectToError(argument.errors[0]),
+      };
 
 type CoercedType<T> = T extends "string"
   ? string
@@ -113,9 +115,9 @@ type ParsedArguments<T> = {
   keyof T extends "positionals"
   ? {
       _all?: {
-        __positionals__?: ValueRepresentation<unknown>;
+        __positionals__?: ValueRepresentation<unknown>[];
       };
-      __positionals__?: ValueRepresentation<unknown>;
+      __positionals__?: ValueRepresentation<unknown>[];
     }
   : never;
 
@@ -171,7 +173,7 @@ function declarativeCliParser<T extends Schema | CommandSchema>(
     });
 
     const argv = mainCommand._unknown || [];
-    console.log({ commands: commandSchema.commands });
+
     const subCommand = commandSchema.commands[mainCommand.name];
 
     if (!subCommand) {
@@ -224,49 +226,73 @@ function declarativeCliParser<T extends Schema | CommandSchema>(
   const schemaKeys = Object.keys(schema) as (keyof T)[];
   // @ts-ignore
   return schemaKeys.reduce((acc, key) => {
-    const result = {
+    // @ts-ignore
+    if (key === "positionals") {
+      const positionals =
+        commandArguments.__positionals__ ||
+        commandArguments._all?.__positionals__ ||
+        [];
+      return {
+        ...acc,
+        // @ts-ignore
+        [key]: schema["positionals"].reduce(
+          (acc: ResultValue<any[]>, value: Argument, index: number) => {
+            const positional = positionals[index];
+
+            if (!positional || positional.value === '') {
+              return {
+                valid: false as const,
+                error: new Error("value not provided"),
+                value: [...acc.value, null],
+              };
+            }
+            if (!positional.valid || !acc.valid) {
+              return {
+                valid: false as const,
+                error:
+                  acc.valid === true
+                    ? mapErrorObjectToError(positional.errors[0])
+                    : acc.error,
+                value: [...acc.value, positional.value],
+              };
+            }
+            return {
+              valid: true as const,
+              value: [...acc.value, positional.value],
+            };
+          },
+          {
+            valid: true,
+            value: [],
+          }
+        ),
+      };
+    }
+    return {
       ...acc,
-      [key]:
-        key !== "positionals"
-          ? // @ts-ignore
-            formatValue<CoercedType<T[typeof key]>>(commandArguments[key])
-          : (
-              commandArguments.__positionals__ ||
-              commandArguments._all?.__positionals__ ||
-              []
-            )
-              // @ts-ignore
-              .reduce(
-                (
-                  acc:
-                    | { valid: true; value: any[] }
-                    | { valid: false; error: Error; value: any[] },
-                  value: {
-                    valid: boolean;
-                    errors: ErrorObject[];
-                    value: any;
-                  }
-                ) =>
-                  !value.valid || !acc.valid
-                    ? {
-                        valid: false,
-                        error:
-                          acc.valid === true
-                            ? mapErrorObjectToError(value.errors[0])
-                            : acc.error,
-                        value: [...acc.value, value.value],
-                      }
-                    : {
-                        valid: true,
-                        value: [...acc.value, value.value],
-                      },
-                {
-                  valid: true,
-                  value: [],
-                }
-              ),
+      // @ts-ignore
+      [key]: Object.entries(schema[key]).reduce((acc, [name, value]) => {
+        // @ts-ignore
+        const commandValue = commandArguments[key][name];
+        if (commandValue === undefined) {
+          if (key === "options") {
+            return acc;
+          }
+          return {
+            [name]: {
+              valid: false,
+              error: new Error("value not provided"),
+              value: null,
+            },
+          };
+        }
+        // @ts-ignore
+        return {
+          ...acc,
+          [name]: formatValue(commandValue),
+        };
+      }, {}),
     };
-    return result;
   }, {}) as unknown as ReturnType<typeof declarativeCliParser>;
 }
 
