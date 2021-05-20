@@ -218,6 +218,7 @@ function declarativeCliParser<T extends Schema | CommandSchema>(
 
   const commandArguments = commandLineArgs(commandDefinition, {
     argv: libOptions.argv,
+    partial: true,
   }) as ParsedArguments<T>;
 
   const schemaKeys = Object.keys(schema) as (keyof T)[];

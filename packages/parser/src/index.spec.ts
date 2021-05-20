@@ -70,8 +70,28 @@ const TEST_CASES = {
         });
       });
     },
-    "not provided": () => {
-    }
+    "not provided": (
+      schema: typeof SCHEMAS["single argument"],
+      argv: string[]
+    ) => {
+      describe("argument not provided", () => {
+        it("should return the argument", () => {
+          const result = declarativeCliParser(schema, { argv });
+          expect(result.arguments.age).not.toBeUndefined();
+        });
+        it("the argument should not be valid", () => {
+          const result = declarativeCliParser(schema, { argv });
+          expect(result.arguments.age.valid).toBe(false);
+        });
+        it("has an argument error", () => {
+          const result = declarativeCliParser(schema, { argv });
+          // @ts-expect-error
+          expect(result.arguments.age.error).toEqual(
+            new Error("value not provided")
+          );
+        });
+      });
+    },
   },
   "single option": {
     valid: (schema: typeof SCHEMAS["single option"], argv: string[]) => {
