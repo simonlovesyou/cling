@@ -1,119 +1,141 @@
 import declarativeCliParser from ".";
-import Schema, { CommandSchema } from "./types";
-import { mergeDeepRight, pipe } from "ramda";
+import { pick, mergeAll, values } from "ramda";
 import randomstring from "randomstring";
 
-type Scenario = {
-  schema: Schema | CommandSchema;
-  argv: string[];
-  testCase: (schema: Schema, argv: string[]) => any;
-  name?: string;
-};
+const mergeArrays = <T extends any[][]>(arrs: T) =>
+  arrs.reduce((acc, arr) => [...acc, ...arr], []);
 
-const SCENARIOS: Record<string, Scenario> = {
+const SCHEMAS = {
   "single argument": {
-    schema: {
-      arguments: {
-        age: {
-          type: "number" as "number",
-        },
+    arguments: {
+      age: {
+        type: "number",
       },
     },
-    argv: "--age 25".split(" "),
-    testCase: (schema, argv) => {
+  },
+  "single option": {
+    options: {
+      email: {
+        type: "string",
+        format: "email",
+      },
+    },
+  },
+  "single positional": {
+    positionals: [
+      {
+        type: "integer",
+      },
+    ],
+  },
+} as const;
+
+const TEST_CASES = {
+  "single argument": {
+    valid: (schema: typeof SCHEMAS["single argument"], argv: string[]) => {
       describe("argument provided", () => {
         describe("correct type", () => {
           it("should return the argument", () => {
             const result = declarativeCliParser(schema, { argv });
-            // @ts-ignore
-            expect(result.arguments!.age).not.toBeUndefined();
+            expect(result.arguments.age).not.toBeUndefined();
           });
           it("should consider the argument valid", () => {
             const result = declarativeCliParser(schema, { argv });
-            // @ts-ignore
-            expect(result.arguments!.age.valid).not.toBeUndefined();
+            expect(result.arguments.age.valid).not.toBeUndefined();
           });
           it("should coerce the type", () => {
             const result = declarativeCliParser(schema, { argv });
-            // @ts-ignore
-            expect(result.arguments!.age.value).toBe(25);
+            expect(result.arguments.age.value).toBe(25);
           });
           it("should not return any errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
-            // @ts-ignore
-            expect(result.arguments!.age.error).toBe(undefined);
+            // @ts-expect-error
+            expect(result.arguments.age?.error).toBe(undefined);
           });
         });
-        describe("incorrect type", () => {
-          const argv = "--age lol".split(" ");
-          it("should return that the argument is not valid", () => {
+      });
+    },
+    invalid: (schema: typeof SCHEMAS["single argument"], argv: string[]) => {
+      describe("incorrect type", () => {
+        it("should return that the argument is not valid", () => {
+          const result = declarativeCliParser(schema, { argv });
+          expect(result.arguments.age.valid).toBe(false);
+        });
+        it("should return an error for the property", () => {
+          const result = declarativeCliParser(schema, { argv });
+          // @ts-expect-error
+          expect(result.arguments.age?.error).toEqual(
+            new Error("type must be number")
+          );
+        });
+      });
+    },
+    "not provided": () => {
+    }
+  },
+  "single option": {
+    valid: (schema: typeof SCHEMAS["single option"], argv: string[]) => {
+      describe("option provided", () => {
+        describe("correct type", () => {
+          it("should return the argument", () => {
             const result = declarativeCliParser(schema, { argv });
-            // @ts-ignore
-            expect(result.arguments!.age.valid).toBe(false);
+            expect(result.options.email).not.toBeUndefined();
           });
-          it("should return an error for the property", () => {
+          it("should coerce the type", () => {
             const result = declarativeCliParser(schema, { argv });
-            // @ts-ignore
-            expect(result.arguments!.age.error).toEqual(
-              new Error("type must be number")
+            expect(result.options.email?.value).toBe("alex@alex.com");
+          });
+          it("should not return any errors for the property", () => {
+            const result = declarativeCliParser(schema, { argv });
+            // @ts-expect-error
+            expect(result.options.email?.error).toBe(undefined);
+          });
+        });
+      });
+    },
+    invalid: (schema: typeof SCHEMAS["single option"], argv: string[]) => {
+      describe("option provided", () => {
+        describe("incorrect type", () => {
+          it("should return the argument", () => {
+            const result = declarativeCliParser(schema, { argv });
+            expect(result.options.email).not.toBeUndefined();
+          });
+          it("should return the argument provided", () => {
+            const result = declarativeCliParser(schema, { argv });
+            expect(result.options.email?.value).toBe("alex");
+          });
+          it("should return errors for the property", () => {
+            const result = declarativeCliParser(schema, { argv });
+            // @ts-expect-error
+            expect(result.options.email?.error).toEqual(
+              new Error('format must match format "email"')
             );
           });
         });
       });
     },
-  },
-  "single option": {
-    schema: {
-      options: {
-        name: {
-          type: "string" as "string",
-        },
-      },
-    },
-    argv: "--name Alex".split(" "),
-    testCase: (schema, argv) => {
-      describe("option provided", () => {
-        describe("correct type", () => {
-          it("should return the argument", () => {
-            const result = declarativeCliParser(schema, { argv });
-            // @ts-ignore
-            expect(result.options!.name).not.toBeUndefined();
-          });
-          it("should coerce the type", () => {
-            const result = declarativeCliParser(schema, { argv });
-            // @ts-ignore
-            expect(result.options!.name.value).toBe("Alex");
-          });
-          it("should not return any errors for the property", () => {
-            const result = declarativeCliParser(schema, { argv });
-            // @ts-ignore
-            expect(result.options!.name.error).toBe(undefined);
-          });
+    "not provided": (
+      schema: typeof SCHEMAS["single option"],
+      argv: string[]
+    ) => {
+      describe("option not provided", () => {
+        it("should not return the option", () => {
+          const result = declarativeCliParser(schema, { argv });
+          expect(result.options.email).toBeUndefined();
         });
       });
     },
   },
   "single positional": {
-    schema: {
-      positionals: [
-        {
-          type: "integer",
-        },
-      ],
-    },
-    argv: ["5"],
-    testCase: (schema, argv) => {
+    valid: (schema: typeof SCHEMAS["single positional"], argv: string[]) => {
       describe("positional provided", () => {
         describe("correct type", () => {
           it("should return that the positional argument is valid", () => {
             const result = declarativeCliParser(schema, { argv });
-            console.log(result);
-            // @ts-expect-error
             expect(result.positionals.valid).toBe(true);
           });
           it("should coerce the type", () => {
             const result = declarativeCliParser(schema, { argv });
-            // @ts-expect-error
             expect(result.positionals.value[0]).toBe(5);
           });
           it("should not return any errors for the property", () => {
@@ -124,45 +146,87 @@ const SCENARIOS: Record<string, Scenario> = {
         });
       });
     },
+    invalid: (schema: typeof SCHEMAS["single positional"], argv: string[]) => {
+      describe("positional provided", () => {
+        describe("incorrect type", () => {
+          it("should return the positional", () => {
+            const result = declarativeCliParser(schema, { argv });
+            expect(result.positionals).not.toBeUndefined();
+          });
+          it("should return the positional value", () => {
+            const result = declarativeCliParser(schema, { argv });
+            expect(result.positionals.value[0]).toBe("bar");
+          });
+          it("should not return any errors for the property", () => {
+            const result = declarativeCliParser(schema, { argv });
+            // @ts-expect-error
+            expect(result.positionals.error).toEqual(
+              new Error("type must be integer")
+            );
+          });
+        });
+      });
+    },
+    "not provided": () => {},
   },
 };
 
-const mergeSchemas = (
-  schemaA: Schema | CommandSchema,
-  schemaB: Schema | CommandSchema
-) => mergeDeepRight(schemaA, schemaB);
+const ARGVS = {
+  "single argument": {
+    valid: ["--age 25"],
+    invalid: ["--age Bar"],
+    "not provided": [] as string[],
+  },
+  "single option": {
+    valid: ["--email alex@alex.com"],
+    invalid: ["--email alex"],
+    "not provided": [] as string[],
+  },
+  "single positional": {
+    valid: ["5"],
+    invalid: ["bar"],
+    "not provided": [] as string[],
+  },
+};
 
-const runTestScenarios = (scenarioNames: string[]) => {
-  const scenarios = Object.entries(SCENARIOS).reduce(
-    (acc: Scenario[], [scenarioName, scenario]) =>
-      scenarioNames.includes(scenarioName) ? [...acc, scenario] : acc,
-    []
-  );
-  const schema = scenarios.reduce(
-    (acc, scenario) => mergeSchemas(acc, scenario.schema),
-    {}
-  );
-  const argv = scenarios.reduce(
-    (acc: string[], scenario) => [...scenario.argv, ...acc],
-    []
-  ) as string[];
-
-  const testCase = scenarios.reduce(
-    (acc, scenario) => () => {
-      acc(schema, argv);
-      scenario.testCase(schema, argv);
-    },
-    (schema: Schema | CommandSchema, argv: string[]) => {}
-  );
-  describe(scenarioNames.join(" & "), () => {
-    testCase(schema, argv);
+const runTestScenarios = (keys: (keyof typeof SCHEMAS)[]) => {
+  describe(keys.join(" & "), () => {
+    describe("valid", () => {
+      const argv = mergeArrays(
+        values(pick(keys, ARGVS)).map((arg) => arg.valid)
+      );
+      const schema = mergeAll(values(pick(keys, SCHEMAS)));
+      values(pick(keys, TEST_CASES)).forEach((testCase) => {
+        // @ts-ignore
+        testCase.valid(schema, argv.join(" ").split(" "));
+      });
+    });
+    describe("invalid", () => {
+      const argv = mergeArrays(
+        values(pick(keys, ARGVS)).map((arg) => arg.invalid)
+      );
+      const schema = mergeAll(values(pick(keys, SCHEMAS)));
+      values(pick(keys, TEST_CASES)).forEach((testCase) => {
+        // @ts-ignore
+        testCase.invalid(schema, argv.join(" ").split(" "));
+      });
+    });
+    describe("not provided", () => {
+      const argv = mergeArrays(
+        values(pick(keys, ARGVS)).map((arg) => arg["not provided"])
+      );
+      const schema = mergeAll(values(pick(keys, SCHEMAS)));
+      values(pick(keys, TEST_CASES)).forEach((testCase) => {
+        // @ts-ignore
+        testCase["not provided"](schema, argv.join(" ").split(" "));
+      });
+    });
   });
 };
 
 runTestScenarios(["single argument"]);
 runTestScenarios(["single option"]);
 runTestScenarios(["single positional"]);
-runTestScenarios(["single command"]);
 runTestScenarios(["single option", "single argument"]);
 runTestScenarios(["single positional", "single option", "single argument"]);
 
