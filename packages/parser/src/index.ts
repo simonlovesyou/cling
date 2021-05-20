@@ -15,7 +15,7 @@ const mapErrorObjectToError = (errorObject: ErrorObject) =>
 
 type ValueRepresentation<TValue extends any> = {
   valid: boolean;
-  errors: ErrorObject<string, Record<string, any>, unknown>[];
+  errors: ErrorObject[];
   value: TValue;
 };
 
