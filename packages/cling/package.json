@@ -11,7 +11,10 @@
     "CHANGELOG.md",
     "yarn.lock"
   ],
-  "private": true,
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "test": "yarn jest src/ --coverage",
     "build": "yarn build:ts",
