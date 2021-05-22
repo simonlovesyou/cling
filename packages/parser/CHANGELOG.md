@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.2.3...@cling/parser@0.3.0) (2021-05-22)
+
+
+### Bug Fixes
+
+* **parser:** Add proper handling of missing positional arguments ([5b41f0b](https://github.com/simonlovesyou/cling/commit/5b41f0b3677327dfebdb1e619255748bd196ae1b))
+* **parser:** Remove ts-node as a dependency ([4352e9f](https://github.com/simonlovesyou/cling/commit/4352e9ffef133f71a0c436058574316c8ad04bd0))
+
+
+### Features
+
+* **parser:** Add format validation ([05c0d34](https://github.com/simonlovesyou/cling/commit/05c0d34ef4dbef78176ad357d50eb22a4d4fa013))
+
+
+
+
+
 ## [0.2.3](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.2.2...@cling/parser@0.2.3) (2021-05-18)
 
 
