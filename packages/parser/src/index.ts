@@ -10,8 +10,8 @@ import { clone } from "ramda";
 import { JSONSchema7 } from "json-schema";
 import addFormats from "ajv-formats";
 
-const mapErrorObjectToError = (errorObject: ErrorObject) =>
-  new Error(`${errorObject.keyword} ${errorObject.message}`);
+const mapErrorObjectToError = (keyName: string, errorObject: ErrorObject) =>
+  new Error(`${keyName}: ${errorObject.keyword} ${errorObject.message}`);
 
 type ValueRepresentation<TValue extends any> = {
   valid: boolean;
@@ -64,6 +64,7 @@ type ResultValue<TValue extends any> =
     };
 
 const formatValue = <TValue extends any>(
+  keyName: string,
   argument: ValueRepresentation<TValue>
 ): ResultValue<TValue> =>
   argument.valid
@@ -71,7 +72,7 @@ const formatValue = <TValue extends any>(
     : {
         valid: false as const,
         value: argument.value,
-        error: mapErrorObjectToError(argument.errors[0]),
+        error: mapErrorObjectToError(keyName, argument.errors[0]),
       };
 
 type CoercedType<T> = T extends "string"
@@ -239,10 +240,10 @@ function declarativeCliParser<T extends Schema | CommandSchema>(
           (acc: ResultValue<any[]>, value: Argument, index: number) => {
             const positional = positionals[index];
 
-            if (!positional || positional.value === '') {
+            if (!positional || positional.value === "") {
               return {
                 valid: false as const,
-                error: new Error("value not provided"),
+                error: new Error(`${value.type}: value not provided`),
                 value: [...acc.value, null],
               };
             }
@@ -251,7 +252,7 @@ function declarativeCliParser<T extends Schema | CommandSchema>(
                 valid: false as const,
                 error:
                   acc.valid === true
-                    ? mapErrorObjectToError(positional.errors[0])
+                    ? mapErrorObjectToError(value.type, positional.errors[0])
                     : acc.error,
                 value: [...acc.value, positional.value],
               };
@@ -281,7 +282,7 @@ function declarativeCliParser<T extends Schema | CommandSchema>(
           return {
             [name]: {
               valid: false,
-              error: new Error("value not provided"),
+              error: new Error(`${name}: value not provided`),
               value: null,
             },
           };
@@ -289,7 +290,7 @@ function declarativeCliParser<T extends Schema | CommandSchema>(
         // @ts-ignore
         return {
           ...acc,
-          [name]: formatValue(commandValue),
+          [name]: formatValue(name, commandValue),
         };
       }, {}),
     };

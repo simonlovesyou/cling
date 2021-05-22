@@ -65,7 +65,7 @@ const TEST_CASES = {
           const result = declarativeCliParser(schema, { argv });
           // @ts-expect-error
           expect(result.arguments.age?.error).toEqual(
-            new Error("type must be number")
+            new Error("age: type must be number")
           );
         });
       });
@@ -87,7 +87,7 @@ const TEST_CASES = {
           const result = declarativeCliParser(schema, { argv });
           // @ts-expect-error
           expect(result.arguments.age.error).toEqual(
-            new Error("value not provided")
+            new Error("age: value not provided")
           );
         });
       });
@@ -128,7 +128,7 @@ const TEST_CASES = {
             const result = declarativeCliParser(schema, { argv });
             // @ts-expect-error
             expect(result.options.email?.error).toEqual(
-              new Error('format must match format "email"')
+              new Error('email: format must match format "email"')
             );
           });
         });
@@ -181,7 +181,7 @@ const TEST_CASES = {
             const result = declarativeCliParser(schema, { argv });
             // @ts-expect-error
             expect(result.positionals.error).toEqual(
-              new Error("type must be integer")
+              new Error("integer: type must be integer")
             );
           });
         });
@@ -204,7 +204,7 @@ const TEST_CASES = {
           const result = declarativeCliParser(schema, { argv });
           // @ts-expect-error
           expect(result.positionals.error).toEqual(
-            new Error("value not provided")
+            new Error("integer: value not provided")
           );
         });
       });
