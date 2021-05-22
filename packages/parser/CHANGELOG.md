@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.3.0...@cling/parser@0.4.0) (2021-05-22)
+
+
+### Features
+
+* **parser:** Add error message prefix with key name ([bd70057](https://github.com/simonlovesyou/cling/commit/bd700573dc3fa62388235384fa34e67cd90e1cd6))
+
+
+
+
+
 # [0.3.0](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.2.3...@cling/parser@0.3.0) (2021-05-22)
 
 
