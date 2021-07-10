@@ -275,6 +275,18 @@ function declarativeCliParser<T extends Schema | CommandSchema>(
       [key]: Object.entries(schema[key]).reduce((acc, [name, value]) => {
         // @ts-ignore
         const commandValue = commandArguments[key][name];
+        // @ts-ignore
+        if (commandValue === null && schema[key][name].type === "boolean") {
+          return {
+            ...acc,
+            [name]: formatValue(name, {
+              valid: true,
+              errors: [],
+              value: true,
+            }),
+          };
+        }
+
         if (commandValue === undefined) {
           if (key === "options") {
             return acc;

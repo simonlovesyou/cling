@@ -1,6 +1,9 @@
 import declarativeCliParser from ".";
-import { pick, mergeAll, values } from "ramda";
+import { pick, mergeAll, values, reduce, mergeDeepRight } from "ramda";
 import randomstring from "randomstring";
+
+// @ts-ignore
+const mergeAllDeep = reduce(mergeDeepRight, {});
 
 const mergeArrays = <T extends any[][]>(arrs: T) =>
   arrs.reduce((acc, arr) => [...acc, ...arr], []);
@@ -18,6 +21,13 @@ const SCHEMAS = {
       email: {
         type: "string",
         format: "email",
+      },
+    },
+  },
+  "single boolean option": {
+    options: {
+      help: {
+        type: "boolean",
       },
     },
   },
@@ -210,12 +220,66 @@ const TEST_CASES = {
       });
     },
   },
+  "single boolean option": {
+    valid: (
+      schema: typeof SCHEMAS["single boolean option"],
+      argv: string[]
+    ) => {
+      describe("option provided", () => {
+        describe("correct type", () => {
+          it("should return that the optional argument is valid", () => {
+            const result = declarativeCliParser(schema, { argv });
+            expect(result.options.help!.valid).toBe(true);
+          });
+          it("should return the value", () => {
+            const result = declarativeCliParser(schema, { argv });
+            expect(result.options.help!.value).toBe(true);
+          });
+          it("should not return any errors for the property", () => {
+            const result = declarativeCliParser(schema, { argv });
+            // @ts-expect-error
+            expect(result.options.help.error).toBe(undefined);
+          });
+        });
+      });
+    },
+    invalid: (
+      schema: typeof SCHEMAS["single boolean option"],
+      argv: string[]
+    ) => {
+      describe("option not provided", () => {
+        describe("incorrect type", () => {
+          it("should return that the optional argument is invalid", () => {
+            const result = declarativeCliParser(schema, { argv });
+            expect(result.options.help!.valid).toBe(false);
+          });
+          it("should return the value", () => {
+            const result = declarativeCliParser(schema, { argv });
+            expect(result.options.help!.value).toBe("5");
+          });
+          it("should return errors for the property", () => {
+            const result = declarativeCliParser(schema, { argv });
+            // @ts-expect-error
+            expect(result.options.help.error).toEqual(
+              new Error("help: type must be boolean")
+            );
+          });
+        });
+      });
+    },
+    "not provided": () => {},
+  },
 };
 
 const ARGVS = {
   "single argument": {
     valid: ["--age 25"],
     invalid: ["--age Bar"],
+    "not provided": [] as string[],
+  },
+  "single boolean option": {
+    valid: ["--help"],
+    invalid: ["--help=5"],
     "not provided": [] as string[],
   },
   "single option": {
@@ -236,7 +300,7 @@ const runTestScenarios = (keys: (keyof typeof SCHEMAS)[]) => {
       const argv = mergeArrays(
         values(pick(keys, ARGVS)).map((arg) => arg.valid)
       );
-      const schema = mergeAll(values(pick(keys, SCHEMAS)));
+      const schema = mergeAllDeep(values(pick(keys, SCHEMAS)));
       values(pick(keys, TEST_CASES)).forEach((testCase) => {
         // @ts-ignore
         testCase.valid(schema, argv.join(" ").split(" "));
@@ -246,7 +310,7 @@ const runTestScenarios = (keys: (keyof typeof SCHEMAS)[]) => {
       const argv = mergeArrays(
         values(pick(keys, ARGVS)).map((arg) => arg.invalid)
       );
-      const schema = mergeAll(values(pick(keys, SCHEMAS)));
+      const schema = mergeAllDeep(values(pick(keys, SCHEMAS)));
       values(pick(keys, TEST_CASES)).forEach((testCase) => {
         // @ts-ignore
         testCase.invalid(schema, argv.join(" ").split(" "));
@@ -256,7 +320,7 @@ const runTestScenarios = (keys: (keyof typeof SCHEMAS)[]) => {
       const argv = mergeArrays(
         values(pick(keys, ARGVS)).map((arg) => arg["not provided"])
       );
-      const schema = mergeAll(values(pick(keys, SCHEMAS)));
+      const schema = mergeAllDeep(values(pick(keys, SCHEMAS)));
       values(pick(keys, TEST_CASES)).forEach((testCase) => {
         // @ts-ignore
         testCase["not provided"](schema, argv.join(" ").split(" "));
@@ -267,9 +331,22 @@ const runTestScenarios = (keys: (keyof typeof SCHEMAS)[]) => {
 
 runTestScenarios(["single argument"]);
 runTestScenarios(["single option"]);
+runTestScenarios(["single boolean option"]);
 runTestScenarios(["single positional"]);
 runTestScenarios(["single option", "single argument"]);
+runTestScenarios(["single boolean option", "single argument"]);
 runTestScenarios(["single positional", "single option", "single argument"]);
+runTestScenarios([
+  "single positional",
+  "single boolean option",
+  "single argument",
+]);
+runTestScenarios([
+  "single positional",
+  "single option",
+  "single boolean option",
+  "single argument",
+]);
 
 describe("commands with positional", () => {
   const command = "foo";
