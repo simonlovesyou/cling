@@ -1,6 +1,6 @@
 {
   "name": "@cling/cling",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Cling is a declarative argument parser",
   "main": "dist/index.js",
   "author": "Simon Johansson <simonljohansson92@gmail.com>",
@@ -37,7 +37,7 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "@cling/parser": "^0.4.1",
+    "@cling/parser": "^0.4.2",
     "command-line-usage": "^6.1.1",
     "ramda": "^0.27.1"
   }
