@@ -74,7 +74,9 @@ const TEST_CASES = {
         it("should log the error to stdout", () => {
           const restoreConsole = mockConsole();
           cling(schema, { argv });
-          expect(console.error).toHaveBeenCalledWith("age: type must be number");
+          expect(console.error).toHaveBeenCalledWith(
+            "age: type must be number"
+          );
           restoreConsole();
         });
       });
@@ -170,7 +172,9 @@ const TEST_CASES = {
           it("should log the error to stdout", () => {
             const restoreConsole = mockConsole();
             cling(schema, { argv });
-            expect(console.error).toHaveBeenCalledWith("integer: type must be integer");
+            expect(console.error).toHaveBeenCalledWith(
+              "integer: type must be integer"
+            );
             restoreConsole();
           });
         });
@@ -188,7 +192,9 @@ const TEST_CASES = {
         it("should log the error to stdout", () => {
           const restoreConsole = mockConsole();
           cling(schema, { argv });
-          expect(console.error).toHaveBeenCalledWith("integer: value not provided");
+          expect(console.error).toHaveBeenCalledWith(
+            "integer: value not provided"
+          );
           restoreConsole();
         });
       });
@@ -280,9 +286,7 @@ describe("commands with positional", () => {
       it(`commands.bar.positionals.value should be valid & ${Number(
         value
       )}`, () => {
-        expect(res.commands[command].positionals).toEqual([
-          Number(value),
-        ]);
+        expect(res.commands[command].positionals).toEqual([Number(value)]);
       });
     });
   });
