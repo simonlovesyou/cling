@@ -10,14 +10,16 @@ type TypeName = "string" | "number" | "integer" | "boolean" | "null";
 export type Argument =
   | {
       type: TypeName;
+      name?: string;
       description?: string;
       alias?: string;
     }
   | {
       type: "array";
+      name?: string;
       items?: readonly Argument[] | Argument;
-      description?: string
-      alias?: string
+      description?: string;
+      alias?: string;
       minItems?: number;
       maxItems?: number;
       uniqueItems?: boolean;
