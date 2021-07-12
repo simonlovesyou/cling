@@ -10,14 +10,16 @@ type TypeName = "string" | "number" | "integer" | "boolean" | "null";
 export type Argument =
   | {
       type: TypeName;
+      name?: string;
       description?: string;
       alias?: string;
     }
   | {
       type: "array";
+      name?: string;
       items?: readonly Argument[] | Argument;
-      description?: string
-      alias?: string
+      description?: string;
+      alias?: string;
       minItems?: number;
       maxItems?: number;
       uniqueItems?: boolean;
@@ -32,10 +34,11 @@ type Schema = {
   arguments?: Record<string, Argument>;
   /** Optionals arguments. Needs to be provided by name or alias */
   options?: Record<string, Argument>;
+  commands?: undefined
 }
 
 export type CommandSchema = {
-  commands: Record<string, Schema>;
+  commands?: Record<string, Schema>;
 }
 
 export type Options = {

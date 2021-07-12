@@ -2,6 +2,17 @@ import cling from ".";
 import { pick, mergeAll, values } from "ramda";
 import randomstring from "randomstring";
 import mockConsole from "jest-mock-console";
+import dedent from "dedent";
+
+// Taken from `ansi-regex`
+// License: MIT
+const ANSI_PATTERN = [
+  "[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:[a-zA-Z\\d]*(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)",
+  "(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PR-TZcf-ntqry=><~]))",
+].join("|");
+
+const stripAnsi = (string: string) =>
+  string.replace(new RegExp(ANSI_PATTERN, "g"), "");
 
 const exit = jest
   .spyOn(process, "exit")
@@ -63,7 +74,9 @@ const TEST_CASES = {
         it("should log the error to stdout", () => {
           const restoreConsole = mockConsole();
           cling(schema, { argv });
-          expect(console.error).toHaveBeenCalledWith("age: type must be number");
+          expect(console.error).toHaveBeenCalledWith(
+            "age: type must be number"
+          );
           restoreConsole();
         });
       });
@@ -159,7 +172,9 @@ const TEST_CASES = {
           it("should log the error to stdout", () => {
             const restoreConsole = mockConsole();
             cling(schema, { argv });
-            expect(console.error).toHaveBeenCalledWith("integer: type must be integer");
+            expect(console.error).toHaveBeenCalledWith(
+              "integer: type must be integer"
+            );
             restoreConsole();
           });
         });
@@ -177,7 +192,9 @@ const TEST_CASES = {
         it("should log the error to stdout", () => {
           const restoreConsole = mockConsole();
           cling(schema, { argv });
-          expect(console.error).toHaveBeenCalledWith("integer: value not provided");
+          expect(console.error).toHaveBeenCalledWith(
+            "integer: value not provided"
+          );
           restoreConsole();
         });
       });
@@ -269,10 +286,44 @@ describe("commands with positional", () => {
       it(`commands.bar.positionals.value should be valid & ${Number(
         value
       )}`, () => {
-        expect(res.commands[command].positionals).toEqual([
-          Number(value),
-        ]);
+        expect(res.commands[command].positionals).toEqual([Number(value)]);
       });
     });
+  });
+});
+
+describe("schema without --help argument", () => {
+  const schema = {
+    arguments: {
+      bar: {
+        type: "string",
+        description: "Foo bar",
+        alias: "b",
+      },
+    },
+    positionals: [
+      {
+        type: "integer",
+      },
+      {
+        type: "integer",
+      },
+    ],
+  } as const;
+  it("should output the help program", () => {
+    mockConsole();
+    cling(schema, { argv: ["--help"] });
+
+    // @ts-expect-error
+    expect(stripAnsi(console.log.mock.calls[0][0])).toStrictEqual(dedent`
+    test
+
+      Usage: test [--bar | -b]  <integer> <integer> 
+
+
+    Arguments
+
+      -b, --bar string   Foo bar
+    `);
   });
 });

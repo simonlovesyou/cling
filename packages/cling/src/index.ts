@@ -1,11 +1,13 @@
 import parser from "@cling/parser";
+import commandLineUsage from "command-line-usage";
 import Schema, {
   Argument,
   Options,
   CommandSchema,
   ExpandRecursively,
 } from "./types";
-import { mapObjIndexed } from "ramda";
+import mapSchemaUsageToHelp from "./utils/mapSchemaToUsageHelp";
+import { mapObjIndexed, assocPath } from "ramda";
 
 type ValueDeclaration<TValue extends any> =
   | {
@@ -90,6 +92,9 @@ type CoerceSchema<T extends Schema> = {
     : never;
 };
 
+const addHelpOption = (schema: Schema): Schema =>
+  assocPath(["options", "help"], { alias: "h", type: "boolean" }, schema);
+
 const cling = <T extends Schema | CommandSchema>(
   schema: T,
   libOptions: Options
@@ -106,10 +111,8 @@ const cling = <T extends Schema | CommandSchema>(
       }
     : never
 > => {
-
-  const commandSchema = schema as CommandSchema
-
-  if (commandSchema.commands) {
+  if (schema.commands) {
+    const commandSchema = schema as CommandSchema;
     // @ts-ignore
     return {
       commands: mapObjIndexed((command, commandName) => {
@@ -121,15 +124,26 @@ const cling = <T extends Schema | CommandSchema>(
             libOptions.argv.filter((arg: string) => arg !== commandName),
         });
         // @ts-ignore
-      })(schema.commands),
+      })(commandSchema.commands),
     };
   }
-  let parsedArguments = null
+  const actualSchema = schema as Schema;
+  let parsedArguments = null;
   try {
-    parsedArguments = parser(schema, libOptions);
-  } catch(error) {
+    parsedArguments = parser(addHelpOption(actualSchema), libOptions);
+  } catch (error) {
+    console.error(error);
     // @ts-ignore
-    return null
+    return null;
+  }
+  // @ts-ignore
+  if (parsedArguments?.options?.help?.value) {
+    console.log(
+      commandLineUsage(
+        mapSchemaUsageToHelp(actualSchema, "test") as commandLineUsage.Section[]
+      ).trim()
+    );
+    return process.exit(0);
   }
 
   try {
