@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.1](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.4.0...@cling/parser@0.4.1) (2021-07-12)
+
+
+### Bug Fixes
+
+* **parser:** Fix bug where boolean options where not correctly parsed ([1591ba6](https://github.com/simonlovesyou/cling/commit/1591ba614f23f37bd9698f1df0e08380b8998825))
+
+
+
+
+
 # [0.4.0](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.3.0...@cling/parser@0.4.0) (2021-05-22)
 
 
