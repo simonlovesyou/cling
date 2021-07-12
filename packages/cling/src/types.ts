@@ -34,10 +34,11 @@ type Schema = {
   arguments?: Record<string, Argument>;
   /** Optionals arguments. Needs to be provided by name or alias */
   options?: Record<string, Argument>;
+  commands?: undefined
 }
 
 export type CommandSchema = {
-  commands: Record<string, Schema>;
+  commands?: Record<string, Schema>;
 }
 
 export type Options = {

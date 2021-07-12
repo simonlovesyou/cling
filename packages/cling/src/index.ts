@@ -124,15 +124,26 @@ const cling = <T extends Schema | CommandSchema>(
             libOptions.argv.filter((arg: string) => arg !== commandName),
         });
         // @ts-ignore
-      })(schema.commands),
+      })(commandSchema.commands),
     };
   }
-  let parsedArguments = null
+  const actualSchema = schema as Schema;
+  let parsedArguments = null;
   try {
-    parsedArguments = parser(schema, libOptions);
-  } catch(error) {
+    parsedArguments = parser(addHelpOption(actualSchema), libOptions);
+  } catch (error) {
+    console.error(error);
     // @ts-ignore
-    return null
+    return null;
+  }
+  // @ts-ignore
+  if (parsedArguments?.options?.help?.value) {
+    console.log(
+      commandLineUsage(
+        mapSchemaUsageToHelp(actualSchema, "test") as commandLineUsage.Section[]
+      ).trim()
+    );
+    return process.exit(0);
   }
 
   try {
