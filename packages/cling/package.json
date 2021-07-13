@@ -4,6 +4,7 @@
   "description": "Cling is a declarative argument parser",
   "main": "dist/index.js",
   "author": "Simon Johansson <simonljohansson92@gmail.com>",
+  "typings": "dist/library-types.d.ts",
   "license": "MIT",
   "files": [
     "dist",

@@ -3,7 +3,7 @@
   "compilerOptions": {
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "typeRoots": ["node_modules/@types"]
+    "typeRoots": ["node_modules/@types", "./types"]
   },
-  "include": ["src/**/*", "examples/**/*", "types/**/*"]
+  "include": ["src/**/*", "examples/**/*", "types/*"]
 }
