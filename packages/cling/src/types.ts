@@ -1,10 +1,3 @@
-// expands object types recursively
-export type ExpandRecursively<T> = T extends object
-  ? T extends infer O
-    ? { [K in keyof O]: ExpandRecursively<O[K]> }
-    : never
-  : T;
-
 type TypeName = "string" | "number" | "integer" | "boolean" | "null";
 
 export type Argument =
@@ -34,12 +27,12 @@ type Schema = {
   arguments?: Record<string, Argument>;
   /** Optionals arguments. Needs to be provided by name or alias */
   options?: Record<string, Argument>;
-  commands?: undefined
-}
+  commands?: undefined;
+};
 
 export type CommandSchema = {
   commands?: Record<string, Schema>;
-}
+};
 
 export type Options = {
   positionals?: boolean;

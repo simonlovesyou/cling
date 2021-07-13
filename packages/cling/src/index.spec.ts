@@ -53,11 +53,11 @@ const TEST_CASES = {
         describe("correct type", () => {
           it("should return the argument", () => {
             const result = cling(schema, { argv });
-            expect(result.arguments.age).not.toBeUndefined();
+            expect(result.arguments!.age).not.toBeUndefined();
           });
           it("should coerce the type", () => {
             const result = cling(schema, { argv });
-            expect(result.arguments.age).toBe(25);
+            expect(result.arguments!.age).toBe(25);
           });
           it("should not return any errors for the property", () => {
             expect(() => cling(schema, { argv })).not.toThrow();
@@ -105,12 +105,11 @@ const TEST_CASES = {
         describe("correct type", () => {
           it("should return the value", () => {
             const result = cling(schema, { argv });
-            expect(result.options.email).toBe("alex@alex.com");
+            expect(result.options!.email).toBe("alex@alex.com");
           });
           it("should not return any errors for the property", () => {
             const result = cling(schema, { argv });
-            // @ts-expect-error
-            expect(result.options.email?.error).toBe(undefined);
+            expect(result.options!.email?.error).toBe(undefined);
           });
         });
       });
@@ -140,7 +139,7 @@ const TEST_CASES = {
       describe("option not provided", () => {
         it("should not return the option", () => {
           const result = cling(schema, { argv });
-          expect(result.options.email).toBeUndefined();
+          expect(result.options!.email).toBeUndefined();
         });
         it("should not throw", () => {
           expect(() => cling(schema, { argv })).not.toThrow();
