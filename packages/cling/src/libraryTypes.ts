@@ -4,13 +4,6 @@ import Schema, {
   CommandSchema,
 } from "./types";
 
-// expands object types recursively
-export type ExpandRecursively<T> = T extends object
-  ? T extends infer O
-    ? { [K in keyof O]: ExpandRecursively<O[K]> }
-    : never
-  : T;
-
 declare type CoercedType<T> = T extends "string"
   ? string
   : T extends "number"
@@ -26,11 +19,13 @@ declare type CoercedType<T> = T extends "string"
 declare type CoerceArrayType<
   T extends Argument & {
     type: "array";
-  }
+  },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 > = T["items"] extends readonly any[]
   ? CoercedTupleOf<T["items"]>
   : T["items"] extends Argument
   ? CoercedTypeObject<T["items"]>[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   : any[];
 
 declare type CoercedTypeObject<T extends Argument> = T["type"] extends "array"
@@ -50,14 +45,13 @@ declare type CoercedTupleOf<T extends readonly Argument[]> = {
 declare type CoerceSchema<T extends Schema> = {
   [Key in keyof T]: Key extends "positionals"
     ?
-        | {
-            valid: true;
-            value: CoercedTupleOf<NonNullable<T["positionals"]>>;
-          }
-        | {
+        {
             valid: false;
             error: Error;
-            value: any;
+            value: unknown;
+          } | {
+            valid: true;
+            value: CoercedTupleOf<NonNullable<T["positionals"]>>;
           }
     : Key extends "options"
     ? {
@@ -74,9 +68,16 @@ declare type CoerceSchema<T extends Schema> = {
     : never;
 };
 
-declare const cling: <T extends Schema | CommandSchema>(
+// expands object types recursively
+type ExpandRecursively<T> = T extends Record<string, unknown>
+  ? T extends infer O
+    ? { [K in keyof O]: ExpandRecursively<O[K]> }
+    : never
+  : T;
+
+declare const cling: <T extends CommandSchema | Schema>(
   schema: T,
-  libOptions: Options
+  libraryOptions: Options
 ) => ExpandRecursively<
   T extends Schema
     ? CoerceSchema<T>
