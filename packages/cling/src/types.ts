@@ -1,24 +1,6 @@
-type TypeName = "string" | "number" | "integer" | "boolean" | "null";
+type TypeName = "boolean" | "integer" | "null" | "number" | "string";
 
-export type Argument =
-  | {
-      type: TypeName;
-      name?: string;
-      description?: string;
-      alias?: string;
-    }
-  | {
-      type: "array";
-      name?: string;
-      items?: readonly Argument[] | Argument;
-      description?: string;
-      alias?: string;
-      minItems?: number;
-      maxItems?: number;
-      uniqueItems?: boolean;
-    };
-
-type Schema = {
+interface Schema {
   /** Description of the CLI */
   description?: string;
   /** Positional arguments. Needs to be provided in order */
@@ -28,16 +10,33 @@ type Schema = {
   /** Optionals arguments. Needs to be provided by name or alias */
   options?: Record<string, Argument>;
   commands?: undefined;
-};
+}
 
-export type CommandSchema = {
+export type Argument =
+  {
+      type: "array";
+      name?: string;
+      items?: Argument | readonly Argument[];
+      description?: string;
+      alias?: string;
+      minItems?: number;
+      maxItems?: number;
+      uniqueItems?: boolean;
+    } | {
+      type: TypeName;
+      name?: string;
+      description?: string;
+      alias?: string;
+    };
+
+export interface CommandSchema {
   commands?: Record<string, Schema>;
-};
+}
 
-export type Options = {
+export interface Options {
   positionals?: boolean;
   argv?: string[];
   coerceTypes?: boolean;
-};
+}
 
 export default Schema;

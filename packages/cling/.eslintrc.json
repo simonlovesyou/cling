@@ -1,0 +1,16 @@
+{
+    "extends": ["@cling/eslint-config"],
+    "settings": {
+      "import/resolver": {
+        "typescript": {
+          "project": "./tsconfig.json"
+        }
+      }
+    },
+    "rules": {
+      "comma-dangle": ["off"],
+      "no-unused-vars": ["off"],
+      "no-redeclare": ["off"],
+      "brace-style": ["off"]
+    }
+}

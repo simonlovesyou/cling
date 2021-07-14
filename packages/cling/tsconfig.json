@@ -2,8 +2,10 @@
   "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
     "moduleResolution": "node",
+    "lib": ["ES2020"],
     "allowSyntheticDefaultImports": true,
-    "typeRoots": ["node_modules/@types", "./types"]
+    "typeRoots": ["node_modules/@types", "./types"],
+    "baseUrl": "."
   },
   "include": ["src/**/*", "examples/**/*", "types/*"]
 }

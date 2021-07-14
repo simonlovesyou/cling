@@ -1,63 +1,61 @@
 declare module "@cling/parser" {
-  type TypeName = "string" | "number" | "integer" | "boolean" | "null";
+  type TypeName = "boolean" | "integer" | "null" | "number" | "string";
 
-  type Schema = {
+  interface Schema {
     description?: string;
     positionals?: readonly Argument[];
     arguments?: Record<string, Argument>;
     options?: Record<string, Argument>;
+  }
+
+  export type ValueRepresentation<T = unknown> = 
+    {
+      valid: true;
+      value: T;
+    } | {
+    error: Error;
+    valid: false;
+    value: T;
   };
 
-  export type ValueRepresentation =
-    | {
-        valid: true;
-        value: any;
-      }
-    | {
-        valid: false;
-        error: Error;
-        value: any;
-      };
-
-  export type CommandSchema = {
+  export interface CommandSchema {
     commands: Record<string, Schema>;
-  };
-  export type Argument =
-    | {
-        type: TypeName;
-        description?: string;
-        alias?: string;
-      }
-    | {
-        type: "array";
-        items?: readonly Argument[] | Argument;
-        description?: string;
-        alias?: string;
-        minItems?: number;
-        maxItems?: number;
-        uniqueItems?: boolean;
-      };
+  }
 
-  export type Options = {
+  interface ArrayArgument {
+    alias?: string;
+    description?: string;
+    items?: Argument | readonly Argument[];
+    maxItems?: number;
+    minItems?: number;
+    type: "array";
+    uniqueItems?: boolean;
+  }
+
+  interface RegularArgument {
+    alias?: string;
+    description?: string;
+    type: TypeName;
+  }
+
+  export type Argument = ArrayArgument | RegularArgument;
+
+  export interface Options {
     positionals?: boolean;
     argv?: string[];
     coerceTypes?: boolean;
-  };
+  }
 
-  export type ArgumentResult = {
-    arguments?: {
-      [x: string]: ValueRepresentation;
-    };
-    options?: {
-      [x: string]: ValueRepresentation;
-    };
-    positionals: ValueRepresentation;
+  export interface ArgumentResult {
+    arguments?: Record<string, ValueRepresentation>;
+    options?: Record<string, ValueRepresentation<unknown | undefined>>;
+    positionals?: ValueRepresentation<readonly unknown[]>;
     commands?: undefined;
-  };
+  }
 
-  function declarativeCliParser<T extends Schema | CommandSchema>(
+  function declarativeCliParser<T extends CommandSchema | Schema> (
     inputSchema: T,
-    libOptions?: Options
+    libraryOptions?: Options
   ): T extends Schema ? ArgumentResult : CommandSchema;
 
   export default declarativeCliParser;

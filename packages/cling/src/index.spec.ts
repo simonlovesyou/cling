@@ -1,8 +1,9 @@
-import cling from ".";
+/* eslint-disable @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-magic-numbers */
 import { pick, mergeAll, values } from "ramda";
 import randomstring from "randomstring";
 import mockConsole from "jest-mock-console";
 import dedent from "dedent";
+import cling from ".";
 
 // Taken from `ansi-regex`
 // License: MIT
@@ -16,10 +17,10 @@ const stripAnsi = (string: string) =>
 
 const exit = jest
   .spyOn(process, "exit")
-  .mockImplementation((number: number | undefined) => undefined as never);
+  .mockImplementation(() => undefined as never);
 
-const mergeArrays = <T extends any[][]>(arrs: T) =>
-  arrs.reduce((acc, arr) => [...acc, ...arr], []);
+const mergeArrays = <T extends unknown[][]>(arrs: T) =>
+  arrs.flat();
 
 const SCHEMAS = {
   "single argument": {
@@ -109,6 +110,7 @@ const TEST_CASES = {
           });
           it("should not return any errors for the property", () => {
             const result = cling(schema, { argv });
+            // @ts-expect-error If the test works as it should then the whole dot chain should be present
             expect(result.options!.email?.error).toBe(undefined);
           });
         });
@@ -125,7 +127,7 @@ const TEST_CASES = {
             const restoreConsole = mockConsole();
             cling(schema, { argv });
             expect(console.error).toHaveBeenCalledWith(
-              'email: format must match format "email"'
+              "email: format must match format \"email\""
             );
             restoreConsole();
           });
@@ -153,7 +155,7 @@ const TEST_CASES = {
         describe("correct type", () => {
           it("should return the value", () => {
             const result = cling(schema, { argv });
-            expect(result.positionals).toEqual([5]);
+            expect(result.positionals).toStrictEqual([5]);
           });
           it("should not throw", () => {
             expect(() => cling(schema, { argv })).not.toThrow();
@@ -223,31 +225,31 @@ const runTestScenarios = (keys: (keyof typeof SCHEMAS)[]) => {
   describe(keys.join(" & "), () => {
     describe("valid", () => {
       const argv = mergeArrays(
-        values(pick(keys, ARGVS)).map((arg) => arg.valid)
+        values(pick(keys, ARGVS)).map((argument) => argument.valid)
       );
       const schema = mergeAll(values(pick(keys, SCHEMAS)));
       values(pick(keys, TEST_CASES)).forEach((testCase) => {
-        // @ts-ignore
+        // @ts-expect-error schema will include additional keys not expected by the function signature
         testCase.valid(schema, argv.join(" ").split(" "));
       });
     });
     describe("invalid", () => {
       const argv = mergeArrays(
-        values(pick(keys, ARGVS)).map((arg) => arg.invalid)
+        values(pick(keys, ARGVS)).map((argument) => argument.invalid)
       );
       const schema = mergeAll(values(pick(keys, SCHEMAS)));
       values(pick(keys, TEST_CASES)).forEach((testCase) => {
-        // @ts-ignore
+        // @ts-expect-error schema will include additional keys not expected by the function signature
         testCase.invalid(schema, argv.join(" ").split(" "));
       });
     });
     describe("not provided", () => {
       const argv = mergeArrays(
-        values(pick(keys, ARGVS)).map((arg) => arg["not provided"])
+        values(pick(keys, ARGVS)).map((argument) => argument["not provided"])
       );
       const schema = mergeAll(values(pick(keys, SCHEMAS)));
       values(pick(keys, TEST_CASES)).forEach((testCase) => {
-        // @ts-ignore
+        // @ts-expect-error schema will include additional keys not expected by the function signature
         testCase["not provided"](schema, argv.join(" ").split(" "));
       });
     });
@@ -275,17 +277,17 @@ describe("commands with positional", () => {
   const argv = [command, value];
   describe("with command provided", () => {
     describe("with valid positional provided", () => {
-      const res = cling(schema, { argv });
+      const result = cling(schema, { argv });
       it("commands should be defined", () => {
-        expect(res.commands).not.toBeUndefined();
+        expect(result.commands).not.toBeUndefined();
       });
       it("commands.bar should be defined", () => {
-        expect(res.commands[command]).not.toBeUndefined();
+        expect(result.commands[command]).not.toBeUndefined();
       });
       it(`commands.bar.positionals.value should be valid & ${Number(
         value
       )}`, () => {
-        expect(res.commands[command].positionals).toEqual([Number(value)]);
+        expect(result.commands[command].positionals).toStrictEqual([Number(value)]);
       });
     });
   });
@@ -313,8 +315,11 @@ describe("schema without --help argument", () => {
     mockConsole();
     cling(schema, { argv: ["--help"] });
 
-    // @ts-expect-error
-    expect(stripAnsi(console.log.mock.calls[0][0])).toStrictEqual(dedent`
+    const log = console.log as jest.Mock;
+
+    const mockCalls = log.mock.calls as unknown[][];
+
+    expect(stripAnsi(mockCalls[0][0] as string)).toStrictEqual(dedent`
     test
 
       Usage: test [--bar | -b]  <integer> <integer> 

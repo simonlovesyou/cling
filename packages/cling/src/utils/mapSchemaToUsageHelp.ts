@@ -1,52 +1,52 @@
-import Schema, { Argument } from "../types";
 import { OptionList } from "command-line-usage";
 import { append, identity, pipe } from "ramda";
+import Schema, { Argument } from "../types";
 
-type Header = {
+interface Header {
   header: string;
   content: string;
-};
+}
 
 const wrap =
   (prefix: string, joinString: string, affix: string) =>
-  (stringArray: string[]): string =>
+  (stringArray: readonly string[]): string =>
     `${prefix}${stringArray.join(joinString)}${affix}`;
 
-const mapArgumentToLabel = (argument: Argument): string =>
+const mapArgumentToLabel = (argument: { name: string; alias?: Argument['alias'] }): string =>
   pipe<string[], string[], string[], string>(
     () => [],
     append(`--${argument.name}`),
-    argument.alias ? append(`-${argument.alias}`) : identity,
+    argument.alias !== undefined ? append(`-${argument.alias}`) : identity,
     wrap("[", " | ", "]")
   )();
 
-const mapPositionalToLabel = (argument: Argument): string =>
+const mapPositionalToLabel = (argument: { name: string; alias?: Argument['alias'] }): string =>
   pipe<string[], string[], string[], string>(
     () => [],
     append(`${argument.name}`),
-    argument.alias ? append(`-${argument.alias}`) : identity,
+    argument.alias !== undefined ? append(`-${argument.alias}`) : identity,
     wrap("<", " | ", ">")
   )();
 
-const schemaToUsageDescription = (schema: Schema, cliName: string): string => {
+const schemaToUsageDescription = (schema: Readonly<Schema>, cliName: string): string => {
   return [
     cliName,
-    Object.entries(schema.arguments || {}).map(([name, argument]) =>
+    Object.entries(schema.arguments ?? {}).map(([name, argument]) =>
       mapArgumentToLabel({
         ...argument,
-        name: argument.name || name,
+        name: argument.name ?? name,
       })
     ),
-    Object.entries(schema.options || {}).map(([name, argument]) =>
+    Object.entries(schema.options ?? {}).map(([name, argument]) =>
       mapArgumentToLabel({
         ...argument,
-        name: argument.name || name,
+        name: argument.name ?? name,
       })
     ),
-    ...(schema.positionals || []).map((positional) =>
+    ...(schema.positionals ?? []).map((positional) =>
       mapPositionalToLabel({
         ...positional,
-        name: positional.name || positional.type,
+        name: positional.name ?? positional.type,
       })
     ),
   ]
@@ -58,7 +58,7 @@ const mapSchemaUsageToHelp = (
   schema: Schema,
   cliName: string
 ): [Header, ...OptionList[]] => {
-  const schemaDescription = schema.description || "";
+  const schemaDescription = schema.description ?? "";
 
   const header: Header = {
     header: cliName,
@@ -75,7 +75,7 @@ const mapSchemaUsageToHelp = (
         optionList: schema.positionals.map(({ type, description, name }) => ({
           typeLabel: type,
           description,
-          name: name || type,
+          name: name ?? type,
         })),
       },
     ],
@@ -84,7 +84,7 @@ const mapSchemaUsageToHelp = (
       optionList: Object.entries(schema.arguments).map(
         ([argumentName, argument]) => ({
           typeLabel: argument.type,
-          name: argument.name || argumentName,
+          name: argument.name ?? argumentName,
           description: argument.description,
           alias: argument.alias,
         })
@@ -95,7 +95,7 @@ const mapSchemaUsageToHelp = (
       optionList: Object.entries(schema.options).map(
         ([argumentName, argument]) => ({
           typeLabel: argument.type,
-          name: argument.name || argumentName,
+          name: argument.name ?? argumentName,
           description: argument.description,
           alias: argument.alias,
         })

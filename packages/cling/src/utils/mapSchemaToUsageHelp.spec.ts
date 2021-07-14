@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-magic-numbers, @typescript-eslint/explicit-function-return-type */
+import { assocPath } from "ramda";
 import mapSchemaUsageToHelp from "./mapSchemaToUsageHelp";
-import { assocPath, identity } from "ramda";
 
 const testFixture = <T>(object: T) => ({
   addValueAtPath: <TValue>(path: string[], value: TValue) =>
@@ -30,12 +31,6 @@ describe("single option", () => {
         ],
       },
     ]);
-  });
-  describe("with alias", () => {
-    const schema = schemaFixture.addValueAtPath(
-      ["options", "help", "alias"],
-      "h"
-    );
   });
 });
 
