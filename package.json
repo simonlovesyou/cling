@@ -11,6 +11,7 @@
     "bootstrap": "yarn lerna exec yarn install",
     "publish": "yarn lerna publish --conventional-commits",
     "build": "yarn lerna run build",
+    "test": "yarn lerna run test",
     "lint": "yarn lerna run lint"
   },
   "devDependencies": {
