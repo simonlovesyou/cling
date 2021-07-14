@@ -10,7 +10,8 @@
   "scripts": {
     "bootstrap": "yarn lerna bootstrap",
     "publish": "yarn lerna publish --conventional-commits",
-    "build": "yarn lerna run build"
+    "build": "yarn lerna run build",
+    "lint": "yarn lerna run lint"
   },
   "devDependencies": {
     "lerna": "^4.0.0"
