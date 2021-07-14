@@ -8,7 +8,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "bootstrap": "yarn lerna bootstrap",
+    "bootstrap": "yarn lerna exec yarn install",
     "publish": "yarn lerna publish --conventional-commits",
     "build": "yarn lerna run build",
     "lint": "yarn lerna run lint"
