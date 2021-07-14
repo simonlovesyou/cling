@@ -1,0 +1,33 @@
+{
+  "name": "@cling/eslint-config",
+  "version": "1.0.0",
+  "files": [
+    ".eslintrc.js",
+    "package.json",
+    "README.md",
+    "yarn.lock"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "ESLint configuration for @cling related packages",
+  "main": ".eslintrc.js",
+  "scripts": {},
+  "author": "Simon Johansson <simonljohansson92@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/eslint-parser": "^7.14.7",
+    "@ridedott/eslint-plugin": "^1.6.211",
+    "@typescript-eslint/eslint-plugin": "^4.28.3",
+    "@typescript-eslint/parser": "^4.28.3",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-fp": "^2.3.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jest": "^24.3.6",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-unicorn": "^34.0.1",
+    "typescript": "^4.3.5"
+  }
+}
