@@ -23,6 +23,7 @@
     "prepublish": "rm -rf ./dist && yarn build"
   },
   "devDependencies": {
+    "@cling/eslint-config": "^1.0.0",
     "@tsconfig/node14": "^1.0.0",
     "@types/command-line-usage": "^5.0.2",
     "@types/dedent": "^0.7.0",
