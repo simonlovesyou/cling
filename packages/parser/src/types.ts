@@ -1,29 +1,6 @@
-// expands object types recursively
-export type ExpandRecursively<T> = T extends object
-  ? T extends infer O
-    ? { [K in keyof O]: ExpandRecursively<O[K]> }
-    : never
-  : T;
+type TypeName = "boolean" | "integer" | "null" | "number" | "string";
 
-type TypeName = "string" | "number" | "integer" | "boolean" | "null";
-
-export type Argument =
-  | {
-      type: TypeName;
-      description?: string;
-      alias?: string;
-    }
-  | {
-      type: "array";
-      items?: readonly Argument[] | Argument;
-      description?: string
-      alias?: string
-      minItems?: number;
-      maxItems?: number;
-      uniqueItems?: boolean;
-    };
-
-type Schema = {
+interface Schema {
   description?: string;
   positionals?: readonly Argument[];
   arguments?: Record<string, Argument>;
@@ -31,14 +8,30 @@ type Schema = {
   commands?: undefined;
 }
 
-export type CommandSchema = {
-  commands?: Record<string, Schema>;
+export type Argument =
+  {
+      type: "array";
+      items?: Argument | readonly Argument[];
+      description?: string;
+      alias?: string;
+      minItems?: number;
+      maxItems?: number;
+      uniqueItems?: boolean;
+    } | {
+      type: TypeName;
+      description?: string;
+      alias?: string;
+    };
+
+export interface CommandSchema {
+  // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
+  commands?: { [commandName: string]: Schema | undefined };
 }
 
-export type Options = {
+export interface Options {
   positionals?: boolean;
   argv?: string[];
   coerceTypes?: boolean;
-};
+}
 
 export default Schema;
