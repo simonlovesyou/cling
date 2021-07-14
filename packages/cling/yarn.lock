@@ -502,10 +502,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@cling/eslint-config@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@cling/eslint-config/-/eslint-config-1.0.0.tgz#4314506f5f8e65b46f83cd90c6303ea3b06a9fdb"
-  integrity sha512-jUHXdPWzxFb1yrEZhiPoBnS0AQSgS2Ci/+KFz7RCzk7QVENe+mQHcdzfYr5Rjvr/nT5sASGOJZKlWynehz1+Dw==
+"@cling/eslint-config@^1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@cling/eslint-config/-/eslint-config-1.2.2.tgz#e47baff90a7c222ebc4b7bec20273ecbc1ca32a1"
+  integrity sha512-WMboHYsLR1vV83sch0cJRpDeL+x17hCieanWpWIjUxhnXAeGkaoaozydSBmSiIyaKK76b7amzzcsr6mfj2qUBA==
   dependencies:
     "@babel/eslint-parser" "^7.14.7"
     "@ridedott/eslint-plugin" "^1.6.211"
@@ -520,10 +520,10 @@
     eslint-plugin-unicorn "^34.0.1"
     typescript "^4.3.5"
 
-"@cling/parser@^0.4.2":
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/@cling/parser/-/parser-0.4.2.tgz#7e3ea2e8f2797ec10edd763bab81410bd44a4034"
-  integrity sha512-v0l3FOHAK7XZzS8U+GW8q4x4qf1XgkkPBiGa6V3ZveYzKN6kirVMBBSTbXMgXdOdH8mIoEDNjAhy3Lahg26nbQ==
+"@cling/parser@^0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@cling/parser/-/parser-0.4.4.tgz#c3329f36d634bcc2c755bb37077f4bb6995c7fef"
+  integrity sha512-bD19gIH5WjHQ9S+b48J+NLu8fv7HOnm8zkdP3t7Kcyc6basOcMYgdW9ypKUCVIxX+f1bzRA/SN59s3UDAsAZag==
   dependencies:
     ajv "^8.1.0"
     ajv-formats "^2.1.0"

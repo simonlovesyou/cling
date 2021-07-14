@@ -2,7 +2,7 @@ module.exports = {
   extends: ["prettier"],
   plugins: ["@typescript-eslint", "import", "unicorn", "@ridedott", "jest", "fp"],
   env: {
-    "jest/globals": true,
+    jest: true,
     node: true,
   },
   parserOptions: {
