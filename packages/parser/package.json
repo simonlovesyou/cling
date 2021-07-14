@@ -17,6 +17,7 @@
   },
   "scripts": {
     "test": "yarn jest",
+    "lint": "yarn eslint src/**",
     "build": "yarn build:ts",
     "build:ts": "yarn tsc --project tsconfig.build.json",
     "prepublish": "rm -rf ./dist && yarn build"
@@ -29,6 +30,7 @@
     "ramda": "^0.27.1"
   },
   "devDependencies": {
+    "@cling/eslint-config": "^1.2.2",
     "@tsconfig/node14": "^1.0.0",
     "@types/ajv": "^1.0.0",
     "@types/command-line-args": "^5.0.0",
@@ -37,6 +39,7 @@
     "@types/json-schema": "^7.0.7",
     "@types/ramda": "^0.27.40",
     "@types/randomstring": "^1.1.6",
+    "eslint": "^7.30.0",
     "json-schema": "^0.3.0",
     "randomstring": "^1.2.1",
     "ts-jest": "^26.5.5",

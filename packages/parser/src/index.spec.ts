@@ -1,12 +1,13 @@
-import declarativeCliParser from ".";
-import { pick, mergeAll, values, reduce, mergeDeepRight } from "ramda";
+/* eslint-disable @typescript-eslint/no-magic-numbers */
+import { pick, values, reduce, mergeDeepRight } from "ramda";
 import randomstring from "randomstring";
+import declarativeCliParser from ".";
 
-// @ts-ignore
-const mergeAllDeep = reduce(mergeDeepRight, {});
+// eslint-disable-next-line @typescript-eslint/ban-types
+const mergeAllDeep = reduce(mergeDeepRight, {} as object);
 
-const mergeArrays = <T extends any[][]>(arrs: T) =>
-  arrs.reduce((acc, arr) => [...acc, ...arr], []);
+const mergeArrays = <T extends unknown[][]>(arrs: T) =>
+  arrs.flat();
 
 const SCHEMAS = {
   "single argument": {
@@ -59,8 +60,7 @@ const TEST_CASES = {
           });
           it("should not return any errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
-            // @ts-expect-error
-            expect(result.arguments.age?.error).toBe(undefined);
+            expect(result.arguments!.age?.error).toBe(undefined);
           });
         });
       });
@@ -73,8 +73,7 @@ const TEST_CASES = {
         });
         it("should return an error for the property", () => {
           const result = declarativeCliParser(schema, { argv });
-          // @ts-expect-error
-          expect(result.arguments.age?.error).toEqual(
+          expect(result.arguments!.age?.error).toStrictEqual(
             new Error("age: type must be number")
           );
         });
@@ -95,8 +94,7 @@ const TEST_CASES = {
         });
         it("has an argument error", () => {
           const result = declarativeCliParser(schema, { argv });
-          // @ts-expect-error
-          expect(result.arguments.age.error).toEqual(
+          expect(result.arguments!.age.error).toStrictEqual(
             new Error("age: value not provided")
           );
         });
@@ -117,8 +115,7 @@ const TEST_CASES = {
           });
           it("should not return any errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
-            // @ts-expect-error
-            expect(result.options.email?.error).toBe(undefined);
+            expect(result.options!.email?.error).toBe(undefined);
           });
         });
       });
@@ -136,8 +133,7 @@ const TEST_CASES = {
           });
           it("should return errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
-            // @ts-expect-error
-            expect(result.options.email?.error).toEqual(
+            expect(result.options!.email?.error).toStrictEqual(
               new Error('email: format must match format "email"')
             );
           });
@@ -170,8 +166,7 @@ const TEST_CASES = {
           });
           it("should not return any errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
-            // @ts-expect-error
-            expect(result.positionals.error).toBe(undefined);
+            expect(result.positionals!.error).toBe(undefined);
           });
         });
       });
@@ -189,8 +184,7 @@ const TEST_CASES = {
           });
           it("should not return any errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
-            // @ts-expect-error
-            expect(result.positionals.error).toEqual(
+            expect(result.positionals!.error).toStrictEqual(
               new Error("integer: type must be integer")
             );
           });
@@ -212,8 +206,7 @@ const TEST_CASES = {
         });
         it("has an argument error", () => {
           const result = declarativeCliParser(schema, { argv });
-          // @ts-expect-error
-          expect(result.positionals.error).toEqual(
+          expect(result.positionals!.error).toStrictEqual(
             new Error("integer: value not provided")
           );
         });
@@ -237,8 +230,7 @@ const TEST_CASES = {
           });
           it("should not return any errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
-            // @ts-expect-error
-            expect(result.options.help.error).toBe(undefined);
+            expect(result.options!.help.error).toBe(undefined);
           });
         });
       });
@@ -247,7 +239,7 @@ const TEST_CASES = {
       schema: typeof SCHEMAS["single boolean option"],
       argv: string[]
     ) => {
-      describe("option not provided", () => {
+      describe("option provided", () => {
         describe("incorrect type", () => {
           it("should return that the optional argument is invalid", () => {
             const result = declarativeCliParser(schema, { argv });
@@ -259,15 +251,24 @@ const TEST_CASES = {
           });
           it("should return errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
-            // @ts-expect-error
-            expect(result.options.help.error).toEqual(
+            expect(result.options!.help.error).toStrictEqual(
               new Error("help: type must be boolean")
             );
           });
         });
       });
     },
-    "not provided": () => {},
+    "not provided": (
+      schema: typeof SCHEMAS["single boolean option"],
+      argv: string[]
+    ) => {
+      describe("option not provided", () => {
+        it("should not return the value", () => {
+          const result = declarativeCliParser(schema, { argv });
+          expect(result.options?.help?.value).toBe(undefined);
+        });
+      });
+    },
   },
 };
 
@@ -298,31 +299,31 @@ const runTestScenarios = (keys: (keyof typeof SCHEMAS)[]) => {
   describe(keys.join(" & "), () => {
     describe("valid", () => {
       const argv = mergeArrays(
-        values(pick(keys, ARGVS)).map((arg) => arg.valid)
+        values(pick(keys, ARGVS)).map((argument) => argument.valid)
       );
       const schema = mergeAllDeep(values(pick(keys, SCHEMAS)));
       values(pick(keys, TEST_CASES)).forEach((testCase) => {
-        // @ts-ignore
+        // @ts-expect-error schema will include additional keys not expected by the function signature
         testCase.valid(schema, argv.join(" ").split(" "));
       });
     });
     describe("invalid", () => {
       const argv = mergeArrays(
-        values(pick(keys, ARGVS)).map((arg) => arg.invalid)
+        values(pick(keys, ARGVS)).map((argument) => argument.invalid)
       );
       const schema = mergeAllDeep(values(pick(keys, SCHEMAS)));
       values(pick(keys, TEST_CASES)).forEach((testCase) => {
-        // @ts-ignore
+        // @ts-expect-error schema will include additional keys not expected by the function signature
         testCase.invalid(schema, argv.join(" ").split(" "));
       });
     });
     describe("not provided", () => {
       const argv = mergeArrays(
-        values(pick(keys, ARGVS)).map((arg) => arg["not provided"])
+        values(pick(keys, ARGVS)).map((argument) => argument["not provided"])
       );
       const schema = mergeAllDeep(values(pick(keys, SCHEMAS)));
       values(pick(keys, TEST_CASES)).forEach((testCase) => {
-        // @ts-ignore
+        // @ts-expect-error schema will include additional keys not expected by the function signature
         testCase["not provided"](schema, argv.join(" ").split(" "));
       });
     });
@@ -365,18 +366,18 @@ describe("commands with positional", () => {
   const argv = [command, value];
   describe("with command provided", () => {
     describe("with valid positional provided", () => {
-      const res = declarativeCliParser(schema, { argv });
+      const result = declarativeCliParser(schema, { argv });
       it("commands should be defined", () => {
-        expect(res.commands).not.toBeUndefined();
+        expect(result.commands).not.toBeUndefined();
       });
       it("commands.bar should be defined", () => {
-        expect(res.commands[command]).not.toBeUndefined();
+        expect(result.commands[command]).not.toBeUndefined();
       });
       it(`commands.bar.positionals.value should be valid & ${Number(
         value
       )}`, () => {
-        expect(res.commands[command].positionals!.valid).toBe(true);
-        expect(res.commands[command].positionals!.value).toEqual([
+        expect(result.commands[command].positionals!.valid).toBe(true);
+        expect(result.commands[command].positionals!.value).toStrictEqual([
           Number(value),
         ]);
       });

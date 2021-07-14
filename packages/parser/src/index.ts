@@ -1,27 +1,25 @@
 import commandLineArgs, { OptionDefinition } from "command-line-args";
+import Ajv, { ErrorObject } from "ajv";
+import { clone, head } from "ramda";
+import { JSONSchema7 } from "json-schema";
+import addFormats from "ajv-formats";
 import Schema, {
   Argument,
   Options,
   CommandSchema,
 } from "./types";
-import Ajv, { ErrorObject } from "ajv";
-import { clone } from "ramda";
-import { JSONSchema7 } from "json-schema";
-import addFormats from "ajv-formats";
-
-const isCommandSchema = (schemaLike: Record<string, unknown>): schemaLike is CommandSchema => schemaLike.commands !== undefined
 
 const mapErrorObjectToError = (keyName: string, errorObject: ErrorObject) =>
-  new Error(`${keyName}: ${errorObject.keyword} ${errorObject.message}`);
+  new Error(`${keyName}: ${errorObject.keyword} ${errorObject.message ?? ''}`.trim());
 
-type ValueRepresentation<TValue = unknown> = {
+interface ValueRepresentation<TValue = unknown> {
   valid: boolean;
   errors: ErrorObject[];
   value: TValue;
-};
+}
 
 const validateType =
-  <TValue extends any>(schema: JSONSchema7) =>
+  <TValue>(schema: JSONSchema7) =>
   (value: TValue): ValueRepresentation<TValue> => {
     const mutateableInstance = { value: clone(value) };
     const ajv = new Ajv({ coerceTypes: true });
@@ -30,50 +28,51 @@ const validateType =
       type: "object",
       properties: { value: schema },
     });
-    const valid = validate(mutateableInstance) as boolean;
+    const valid = validate(mutateableInstance)!;
 
     return {
       valid,
-      errors: validate.errors || [],
+      errors: validate.errors ?? [],
       value: mutateableInstance.value,
     };
   };
 
 interface ParsedArguments {
-  options?: Record<string, ValueRepresentation<unknown>>;
-  arguments?: Record<string, ValueRepresentation<unknown>>;
-  _positionals_?: ValueRepresentation<unknown>[];
+  options?: Record<string, ValueRepresentation>;
+  arguments?: Record<string, ValueRepresentation>;
+  _positionals_?: (ValueRepresentation | undefined)[];
   _all?: {
-    _positionals_: ValueRepresentation<unknown>[];
-  }
+    _positionals_?: (ValueRepresentation | undefined)[];
+  };
 }
 
 const validateItemPosition = (
-  schemas: readonly JSONSchema7[] | JSONSchema7
+  schemas: JSONSchema7 | readonly JSONSchema7[]
 ) => {
+  // eslint-disable-next-line fp/no-let
   let currentPosition = 0;
-  return (value: any) => {
-    const schema = Array.isArray(schemas) ? schemas[currentPosition] : schemas;
+  return (value: unknown) => {
+    const schema = (Array.isArray(schemas) ? schemas[currentPosition] : schemas) as JSONSchema7;
 
     const validatedType = validateType(schema)(value);
-
+    // eslint-disable-next-line fp/no-mutation
+    currentPosition++;
     return validatedType;
   };
 };
 
-type ResultValue<TValue extends any> =
-  | {
-      valid: true;
-      value: TValue;
-      error?: undefined;
-    }
-  | {
+type ResultValue<TValue = unknown> =
+  {
       valid: false;
       value: TValue;
       error: Error;
+    } | {
+      valid: true;
+      value: TValue;
+      error?: undefined;
     };
 
-const formatValue = <TValue extends any>(
+const formatValue = <TValue>(
   keyName: string,
   argument: ValueRepresentation<TValue>
 ): ResultValue<TValue> =>
@@ -82,70 +81,68 @@ const formatValue = <TValue extends any>(
     : {
         valid: false as const,
         value: argument.value,
-        error: mapErrorObjectToError(keyName, argument.errors[0]),
+        error: mapErrorObjectToError(keyName, head(argument.errors)!),
       };
 
 interface SchemaResults {
-  arguments?: Record<string, ValueRepresentation>;
-  options?: Record<string, ValueRepresentation>;
-  positionals?: ValueRepresentation<readonly unknown[]>;
+  arguments?: Record<string, ResultValue>;
+  options?: Record<string, ResultValue>;
+  positionals?: ResultValue<readonly unknown[]>;
 }
 
 interface CommandResults {
-  commands: Record<string, SchemaResults>
+  commands: Record<string, SchemaResults>;
 }
 
-function declarativeCliParser(inputSchema: Schema, libOptions: Options): SchemaResults
-function declarativeCliParser(inputSchema: CommandSchema, libOptions: Options): CommandResults
-function declarativeCliParser(
-  schema: Schema | CommandSchema,
-  libOptions: Options = {}
-): SchemaResults | CommandResults {
-  if (isCommandSchema(schema)) {
+function declarativeCliParser (inputSchema: Schema, libraryOptions: Options): SchemaResults;
+function declarativeCliParser (inputSchema: CommandSchema, libraryOptions: Options): CommandResults;
+function declarativeCliParser (
+  schema: CommandSchema | Schema,
+  libraryOptions: Options = {}
+): CommandResults | SchemaResults {
+  if (schema.commands !== undefined) {
     const mainCommandDefinition = [{ name: "name", defaultOption: true }];
     const mainCommand = commandLineArgs(mainCommandDefinition, {
       stopAtFirstUnknown: true,
-      argv: libOptions.argv,
-    });
+      argv: libraryOptions.argv,
+    }) as { name?: string; _unknown?: string[] };
 
-    const argv = mainCommand._unknown || [];
+    const argv = mainCommand?._unknown ?? [];
 
-    const subCommand = schema.commands?.[mainCommand.name];
+    const commandName = mainCommand.name ?? '';
+
+    const subCommand = schema.commands?.[commandName];
 
     if (!subCommand) {
-      throw {
-        commands: {
-          [mainCommand.name]: [new Error("Unknown command")],
-        },
-      };
+      throw new Error(`Unknown command: ${commandName}`);
     }
 
     return {
       commands: {
-        [mainCommand.name]: declarativeCliParser(subCommand, { argv }),
+        [commandName]: declarativeCliParser(subCommand, { argv }),
       },
-    }
+    };
   }
-  const argumentSchema = schema as Schema
+  const argumentSchema = schema as Schema;
 
   const arguments_ = argumentSchema.arguments;
   const options = argumentSchema.options;
-  const positionals = argumentSchema.positionals;
+  const positionalDefinitions = argumentSchema.positionals;
 
   const commandDefinition = [
-    positionals && {
+    positionalDefinitions && {
       name: "_positionals_",
       defaultOption: true,
       multiple: true,
-      type: validateItemPosition(positionals as unknown as JSONSchema7),
+      type: validateItemPosition(positionalDefinitions as unknown as JSONSchema7),
     },
-    ...Object.entries(options || {}).map(([optionName, option]) => ({
+    ...Object.entries(options ?? {}).map(([optionName, option]) => ({
       name: optionName,
       alias: option.alias,
       group: "options",
       type: validateType(option as unknown as JSONSchema7),
     })),
-    ...Object.entries(arguments_ || {}).map(([argumentName, argument]) => ({
+    ...Object.entries(arguments_ ?? {}).map(([argumentName, argument]) => ({
       name: argumentName,
       alias: argument.alias,
       group: "arguments",
@@ -154,44 +151,45 @@ function declarativeCliParser(
   ].filter((definition) => definition) as OptionDefinition[];
 
   const commandArguments = commandLineArgs(commandDefinition, {
-    argv: libOptions.argv,
+    argv: libraryOptions.argv,
     partial: true,
   }) as ParsedArguments;
 
-  const schemaKeys = Object.keys(argumentSchema).filter(key => key !== 'commands' && key !== 'description') as Exclude<keyof Schema, 'commands' | 'description'>[]
+  const schemaKeys = Object.keys(argumentSchema).filter(key => key !== 'commands' && key !== 'description') as Exclude<keyof Schema, 'commands' | 'description'>[];
 
-  return schemaKeys.reduce((acc, key) => {
+  return schemaKeys.reduce((accumulator, key) => {
     if (key === "positionals") {
       const positionals =
         commandArguments._positionals_ ??
         commandArguments._all?._positionals_ ??
         [];
       return {
-        ...acc,
+        ...accumulator,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         [key]: argumentSchema.positionals!.reduce(
-          (acc: ResultValue<readonly unknown[]>, value: Argument, index: number) => {
+          (accumulator_: ResultValue<readonly unknown[]>, value: Argument, index: number) => {
             const positional = positionals[index];
-
+            
             if (!positional || positional.value === "") {
               return {
                 valid: false as const,
                 error: new Error(`${value.type}: value not provided`),
-                value: [...acc.value, null],
+                value: [...accumulator_.value, null],
               };
             }
-            if (!positional.valid || !acc.valid) {
+            if (!positional.valid || !accumulator_.valid) {
               return {
                 valid: false as const,
                 error:
-                  acc.valid === true
-                    ? mapErrorObjectToError(value.type, positional.errors[0])
-                    : acc.error,
-                value: [...acc.value, positional.value],
+                  accumulator_.valid === true
+                    ? mapErrorObjectToError(value.type, head(positional.errors)!)
+                    : accumulator_.error,
+                value: [...accumulator_.value, positional.value],
               };
             }
             return {
               valid: true as const,
-              value: [...acc.value, positional.value],
+              value: [...accumulator_.value, positional.value],
             };
           },
           {
@@ -202,12 +200,12 @@ function declarativeCliParser(
       };
     }
     return {
-      ...acc,
-      [key]: Object.entries(schema[key]).reduce((acc, [name, value]) => {
+      ...accumulator,
+      [key]: Object.entries(argumentSchema[key]!).reduce((nestedAccumulator, [name]) => {
         const commandValue = commandArguments[key]![name];
         if (commandValue === null && argumentSchema[key]![name].type === "boolean") {
           return {
-            ...acc,
+            ...nestedAccumulator,
             [name]: formatValue(name, {
               valid: true,
               errors: [],
@@ -218,7 +216,7 @@ function declarativeCliParser(
 
         if (commandValue === undefined) {
           if (key === "options") {
-            return acc;
+            return nestedAccumulator;
           }
           return {
             [name]: {
@@ -229,12 +227,12 @@ function declarativeCliParser(
           };
         }
         return {
-          ...acc,
+          ...nestedAccumulator,
           [name]: formatValue(name, commandValue),
         };
       }, {}),
     };
-  }, {})
+  }, {});
 }
 
 export { Schema, Argument };
