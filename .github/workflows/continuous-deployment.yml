@@ -46,6 +46,6 @@ jobs:
       - name: Build
         run: yarn build
       - name: Publish
-        run: yarn run publish --yes --create-release=github
+        run: yarn run publish --yes --create-release=github --loglevel=silly
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
