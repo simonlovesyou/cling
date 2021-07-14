@@ -35,5 +35,9 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-yarn-
     - run: yarn install --frozen-lockfile
-    - run: yarn lint
-    - run: yarn test
+    - name: Bootstrap
+      run: yarn lerna bootstrap
+    - name: Lint
+      run: yarn lint
+    - name: Test
+      run: yarn test
