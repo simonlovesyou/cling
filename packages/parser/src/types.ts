@@ -28,10 +28,11 @@ type Schema = {
   positionals?: readonly Argument[];
   arguments?: Record<string, Argument>;
   options?: Record<string, Argument>;
+  commands?: undefined;
 }
 
 export type CommandSchema = {
-  commands: Record<string, Schema>;
+  commands?: Record<string, Schema>;
 }
 
 export type Options = {
