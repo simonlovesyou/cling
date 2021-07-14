@@ -19,6 +19,7 @@
   "scripts": {
     "test": "yarn jest src/ --coverage",
     "build": "yarn build:ts",
+    "lint": "yarn eslint \"{src,types}/**\"",
     "build:ts": "yarn tsc --project tsconfig.build.json",
     "prepublish": "rm -rf ./dist && yarn build"
   },
@@ -31,6 +32,7 @@
     "@types/ramda": "^0.27.40",
     "@types/randomstring": "^1.1.6",
     "dedent": "^0.7.0",
+    "eslint": "^7.30.0",
     "jest": "^26.0.0",
     "jest-mock-console": "^1.1.0",
     "randomstring": "^1.2.1",
@@ -40,6 +42,7 @@
   },
   "dependencies": {
     "@cling/parser": "^0.4.2",
+    "@eropple/exit-codes": "^1.0.0",
     "command-line-usage": "^6.1.1",
     "ramda": "^0.27.1"
   }
