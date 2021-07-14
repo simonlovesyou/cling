@@ -2,7 +2,6 @@ import commandLineArgs, { OptionDefinition } from "command-line-args";
 import Schema, {
   Argument,
   Options,
-  ExpandRecursively,
   CommandSchema,
 } from "./types";
 import Ajv, { ErrorObject } from "ajv";
@@ -10,10 +9,12 @@ import { clone } from "ramda";
 import { JSONSchema7 } from "json-schema";
 import addFormats from "ajv-formats";
 
+const isCommandSchema = (schemaLike: Record<string, unknown>): schemaLike is CommandSchema => schemaLike.commands !== undefined
+
 const mapErrorObjectToError = (keyName: string, errorObject: ErrorObject) =>
   new Error(`${keyName}: ${errorObject.keyword} ${errorObject.message}`);
 
-type ValueRepresentation<TValue extends any> = {
+type ValueRepresentation<TValue = unknown> = {
   valid: boolean;
   errors: ErrorObject[];
   value: TValue;
@@ -37,6 +38,15 @@ const validateType =
       value: mutateableInstance.value,
     };
   };
+
+interface ParsedArguments {
+  options?: Record<string, ValueRepresentation<unknown>>;
+  arguments?: Record<string, ValueRepresentation<unknown>>;
+  _positionals_?: ValueRepresentation<unknown>[];
+  _all?: {
+    _positionals_: ValueRepresentation<unknown>[];
+  }
+}
 
 const validateItemPosition = (
   schemas: readonly JSONSchema7[] | JSONSchema7
@@ -75,98 +85,23 @@ const formatValue = <TValue extends any>(
         error: mapErrorObjectToError(keyName, argument.errors[0]),
       };
 
-type CoercedType<T> = T extends "string"
-  ? string
-  : T extends "number"
-  ? number
-  : T extends "integer"
-  ? number
-  : T extends "boolean"
-  ? boolean
-  : T extends "null"
-  ? null
-  : never;
+interface SchemaResults {
+  arguments?: Record<string, ValueRepresentation>;
+  options?: Record<string, ValueRepresentation>;
+  positionals?: ValueRepresentation<readonly unknown[]>;
+}
 
-type CoerceArrayType<T extends Argument & { type: "array" }> =
-  T["items"] extends readonly Argument[]
-    ? CoercedTupleOf<T["items"]>
-    : T["items"] extends Argument
-    ? CoercedTypeObject<T["items"]>[]
-    : any[];
+interface CommandResults {
+  commands: Record<string, SchemaResults>
+}
 
-type CoercedTypeObject<T extends Argument> = T["type"] extends "array"
-  ? CoerceArrayType<T & { type: "array" }>
-  : CoercedType<T[keyof T]>;
-
-type CoercedTupleOf<T extends readonly Argument[]> = {
-  [Key in keyof T]: keyof T[Key] extends "type"
-    ? CoercedType<T[Key][keyof T[Key]]>
-    : never;
-};
-
-type ParsedArguments<T> = {
-  [Key in keyof T]: Key extends "options"
-    ? {
-        [ArgumentKey in keyof T[Key]]?: ValueRepresentation<unknown>;
-      }
-    : {
-        [ArgumentKey in keyof T[Key]]: ValueRepresentation<unknown>;
-      };
-} &
-  keyof T extends "positionals"
-  ? {
-      _all?: {
-        __positionals__?: ValueRepresentation<unknown>[];
-      };
-      __positionals__?: ValueRepresentation<unknown>[];
-    }
-  : never;
-
-type CoerceSchema<T extends Schema> = {
-  [Key in keyof T]: Key extends "positionals"
-    ?
-        | { valid: true; value: CoercedTupleOf<NonNullable<T["positionals"]>> }
-        | { valid: false; error: Error; value: any }
-    : Key extends "options"
-    ? {
-        [ArgumentKey in keyof T[Key]]?:
-          | {
-              valid: true;
-              value?: CoercedTypeObject<NonNullable<T["options"]>[ArgumentKey]>;
-            }
-          | { valid: false; error: Error; value: any };
-      }
-    : Key extends "arguments"
-    ? {
-        [ArgumentKey in keyof T[Key]]:
-          | {
-              valid: true;
-              value: CoercedTypeObject<NonNullable<T[Key]>[ArgumentKey]>;
-            }
-          | { valid: false; error: Error; value: any };
-      }
-    : never;
-};
-
-function declarativeCliParser<T extends Schema | CommandSchema>(
-  inputSchema: T,
+function declarativeCliParser(inputSchema: Schema, libOptions: Options): SchemaResults
+function declarativeCliParser(inputSchema: CommandSchema, libOptions: Options): CommandResults
+function declarativeCliParser(
+  schema: Schema | CommandSchema,
   libOptions: Options = {}
-): ExpandRecursively<
-  T extends Schema
-    ? CoerceSchema<T>
-    : T extends CommandSchema
-    ? {
-        commands: {
-          [NestedKey in keyof T["commands"]]: CoerceSchema<
-            T["commands"][NestedKey]
-          >;
-        };
-      }
-    : never
-> {
-  const commandSchema = inputSchema as CommandSchema;
-
-  if (commandSchema.commands) {
+): SchemaResults | CommandResults {
+  if (isCommandSchema(schema)) {
     const mainCommandDefinition = [{ name: "name", defaultOption: true }];
     const mainCommand = commandLineArgs(mainCommandDefinition, {
       stopAtFirstUnknown: true,
@@ -175,7 +110,7 @@ function declarativeCliParser<T extends Schema | CommandSchema>(
 
     const argv = mainCommand._unknown || [];
 
-    const subCommand = commandSchema.commands[mainCommand.name];
+    const subCommand = schema.commands?.[mainCommand.name];
 
     if (!subCommand) {
       throw {
@@ -184,23 +119,22 @@ function declarativeCliParser<T extends Schema | CommandSchema>(
         },
       };
     }
-    // @ts-ignore
+
     return {
       commands: {
         [mainCommand.name]: declarativeCliParser(subCommand, { argv }),
       },
-    } as unknown as ReturnType<typeof declarativeCliParser>;
+    }
   }
+  const argumentSchema = schema as Schema
 
-  const schema = inputSchema as Schema;
-
-  const args = schema.arguments;
-  const options = schema.options;
-  const positionals = schema.positionals;
+  const arguments_ = argumentSchema.arguments;
+  const options = argumentSchema.options;
+  const positionals = argumentSchema.positionals;
 
   const commandDefinition = [
     positionals && {
-      name: "__positionals__",
+      name: "_positionals_",
       defaultOption: true,
       multiple: true,
       type: validateItemPosition(positionals as unknown as JSONSchema7),
@@ -211,33 +145,31 @@ function declarativeCliParser<T extends Schema | CommandSchema>(
       group: "options",
       type: validateType(option as unknown as JSONSchema7),
     })),
-    ...Object.entries(args || {}).map(([argumentName, arg]) => ({
+    ...Object.entries(arguments_ || {}).map(([argumentName, argument]) => ({
       name: argumentName,
-      alias: arg.alias,
+      alias: argument.alias,
       group: "arguments",
-      type: validateType(arg as unknown as JSONSchema7),
+      type: validateType(argument as unknown as JSONSchema7),
     })),
   ].filter((definition) => definition) as OptionDefinition[];
 
   const commandArguments = commandLineArgs(commandDefinition, {
     argv: libOptions.argv,
     partial: true,
-  }) as ParsedArguments<T>;
+  }) as ParsedArguments;
 
-  const schemaKeys = Object.keys(schema) as (keyof T)[];
-  // @ts-ignore
+  const schemaKeys = Object.keys(argumentSchema).filter(key => key !== 'commands' && key !== 'description') as Exclude<keyof Schema, 'commands' | 'description'>[]
+
   return schemaKeys.reduce((acc, key) => {
-    // @ts-ignore
     if (key === "positionals") {
       const positionals =
-        commandArguments.__positionals__ ||
-        commandArguments._all?.__positionals__ ||
+        commandArguments._positionals_ ??
+        commandArguments._all?._positionals_ ??
         [];
       return {
         ...acc,
-        // @ts-ignore
-        [key]: schema["positionals"].reduce(
-          (acc: ResultValue<any[]>, value: Argument, index: number) => {
+        [key]: argumentSchema.positionals!.reduce(
+          (acc: ResultValue<readonly unknown[]>, value: Argument, index: number) => {
             const positional = positionals[index];
 
             if (!positional || positional.value === "") {
@@ -271,12 +203,9 @@ function declarativeCliParser<T extends Schema | CommandSchema>(
     }
     return {
       ...acc,
-      // @ts-ignore
       [key]: Object.entries(schema[key]).reduce((acc, [name, value]) => {
-        // @ts-ignore
-        const commandValue = commandArguments[key][name];
-        // @ts-ignore
-        if (commandValue === null && schema[key][name].type === "boolean") {
+        const commandValue = commandArguments[key]![name];
+        if (commandValue === null && argumentSchema[key]![name].type === "boolean") {
           return {
             ...acc,
             [name]: formatValue(name, {
@@ -299,14 +228,13 @@ function declarativeCliParser<T extends Schema | CommandSchema>(
             },
           };
         }
-        // @ts-ignore
         return {
           ...acc,
           [name]: formatValue(name, commandValue),
         };
       }, {}),
     };
-  }, {}) as unknown as ReturnType<typeof declarativeCliParser>;
+  }, {})
 }
 
 export { Schema, Argument };

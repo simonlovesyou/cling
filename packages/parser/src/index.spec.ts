@@ -47,15 +47,15 @@ const TEST_CASES = {
         describe("correct type", () => {
           it("should return the argument", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.arguments.age).not.toBeUndefined();
+            expect(result.arguments!.age).not.toBeUndefined();
           });
           it("should consider the argument valid", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.arguments.age.valid).not.toBeUndefined();
+            expect(result.arguments!.age.valid).not.toBeUndefined();
           });
           it("should coerce the type", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.arguments.age.value).toBe(25);
+            expect(result.arguments!.age.value).toBe(25);
           });
           it("should not return any errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
@@ -69,7 +69,7 @@ const TEST_CASES = {
       describe("incorrect type", () => {
         it("should return that the argument is not valid", () => {
           const result = declarativeCliParser(schema, { argv });
-          expect(result.arguments.age.valid).toBe(false);
+          expect(result.arguments!.age.valid).toBe(false);
         });
         it("should return an error for the property", () => {
           const result = declarativeCliParser(schema, { argv });
@@ -87,11 +87,11 @@ const TEST_CASES = {
       describe("argument not provided", () => {
         it("should return the argument", () => {
           const result = declarativeCliParser(schema, { argv });
-          expect(result.arguments.age).not.toBeUndefined();
+          expect(result.arguments!.age).not.toBeUndefined();
         });
         it("the argument should not be valid", () => {
           const result = declarativeCliParser(schema, { argv });
-          expect(result.arguments.age.valid).toBe(false);
+          expect(result.arguments!.age.valid).toBe(false);
         });
         it("has an argument error", () => {
           const result = declarativeCliParser(schema, { argv });
@@ -109,11 +109,11 @@ const TEST_CASES = {
         describe("correct type", () => {
           it("should return the argument", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.options.email).not.toBeUndefined();
+            expect(result.options!.email).not.toBeUndefined();
           });
           it("should coerce the type", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.options.email?.value).toBe("alex@alex.com");
+            expect(result.options!.email?.value).toBe("alex@alex.com");
           });
           it("should not return any errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
@@ -128,11 +128,11 @@ const TEST_CASES = {
         describe("incorrect type", () => {
           it("should return the argument", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.options.email).not.toBeUndefined();
+            expect(result.options!.email).not.toBeUndefined();
           });
           it("should return the argument provided", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.options.email?.value).toBe("alex");
+            expect(result.options!.email?.value).toBe("alex");
           });
           it("should return errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
@@ -151,7 +151,7 @@ const TEST_CASES = {
       describe("option not provided", () => {
         it("should not return the option", () => {
           const result = declarativeCliParser(schema, { argv });
-          expect(result.options.email).toBeUndefined();
+          expect(result.options!.email).toBeUndefined();
         });
       });
     },
@@ -162,11 +162,11 @@ const TEST_CASES = {
         describe("correct type", () => {
           it("should return that the positional argument is valid", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.positionals.valid).toBe(true);
+            expect(result.positionals!.valid).toBe(true);
           });
           it("should coerce the type", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.positionals.value[0]).toBe(5);
+            expect(result.positionals!.value[0]).toBe(5);
           });
           it("should not return any errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
@@ -185,7 +185,7 @@ const TEST_CASES = {
           });
           it("should return the positional value", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.positionals.value[0]).toBe("bar");
+            expect(result.positionals!.value[0]).toBe("bar");
           });
           it("should not return any errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
@@ -208,7 +208,7 @@ const TEST_CASES = {
         });
         it("the argument should not be valid", () => {
           const result = declarativeCliParser(schema, { argv });
-          expect(result.positionals.valid).toBe(false);
+          expect(result.positionals!.valid).toBe(false);
         });
         it("has an argument error", () => {
           const result = declarativeCliParser(schema, { argv });
@@ -229,11 +229,11 @@ const TEST_CASES = {
         describe("correct type", () => {
           it("should return that the optional argument is valid", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.options.help!.valid).toBe(true);
+            expect(result.options!.help!.valid).toBe(true);
           });
           it("should return the value", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.options.help!.value).toBe(true);
+            expect(result.options!.help!.value).toBe(true);
           });
           it("should not return any errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
@@ -251,11 +251,11 @@ const TEST_CASES = {
         describe("incorrect type", () => {
           it("should return that the optional argument is invalid", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.options.help!.valid).toBe(false);
+            expect(result.options!.help!.valid).toBe(false);
           });
           it("should return the value", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.options.help!.value).toBe("5");
+            expect(result.options!.help!.value).toBe("5");
           });
           it("should return errors for the property", () => {
             const result = declarativeCliParser(schema, { argv });
@@ -375,8 +375,8 @@ describe("commands with positional", () => {
       it(`commands.bar.positionals.value should be valid & ${Number(
         value
       )}`, () => {
-        expect(res.commands[command].positionals.valid).toBe(true);
-        expect(res.commands[command].positionals.value).toEqual([
+        expect(res.commands[command].positionals!.valid).toBe(true);
+        expect(res.commands[command].positionals!.value).toEqual([
           Number(value),
         ]);
       });
