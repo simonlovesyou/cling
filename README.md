@@ -12,7 +12,7 @@ yarn install
 ```
 
 Then, to bootstrap all packages, run:
-```
+```bash
 yarn bootstrap
 ```
 
