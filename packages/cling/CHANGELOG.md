@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.2.0...@cling/cling@0.3.0) (2021-07-15)
+
+
+### Features
+
+* Add continuous integration & deployment ([#10](https://github.com/simonlovesyou/cling/issues/10)) ([2678540](https://github.com/simonlovesyou/cling/commit/26785407152e888115f3be8eced963b656f02fb6))
+
+
+
+
+
 ## [0.2.3](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.2.2...@cling/cling@0.2.3) (2021-07-14)
 
 **Note:** Version bump only for package @cling/cling
