@@ -11,7 +11,9 @@ The repository uses yarn as a package manager along with lerna to manage the mon
 yarn install
 ```
 
-Then, to bootstrap all packages run:
+Then, to bootstrap all packages, run:
 ```
 yarn bootstrap
 ```
+
+Happy hacking!
