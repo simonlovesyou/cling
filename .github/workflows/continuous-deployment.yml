@@ -44,10 +44,8 @@ jobs:
         run: yarn install
       - name: Bootstrap
         run: yarn bootstrap
-      - name: Build
-        run: yarn build
       - name: Publish
-        run: yarn run publish --yes --create-release=github --no-verify-access
+        run: yarn run publish --yes --no-verify-access
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GH_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
