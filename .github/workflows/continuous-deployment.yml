@@ -44,6 +44,9 @@ jobs:
         run: yarn install
       - name: Bootstrap
         run: yarn bootstrap
+      - run: echo //registry.npmjs.org/:_authToken=${NPM_TOKEN} > .npmrc
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish
         run: yarn run publish --yes --no-verify-access
         env:
