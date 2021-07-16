@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.6](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.4.5...@cling/parser@0.4.6) (2021-07-16)
+
+
+### Bug Fixes
+
+* Fix positional parser type ([#12](https://github.com/simonlovesyou/cling/issues/12)) ([41103c8](https://github.com/simonlovesyou/cling/commit/41103c812b63bf2bec3c7e45adcce8a1cbe6b737))
+
+
+
+
+
 ## [0.4.5](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.4.2...@cling/parser@0.4.5) (2021-07-15)
 
 **Note:** Version bump only for package @cling/parser
