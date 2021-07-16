@@ -40,7 +40,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn install
       - name: Bootstrap
         run: yarn bootstrap
