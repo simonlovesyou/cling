@@ -311,10 +311,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@cling/eslint-config@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@cling/eslint-config/-/eslint-config-1.2.2.tgz#e47baff90a7c222ebc4b7bec20273ecbc1ca32a1"
-  integrity sha512-WMboHYsLR1vV83sch0cJRpDeL+x17hCieanWpWIjUxhnXAeGkaoaozydSBmSiIyaKK76b7amzzcsr6mfj2qUBA==
+"@cling/eslint-config@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@cling/eslint-config/-/eslint-config-1.3.0.tgz#98260ad4a2dd6de9d2e358f6441c7676adc9a5b6"
+  integrity sha512-QLRbf+nfOa2nxiyWUCFFPL+uXUITv6KML1kRLOQjbP5Be/mHrQCDPjMMKzZ43g2WCqpbkFGzWUfkScgPANDJUQ==
   dependencies:
     "@babel/eslint-parser" "^7.14.7"
     "@ridedott/eslint-plugin" "^1.6.211"
@@ -329,10 +329,10 @@
     eslint-plugin-unicorn "^34.0.1"
     typescript "^4.3.5"
 
-"@cling/parser@^0.4.4":
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/@cling/parser/-/parser-0.4.4.tgz#c3329f36d634bcc2c755bb37077f4bb6995c7fef"
-  integrity sha512-bD19gIH5WjHQ9S+b48J+NLu8fv7HOnm8zkdP3t7Kcyc6basOcMYgdW9ypKUCVIxX+f1bzRA/SN59s3UDAsAZag==
+"@cling/parser@^0.4.5":
+  version "0.4.5"
+  resolved "https://registry.yarnpkg.com/@cling/parser/-/parser-0.4.5.tgz#ad94ce77e1cfae9a35055edcac968ccfb1391f64"
+  integrity sha512-R+2ZuKgRDdgtGPPUtkflHH6wCzxej0tIGeY3WIE1fnTLBFpkO3NFvJWwO8kwt7UOuE1M6yrMtFvnNMClE4FehQ==
   dependencies:
     ajv "^8.1.0"
     ajv-formats "^2.1.0"
