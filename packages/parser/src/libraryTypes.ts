@@ -15,7 +15,7 @@ declare type CoercedTypeObject<T extends Argument> = T["type"] extends "array" ?
     type: "array";
 }> : CoercedType<T[keyof T]>;
 declare type CoercedTupleOf<T extends readonly Argument[]> = {
-    [Key in keyof T]: keyof T[Key] extends "type" ? CoercedType<T[Key][keyof T[Key]]> : never;
+    [Key in keyof T]: T[Key] extends Argument ? T[Key]['type'] : never
 };
 declare type CoerceSchema<T extends Schema> = {
     [Key in keyof T]: Key extends "positionals" ? {
