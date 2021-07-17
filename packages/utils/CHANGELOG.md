@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.23](https://github.com/simonlovesyou/cling/compare/@cling/utils@0.0.22...@cling/utils@0.0.23) (2021-07-17)
+
+
+### Bug Fixes
+
+* **parser:** Use dereferenced schema instead of plain json schema ([7c3e16f](https://github.com/simonlovesyou/cling/commit/7c3e16f0b4f65ec86deb5633cf5b0b9ab3703a6a))
+
+
+
+
+
 ## [0.0.22](https://github.com/simonlovesyou/cling/compare/@cling/utils@0.0.21...@cling/utils@0.0.22) (2021-07-17)
 
 
