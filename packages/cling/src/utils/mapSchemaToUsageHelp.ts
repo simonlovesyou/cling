@@ -31,13 +31,13 @@ const mapPositionalToLabel = (argument: { name: string; alias?: Argument['alias'
 const schemaToUsageDescription = (schema: Readonly<Schema>, cliName: string): string => {
   return [
     cliName,
-    Object.entries(schema.arguments ?? {}).map(([name, argument]) =>
+    schema.arguments && Object.entries(schema.arguments).map(([name, argument]) =>
       mapArgumentToLabel({
         ...argument,
         name: argument.name ?? name,
       })
     ),
-    Object.entries(schema.options ?? {}).map(([name, argument]) =>
+    schema.options && Object.entries(schema.options).map(([name, argument]) =>
       mapArgumentToLabel({
         ...argument,
         name: argument.name ?? name,
@@ -49,7 +49,7 @@ const schemaToUsageDescription = (schema: Readonly<Schema>, cliName: string): st
         name: positional.name ?? positional.type,
       })
     ),
-  ]
+  ].filter(section => section)
     .join(" ")
     .trim();
 };

@@ -18,7 +18,7 @@ describe("single option", () => {
   } as const);
   it("should return the correct usage guide", () => {
     expect(mapSchemaUsageToHelp(schemaFixture.get(), "lol")).toStrictEqual([
-      { content: "Usage: lol  [--help]", header: "lol" },
+      { content: "Usage: lol [--help]", header: "lol" },
       {
         header: "Options",
         optionList: [
@@ -44,7 +44,7 @@ describe("single argument", () => {
   } as const);
   it("should return the correct usage guide", () => {
     expect(mapSchemaUsageToHelp(schemaFixture.get(), "lol")).toStrictEqual([
-      { content: "Usage: lol  [--help]", header: "lol" },
+      { content: "Usage: lol [--help]", header: "lol" },
       {
         header: "Options",
         optionList: [
@@ -65,7 +65,7 @@ describe("single argument", () => {
     );
     it("should return the correct usage guide", () => {
       expect(mapSchemaUsageToHelp(schema.get(), "lol")).toStrictEqual([
-        { content: "Usage: lol  [--help | -h]", header: "lol" },
+        { content: "Usage: lol [--help | -h]", header: "lol" },
         {
           header: "Options",
           optionList: [
