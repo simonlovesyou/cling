@@ -295,10 +295,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@cling/parser@^0.4.6":
-  version "0.4.6"
-  resolved "https://registry.yarnpkg.com/@cling/parser/-/parser-0.4.6.tgz#c2afe7a8b2b1b80ebbab40673b4a4759e7090910"
-  integrity sha512-P98MqEoIy0PsgKtcN2aXj4hlreAw6BQLzo474SpQeXBkEAlPwkGI/pzpNQk5Y9oQj1/1FJIAJEC+dxyetlZHpQ==
+"@cling/parser@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@cling/parser/-/parser-0.5.0.tgz#77a62365f2a6ccf5e7a5d505e687066bdb8ad691"
+  integrity sha512-a9vCDxizLjYL4cIOgmBZjV0bgx9r1yjHA8+d2vyeGbBlVBsIBDAjF4qWFkc9fEqogYnFUSBChkXyFH2FUBKZ3w==
   dependencies:
     ajv "^8.1.0"
     ajv-formats "^2.1.0"
