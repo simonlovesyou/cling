@@ -69,7 +69,7 @@ const mapSchemaUsageToHelp = (
   };
 
   const optionList = [
-    schema.positionals && [
+    schema.positionals && 
       {
         header: "Positionals",
         optionList: schema.positionals.map(({ type, description, name }) => ({
@@ -78,7 +78,6 @@ const mapSchemaUsageToHelp = (
           name: name ?? type,
         })),
       },
-    ],
     schema.arguments && {
       header: "Arguments",
       optionList: Object.entries(schema.arguments).map(

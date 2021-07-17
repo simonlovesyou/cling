@@ -3,7 +3,7 @@ import { assocPath } from "ramda";
 import mapSchemaUsageToHelp from "./mapSchemaToUsageHelp";
 
 const testFixture = <T>(object: T) => ({
-  addValueAtPath: <TValue>(path: string[], value: TValue) =>
+  addValueAtPath: <TValue>(path: (number | string)[], value: TValue) =>
     testFixture(assocPath(path, value, object)),
   get: () => object,
 });
@@ -74,6 +74,50 @@ describe("single argument", () => {
               description: undefined,
               name: "help",
               typeLabel: "boolean",
+            },
+          ],
+        },
+      ]);
+    });
+  });
+});
+
+describe("single positional", () => {
+  const schemaFixture = testFixture({
+    positionals: [{
+      type: "string",
+    }],
+  } as const);
+  it("should return the correct usage guide", () => {
+    expect(mapSchemaUsageToHelp(schemaFixture.get(), "lol")).toStrictEqual([
+      { content: "Usage: lol <string>", header: "lol" },
+      {
+        header: "Positionals",
+        optionList: [
+          {
+            description: undefined,
+            name: "string",
+            typeLabel: "string",
+          },
+        ],
+      },
+    ]);
+  });
+  describe("with name", () => {
+    const schema = schemaFixture.addValueAtPath(
+      ["positionals", 0, "name"],
+      "bar"
+    );
+    it("should return the correct usage guide", () => {
+      expect(mapSchemaUsageToHelp(schema.get(), "lol")).toStrictEqual([
+        { content: "Usage: lol <bar>", header: "lol" },
+        {
+          header: "Positionals",
+          optionList: [
+            {
+              description: undefined,
+              name: "bar",
+              typeLabel: "string",
             },
           ],
         },
