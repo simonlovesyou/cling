@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.4](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.5.3...@cling/cling@0.5.4) (2021-07-17)
+
+
+### Bug Fixes
+
+* **cling:** Remove excess white space between elements in usage description ([ea28842](https://github.com/simonlovesyou/cling/commit/ea288424aaaf0fbe2484be5e08048f9478b3019f))
+
+
+
+
+
 ## [0.5.3](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.5.2...@cling/cling@0.5.3) (2021-07-17)
 
 
