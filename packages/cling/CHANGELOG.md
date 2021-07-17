@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.5.2 (2021-07-17)
+
+
+### Bug Fixes
+
+* **cling:** Fix positional types ([0276273](https://github.com/simonlovesyou/cling/commit/02762733df62f45ae164212853b36b394e54bb5a))
+
+
+
+
+
 ## [0.5.1](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.5.0...@cling/cling@0.5.1) (2021-07-17)
 
 **Note:** Version bump only for package @cling/cling
