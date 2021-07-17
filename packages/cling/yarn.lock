@@ -329,10 +329,10 @@
     eslint-plugin-unicorn "^34.0.1"
     typescript "^4.3.5"
 
-"@cling/parser@^0.4.5":
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/@cling/parser/-/parser-0.4.5.tgz#ad94ce77e1cfae9a35055edcac968ccfb1391f64"
-  integrity sha512-R+2ZuKgRDdgtGPPUtkflHH6wCzxej0tIGeY3WIE1fnTLBFpkO3NFvJWwO8kwt7UOuE1M6yrMtFvnNMClE4FehQ==
+"@cling/parser@^0.4.6":
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/@cling/parser/-/parser-0.4.6.tgz#c2afe7a8b2b1b80ebbab40673b4a4759e7090910"
+  integrity sha512-P98MqEoIy0PsgKtcN2aXj4hlreAw6BQLzo474SpQeXBkEAlPwkGI/pzpNQk5Y9oQj1/1FJIAJEC+dxyetlZHpQ==
   dependencies:
     ajv "^8.1.0"
     ajv-formats "^2.1.0"
