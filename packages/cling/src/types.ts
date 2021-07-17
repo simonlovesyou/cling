@@ -1,5 +1,3 @@
-type TypeName = "boolean" | "integer" | "null" | "number" | "string";
-
 interface Schema {
   /** Description of the CLI */
   description?: string;
@@ -12,7 +10,9 @@ interface Schema {
   commands?: undefined;
 }
 
-interface BaseArgument<TType extends TypeName | "array"> {
+export type TypeName = "boolean" | "integer" | "null" | "number" | "string";
+
+export interface BaseArgument<TType extends TypeName | "array"> {
   type: TType;
   description?: string;
   alias?: string;
@@ -20,7 +20,7 @@ interface BaseArgument<TType extends TypeName | "array"> {
   name?: string;
 }
 
-interface ArrayArgument extends BaseArgument<"array"> {
+export interface ArrayArgument extends BaseArgument<"array"> {
   items?: Argument | readonly Argument[];
   minItems?: number;
   maxItems?: number;
