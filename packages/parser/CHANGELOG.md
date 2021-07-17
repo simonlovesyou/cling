@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.4.6...@cling/parser@0.5.0) (2021-07-17)
+
+
+### Features
+
+* **parser:** Add support for enums ([#13](https://github.com/simonlovesyou/cling/issues/13)) ([c21e791](https://github.com/simonlovesyou/cling/commit/c21e7915f75a0ce084b38fd8f3d2c4dcd0e2e380))
+
+
+
+
+
 ## [0.4.6](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.4.5...@cling/parser@0.4.6) (2021-07-16)
 
 
