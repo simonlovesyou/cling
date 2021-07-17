@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.3](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.5.2...@cling/cling@0.5.3) (2021-07-17)
+
+
+### Bug Fixes
+
+* **cling:** Update library schema so that commands are optional in resulting object ([318fb75](https://github.com/simonlovesyou/cling/commit/318fb75fe0d875edcacfac7f68fb9cb360c8332d))
+
+
+
+
+
 ## 0.5.2 (2021-07-17)
 
 

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.6.1 (2021-07-17)
+
+
+### Bug Fixes
+
+* **parser:** Update library schema so that commands are optional in resulting object ([8500c7f](https://github.com/simonlovesyou/cling/commit/8500c7f040c19b9d4158d8c07bfb6be85512aea0))
+
+
+
+
+
 # [0.6.0](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.5.2...@cling/parser@0.6.0) (2021-07-17)
 
 
