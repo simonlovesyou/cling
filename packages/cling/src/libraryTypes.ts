@@ -77,7 +77,7 @@ declare const cling: <T extends CommandSchema | Schema>(
     : T extends CommandSchema
     ? {
         commands: {
-          [NestedKey in keyof T["commands"]]: CoerceSchema<
+          [NestedKey in keyof T["commands"]]?: CoerceSchema<
             T["commands"][NestedKey]
           >;
         };
