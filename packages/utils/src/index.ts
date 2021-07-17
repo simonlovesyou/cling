@@ -36,7 +36,7 @@ export const convertJSONSchemaToArgument = (
   jsonSchema: JSONSchema7
 ): Argument => {
   const dereferencedSchema = deref(jsonSchema);
-  const baseArgument = convertBaseArgumentProperties(jsonSchema)
+  const baseArgument = convertBaseArgumentProperties(dereferencedSchema)
   /* "Enumable" types */
   if(jsonSchema.type! === 'string') {
     return merge(baseArgument, pick(['enum'], jsonSchema))
