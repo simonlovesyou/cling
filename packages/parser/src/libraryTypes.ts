@@ -15,11 +15,7 @@ declare type CoercedTypeObject<T extends Argument> = T["type"] extends "array" ?
     type: "array";
 }> : T extends EnumableArgument<string> ? CoerceEnumType<T> : CoercedType<T[keyof T]>;
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-declare type CoerceEnumType<T extends EnumableArgument<number | string>> = {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    type: T['enum'] extends (number | string)[] ? T['enum'][number] : CoercedType<T[keyof T]>;
-};
+declare type CoerceEnumType<T extends EnumableArgument<number | string>> = T['enum'] extends readonly (number | string)[] ? T['enum'][number] : CoercedType<T[keyof T]>;
 
 declare type CoercedTupleOf<T extends readonly Argument[]> = {
     [Key in keyof T]: T[Key] extends Argument ? T[Key]['type'] : never
