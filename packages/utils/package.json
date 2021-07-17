@@ -1,6 +1,6 @@
 {
   "name": "@cling/utils",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "A collection of utilities to ease the use of cling",
   "main": "dist/index.js",
   "author": "@simonlovesyou",

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.22](https://github.com/simonlovesyou/cling/compare/@cling/utils@0.0.21...@cling/utils@0.0.22) (2021-07-17)
+
+
+### Bug Fixes
+
+* **utils:** Fix common cases where JSON Schema compatible properties were not carried over ([8714d5b](https://github.com/simonlovesyou/cling/commit/8714d5b8d086c34b8c59e2ee13d45326d537d13a))
+
+
+
+
+
 ## [0.0.21](https://github.com/simonlovesyou/cling/compare/@cling/utils@0.0.20...@cling/utils@0.0.21) (2021-07-17)
 
 **Note:** Version bump only for package @cling/utils
