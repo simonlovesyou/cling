@@ -45,15 +45,7 @@ declare type CoerceEnumType<T extends EnumableArgument<number | string>> = T['en
 
 declare type CoerceSchema<T extends Schema> = {
   [Key in keyof T]: Key extends "positionals"
-    ?
-        {
-            valid: false;
-            error: Error;
-            value: unknown;
-          } | {
-            valid: true;
-            value: CoercedTupleOf<NonNullable<T["positionals"]>>;
-          }
+    ? CoercedTupleOf<NonNullable<T["positionals"]>>
     : Key extends "options"
     ? {
         [ArgumentKey in keyof T[Key]]?: CoercedTypeObject<
