@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.5.1 (2021-07-17)
+
+
+### Bug Fixes
+
+* **parser:** Fix incorrectly inferrence of enum types/values ([b891b52](https://github.com/simonlovesyou/cling/commit/b891b5272d2287476272ec42d4f902bc4f78e143))
+
+
+
+
+
 # [0.5.0](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.4.6...@cling/parser@0.5.0) (2021-07-17)
 
 
