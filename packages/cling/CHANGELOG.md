@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.3.2...@cling/cling@0.4.0) (2021-07-17)
+
+
+### Features
+
+* **cling:** Add support for argument enums ([#14](https://github.com/simonlovesyou/cling/issues/14)) ([1d94f8f](https://github.com/simonlovesyou/cling/commit/1d94f8f2b91ccb5668806fa1e37c10ed55bed973))
+
+
+
+
+
 ## [0.3.2](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.3.1...@cling/cling@0.3.2) (2021-07-17)
 
 **Note:** Version bump only for package @cling/cling
