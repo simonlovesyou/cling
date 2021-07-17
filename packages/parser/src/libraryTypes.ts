@@ -50,7 +50,7 @@ declare type CoerceSchema<T extends Schema> = {
 };
 declare function declarativeCliParser<T extends CommandSchema | Schema> (inputSchema: T, libraryOptions?: Options): ExpandRecursively<T extends Schema ? CoerceSchema<T> : T extends CommandSchema ? {
     commands: {
-        [NestedKey in keyof T["commands"]]: CoerceSchema<T["commands"][NestedKey]>;
+        [NestedKey in keyof T["commands"]]?: CoerceSchema<T["commands"][NestedKey]>;
     };
 } : never>;
 export { Schema, Argument };
