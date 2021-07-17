@@ -8,20 +8,42 @@ interface Schema {
   commands?: undefined;
 }
 
+interface BaseArgument<TType extends TypeName | "array"> {
+  type: TType;
+  description?: string;
+  alias?: string;
+  format?: string;
+  name?: string;
+}
+
+interface ArrayArgument extends BaseArgument<"array"> {
+  items?: Argument | readonly Argument[];
+  minItems?: number;
+  maxItems?: number;
+  uniqueItems?: boolean;
+}
+
+export interface EnumableArgument<TEnumType extends number | string> {
+  enum?: readonly TEnumType[];
+}
+
+export type StringArgument = BaseArgument<'string'> & EnumableArgument<string>;
+
+export type NumberArgument = BaseArgument<'number'> & EnumableArgument<number>;
+
+export type IntegerArgument = BaseArgument<'integer'> & EnumableArgument<number>;
+
+export type NullArgument = BaseArgument<'null'>;
+
+export type BooleanArgument = BaseArgument<"boolean">;
+
 export type Argument =
-  {
-      type: "array";
-      items?: Argument | readonly Argument[];
-      description?: string;
-      alias?: string;
-      minItems?: number;
-      maxItems?: number;
-      uniqueItems?: boolean;
-    } | {
-      type: TypeName;
-      description?: string;
-      alias?: string;
-    };
+  | ArrayArgument
+  | BooleanArgument
+  | IntegerArgument
+  | NullArgument
+  | NumberArgument
+  | StringArgument;
 
 export interface CommandSchema {
   // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style

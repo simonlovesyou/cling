@@ -3,14 +3,12 @@ import Ajv, { ErrorObject } from "ajv";
 import { clone, head } from "ramda";
 import { JSONSchema7 } from "json-schema";
 import addFormats from "ajv-formats";
-import Schema, {
-  Argument,
-  Options,
-  CommandSchema,
-} from "./types";
+import Schema, { Argument, Options, CommandSchema } from "./types";
 
 const mapErrorObjectToError = (keyName: string, errorObject: ErrorObject) =>
-  new Error(`${keyName}: ${errorObject.keyword} ${errorObject.message ?? ''}`.trim());
+  new Error(
+    `${keyName}: ${errorObject.keyword} ${errorObject.message ?? ""}`.trim()
+  );
 
 interface ValueRepresentation<TValue = unknown> {
   valid: boolean;
@@ -22,13 +20,30 @@ const validateType =
   <TValue>(schema: JSONSchema7) =>
   (value: TValue): ValueRepresentation<TValue> => {
     const mutateableInstance = { value: clone(value) };
-    const ajv = new Ajv({ coerceTypes: true });
+    const ajv = new Ajv({ coerceTypes: true, allErrors: true });
     addFormats(ajv);
     const validate = ajv.compile({
       type: "object",
       properties: { value: schema },
     });
     const valid = validate(mutateableInstance)!;
+
+    if (validate.errors) {
+      return {
+        valid: false,
+        value,
+        errors: validate.errors.map((error) =>
+          error.keyword === "enum"
+            ? {
+                ...error,
+                message: `must be equal to one of the allowed values: ${schema.enum!.join(
+                  ", "
+                )}`,
+              }
+            : error
+        ),
+      };
+    }
 
     return {
       valid,
@@ -52,7 +67,9 @@ const validateItemPosition = (
   // eslint-disable-next-line fp/no-let
   let currentPosition = 0;
   return (value: unknown) => {
-    const schema = (Array.isArray(schemas) ? schemas[currentPosition] : schemas) as JSONSchema7;
+    const schema = (
+      Array.isArray(schemas) ? schemas[currentPosition] : schemas
+    ) as JSONSchema7;
 
     const validatedType = validateType(schema)(value);
     // eslint-disable-next-line fp/no-mutation
@@ -62,11 +79,12 @@ const validateItemPosition = (
 };
 
 type ResultValue<TValue = unknown> =
-  {
+  | {
       valid: false;
       value: TValue;
       error: Error;
-    } | {
+    }
+  | {
       valid: true;
       value: TValue;
       error?: undefined;
@@ -94,8 +112,14 @@ interface CommandResults {
   commands: Record<string, SchemaResults>;
 }
 
-function declarativeCliParser (inputSchema: Schema, libraryOptions: Options): SchemaResults;
-function declarativeCliParser (inputSchema: CommandSchema, libraryOptions: Options): CommandResults;
+function declarativeCliParser (
+  inputSchema: Schema,
+  libraryOptions: Options
+): SchemaResults;
+function declarativeCliParser (
+  inputSchema: CommandSchema,
+  libraryOptions: Options
+): CommandResults;
 function declarativeCliParser (
   schema: CommandSchema | Schema,
   libraryOptions: Options = {}
@@ -109,7 +133,7 @@ function declarativeCliParser (
 
     const argv = mainCommand?._unknown ?? [];
 
-    const commandName = mainCommand.name ?? '';
+    const commandName = mainCommand.name ?? "";
 
     const subCommand = schema.commands?.[commandName];
 
@@ -134,7 +158,9 @@ function declarativeCliParser (
       name: "_positionals_",
       defaultOption: true,
       multiple: true,
-      type: validateItemPosition(positionalDefinitions as unknown as JSONSchema7),
+      type: validateItemPosition(
+        positionalDefinitions as unknown as JSONSchema7
+      ),
     },
     ...Object.entries(options ?? {}).map(([optionName, option]) => ({
       name: optionName,
@@ -155,7 +181,9 @@ function declarativeCliParser (
     partial: true,
   }) as ParsedArguments;
 
-  const schemaKeys = Object.keys(argumentSchema).filter(key => key !== 'commands' && key !== 'description') as Exclude<keyof Schema, 'commands' | 'description'>[];
+  const schemaKeys = Object.keys(argumentSchema).filter(
+    (key) => key !== "commands" && key !== "description"
+  ) as Exclude<keyof Schema, "commands" | "description">[];
 
   return schemaKeys.reduce((accumulator, key) => {
     if (key === "positionals") {
@@ -167,9 +195,13 @@ function declarativeCliParser (
         ...accumulator,
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         [key]: argumentSchema.positionals!.reduce(
-          (accumulator_: ResultValue<readonly unknown[]>, value: Argument, index: number) => {
+          (
+            accumulator_: ResultValue<readonly unknown[]>,
+            value: Argument,
+            index: number
+          ) => {
             const positional = positionals[index];
-            
+
             if (!positional || positional.value === "") {
               return {
                 valid: false as const,
@@ -182,7 +214,10 @@ function declarativeCliParser (
                 valid: false as const,
                 error:
                   accumulator_.valid === true
-                    ? mapErrorObjectToError(value.type, head(positional.errors)!)
+                    ? mapErrorObjectToError(
+                        value.type,
+                        head(positional.errors)!
+                      )
                     : accumulator_.error,
                 value: [...accumulator_.value, positional.value],
               };
@@ -201,36 +236,42 @@ function declarativeCliParser (
     }
     return {
       ...accumulator,
-      [key]: Object.entries(argumentSchema[key]!).reduce((nestedAccumulator, [name]) => {
-        const commandValue = commandArguments[key]![name];
-        if (commandValue === null && argumentSchema[key]![name].type === "boolean") {
-          return {
-            ...nestedAccumulator,
-            [name]: formatValue(name, {
-              valid: true,
-              errors: [],
-              value: true,
-            }),
-          };
-        }
+      [key]: Object.entries(argumentSchema[key]!).reduce(
+        (nestedAccumulator, [name]) => {
+          const commandValue = commandArguments[key]![name];
+          if (
+            commandValue === null &&
+            argumentSchema[key]![name].type === "boolean"
+          ) {
+            return {
+              ...nestedAccumulator,
+              [name]: formatValue(name, {
+                valid: true,
+                errors: [],
+                value: true,
+              }),
+            };
+          }
 
-        if (commandValue === undefined) {
-          if (key === "options") {
-            return nestedAccumulator;
+          if (commandValue === undefined) {
+            if (key === "options") {
+              return nestedAccumulator;
+            }
+            return {
+              [name]: {
+                valid: false,
+                error: new Error(`${name}: value not provided`),
+                value: null,
+              },
+            };
           }
           return {
-            [name]: {
-              valid: false,
-              error: new Error(`${name}: value not provided`),
-              value: null,
-            },
+            ...nestedAccumulator,
+            [name]: formatValue(name, commandValue),
           };
-        }
-        return {
-          ...nestedAccumulator,
-          [name]: formatValue(name, commandValue),
-        };
-      }, {}),
+        },
+        {}
+      ),
     };
   }, {});
 }

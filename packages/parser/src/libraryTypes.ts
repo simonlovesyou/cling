@@ -1,4 +1,4 @@
-import Schema, { Argument, Options, CommandSchema } from "./types";
+import Schema, { Argument, Options, CommandSchema, EnumableArgument } from "./types";
 
 // expands object types recursively
 type ExpandRecursively<T> = T extends Record<number | string | symbol, unknown>
@@ -13,7 +13,14 @@ declare type CoerceArrayType<T extends Argument & {
 }> = T["items"] extends readonly Argument[] ? CoercedTupleOf<T["items"]> : T["items"] extends Argument ? CoercedTypeObject<T["items"]>[] : unknown[];
 declare type CoercedTypeObject<T extends Argument> = T["type"] extends "array" ? CoerceArrayType<T & {
     type: "array";
-}> : CoercedType<T[keyof T]>;
+}> : T extends EnumableArgument<string> ? CoerceEnumType<T> : CoercedType<T[keyof T]>;
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+declare type CoerceEnumType<T extends EnumableArgument<number | string>> = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    type: T['enum'] extends (number | string)[] ? T['enum'][number] : CoercedType<T[keyof T]>;
+};
+
 declare type CoercedTupleOf<T extends readonly Argument[]> = {
     [Key in keyof T]: T[Key] extends Argument ? T[Key]['type'] : never
 };

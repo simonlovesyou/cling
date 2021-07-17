@@ -17,6 +17,14 @@ const SCHEMAS = {
       },
     },
   },
+  "single argument with enums": {
+    arguments: {
+      role: {
+        type: 'string',
+        enum: ['user', 'admin'],
+      },
+    },
+  },
   "single option": {
     options: {
       email: {
@@ -41,6 +49,34 @@ const SCHEMAS = {
   },
 } as const;
 
+const ARGVS = {
+  "single argument": {
+    valid: ["--age 25"],
+    invalid: ["--age Bar"],
+    "not provided": [] as string[],
+  },
+  "single argument with enums": {
+    valid: ['--role user'],
+    invalid: ['--role bar'],
+    "not provided": [] as string[],
+  },
+  "single boolean option": {
+    valid: ["--help"],
+    invalid: ["--help=5"],
+    "not provided": [] as string[],
+  },
+  "single option": {
+    valid: ["--email alex@alex.com"],
+    invalid: ["--email alex"],
+    "not provided": [] as string[],
+  },
+  "single positional": {
+    valid: ["5"],
+    invalid: ["bar"],
+    "not provided": [] as string[],
+  },
+};
+
 const TEST_CASES = {
   "single argument": {
     valid: (schema: typeof SCHEMAS["single argument"], argv: string[]) => {
@@ -52,7 +88,7 @@ const TEST_CASES = {
           });
           it("should consider the argument valid", () => {
             const result = declarativeCliParser(schema, { argv });
-            expect(result.arguments!.age.valid).not.toBeUndefined();
+            expect(result.arguments!.age.valid).toBe(true);
           });
           it("should coerce the type", () => {
             const result = declarativeCliParser(schema, { argv });
@@ -96,6 +132,65 @@ const TEST_CASES = {
           const result = declarativeCliParser(schema, { argv });
           expect(result.arguments!.age.error).toStrictEqual(
             new Error("age: value not provided")
+          );
+        });
+      });
+    },
+  },
+  "single argument with enums": {
+    valid: (schema: typeof SCHEMAS["single argument with enums"], argv: string[]) => {
+      describe("argument provided", () => {
+        describe("correct type", () => {
+          it("should return the argument", () => {
+            const result = declarativeCliParser(schema, { argv });
+            expect(result.arguments!.role).not.toBeUndefined();
+          });
+          it("should consider the argument valid", () => {
+            const result = declarativeCliParser(schema, { argv });
+            expect(result.arguments!.role.valid).toBe(true);
+          });
+          it("should coerce the type", () => {
+            const result = declarativeCliParser(schema, { argv });
+            expect(result.arguments!.role.value).toBe("user");
+          });
+          it("should not return any errors for the property", () => {
+            const result = declarativeCliParser(schema, { argv });
+            expect(result.arguments!.role?.error).toBe(undefined);
+          });
+        });
+      });
+    },
+    invalid: (schema: typeof SCHEMAS["single argument with enums"], argv: string[]) => {
+      describe("incorrect type", () => {
+        it("should return that the argument is not valid", () => {
+          const result = declarativeCliParser(schema, { argv });
+          expect(result.arguments!.role.valid).toBe(false);
+        });
+        it("should return an error for the property", () => {
+          const result = declarativeCliParser(schema, { argv });
+          expect(result.arguments!.role?.error).toStrictEqual(
+            new Error("role: enum must be equal to one of the allowed values: user, admin")
+          );
+        });
+      });
+    },
+    "not provided": (
+      schema: typeof SCHEMAS["single argument with enums"],
+      argv: string[]
+    ) => {
+      describe("argument not provided", () => {
+        it("should return the argument", () => {
+          const result = declarativeCliParser(schema, { argv });
+          expect(result.arguments!.role).not.toBeUndefined();
+        });
+        it("the argument should not be valid", () => {
+          const result = declarativeCliParser(schema, { argv });
+          expect(result.arguments!.role.valid).toBe(false);
+        });
+        it("has an argument error", () => {
+          const result = declarativeCliParser(schema, { argv });
+          expect(result.arguments!.role.error).toStrictEqual(
+            new Error("role: value not provided")
           );
         });
       });
@@ -272,29 +367,6 @@ const TEST_CASES = {
   },
 };
 
-const ARGVS = {
-  "single argument": {
-    valid: ["--age 25"],
-    invalid: ["--age Bar"],
-    "not provided": [] as string[],
-  },
-  "single boolean option": {
-    valid: ["--help"],
-    invalid: ["--help=5"],
-    "not provided": [] as string[],
-  },
-  "single option": {
-    valid: ["--email alex@alex.com"],
-    invalid: ["--email alex"],
-    "not provided": [] as string[],
-  },
-  "single positional": {
-    valid: ["5"],
-    invalid: ["bar"],
-    "not provided": [] as string[],
-  },
-};
-
 const runTestScenarios = (keys: (keyof typeof SCHEMAS)[]) => {
   describe(keys.join(" & "), () => {
     describe("valid", () => {
@@ -331,12 +403,15 @@ const runTestScenarios = (keys: (keyof typeof SCHEMAS)[]) => {
 };
 
 runTestScenarios(["single argument"]);
+runTestScenarios(["single argument with enums"]);
 runTestScenarios(["single option"]);
 runTestScenarios(["single boolean option"]);
 runTestScenarios(["single positional"]);
 runTestScenarios(["single option", "single argument"]);
 runTestScenarios(["single boolean option", "single argument"]);
+runTestScenarios(["single boolean option", "single argument with enums"]);
 runTestScenarios(["single positional", "single option", "single argument"]);
+runTestScenarios(["single positional", "single option", "single argument with enums"]);
 runTestScenarios([
   "single positional",
   "single boolean option",
