@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.2](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.4.1...@cling/cling@0.4.2) (2021-07-17)
+
+
+### Bug Fixes
+
+* **cling:** Fix userland inferred types for enums ([ee0da6a](https://github.com/simonlovesyou/cling/commit/ee0da6a94d6b830d28833b3f1f78c6a8319e1b37))
+
+
+
+
+
 ## [0.4.1](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.4.0...@cling/cling@0.4.1) (2021-07-17)
 
 **Note:** Version bump only for package @cling/cling

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.2](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.5.1...@cling/parser@0.5.2) (2021-07-17)
+
+
+### Bug Fixes
+
+* **parser:** Fix inferred type for tuples ([32c11a4](https://github.com/simonlovesyou/cling/commit/32c11a45b281c458c0cf78c78fdae6c12a92e44d))
+* **parser:** Fix so that number enums can also be inferred ([a62e86e](https://github.com/simonlovesyou/cling/commit/a62e86ef818f969859451fb4680c61f8a9b0460c))
+
+
+
+
+
 ## 0.5.1 (2021-07-17)
 
 
