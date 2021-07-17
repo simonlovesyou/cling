@@ -30,6 +30,14 @@ const SCHEMAS = {
       },
     },
   },
+  "single argument with enums": {
+    arguments: {
+      exitCode: {
+        type: "integer",
+        enum: [0, 1],
+      },
+    },
+  },
   "single option": {
     options: {
       email: {
@@ -46,6 +54,29 @@ const SCHEMAS = {
     ],
   },
 } as const;
+
+const ARGVS = {
+  "single argument": {
+    valid: ["--age 25"],
+    invalid: ["--age Bar"],
+    "not provided": [] as string[],
+  },
+  "single argument with enums": {
+    valid: ["--exitCode 1"],
+    invalid: ["--exitCode 2"],
+    "not provided": [] as string[],
+  },
+  "single option": {
+    valid: ["--email alex@alex.com"],
+    invalid: ["--email alex"],
+    "not provided": [] as string[],
+  },
+  "single positional": {
+    valid: ["5"],
+    invalid: ["bar"],
+    "not provided": [] as string[],
+  },
+};
 
 const TEST_CASES = {
   "single argument": {
@@ -149,6 +180,58 @@ const TEST_CASES = {
       });
     },
   },
+  "single argument with enums": {
+    valid: (schema: typeof SCHEMAS["single argument with enums"], argv: string[]) => {
+      describe("argument provided", () => {
+        describe("correct type", () => {
+          it("should return the argument", () => {
+            const result = cling(schema, { argv });
+            expect(result.arguments!.exitCode).not.toBeUndefined();
+          });
+          it("should coerce the type", () => {
+            const result = cling(schema, { argv });
+            expect(result.arguments!.exitCode).toBe(1);
+          });
+          it("should not return any errors for the property", () => {
+            expect(() => cling(schema, { argv })).not.toThrow();
+          });
+        });
+      });
+    },
+    invalid: (schema: typeof SCHEMAS["single argument with enums"], argv: string[]) => {
+      describe("incorrect type", () => {
+        it("should exit the process with 1", () => {
+          cling(schema, { argv });
+          expect(exit).toHaveBeenCalledWith(1);
+        });
+        it("should log the error to stdout", () => {
+          const restoreConsole = mockConsole();
+          cling(schema, { argv });
+          expect(console.error).toHaveBeenCalledWith(
+            "exitCode: enum must be equal to one of the allowed values: 0, 1"
+          );
+          restoreConsole();
+        });
+      });
+    },
+    "not provided": (
+      schema: typeof SCHEMAS["single argument with enums"],
+      argv: string[]
+    ) => {
+      describe("argument not provided", () => {
+        it("should exit the process with 1", () => {
+          cling(schema, { argv });
+          expect(exit).toHaveBeenCalledWith(1);
+        });
+        it("should log the error to stdout", () => {
+          const restoreConsole = mockConsole();
+          cling(schema, { argv });
+          expect(console.error).toHaveBeenCalledWith("exitCode: value not provided");
+          restoreConsole();
+        });
+      });
+    },
+  },
   "single positional": {
     valid: (schema: typeof SCHEMAS["single positional"], argv: string[]) => {
       describe("positional provided", () => {
@@ -203,24 +286,6 @@ const TEST_CASES = {
   },
 };
 
-const ARGVS = {
-  "single argument": {
-    valid: ["--age 25"],
-    invalid: ["--age Bar"],
-    "not provided": [] as string[],
-  },
-  "single option": {
-    valid: ["--email alex@alex.com"],
-    invalid: ["--email alex"],
-    "not provided": [] as string[],
-  },
-  "single positional": {
-    valid: ["5"],
-    invalid: ["bar"],
-    "not provided": [] as string[],
-  },
-};
-
 const runTestScenarios = (keys: (keyof typeof SCHEMAS)[]) => {
   describe(keys.join(" & "), () => {
     describe("valid", () => {
@@ -257,6 +322,7 @@ const runTestScenarios = (keys: (keyof typeof SCHEMAS)[]) => {
 };
 
 runTestScenarios(["single argument"]);
+runTestScenarios(["single argument with enums"]);
 runTestScenarios(["single option"]);
 runTestScenarios(["single positional"]);
 
