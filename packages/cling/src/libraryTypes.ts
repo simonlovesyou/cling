@@ -2,6 +2,7 @@ import Schema, {
   Argument,
   Options,
   CommandSchema,
+  EnumableArgument
 } from "./types";
 
 declare type CoercedType<T> = T extends "string"
@@ -34,11 +35,13 @@ declare type CoercedTypeObject<T extends Argument> = T["type"] extends "array"
         type: "array";
       }
     >
-  : CoercedType<T[keyof T]>;
+  : T extends EnumableArgument<number | string> ? CoerceEnumType<T> : CoercedType<T[keyof T]>;
 
 declare type CoercedTupleOf<T extends readonly Argument[]> = {
     [Key in keyof T]: T[Key] extends Argument ? T[Key]['type'] : never
 };
+
+declare type CoerceEnumType<T extends EnumableArgument<number | string>> = T['enum'] extends readonly (number | string)[] ? T['enum'][number] : CoercedType<T[keyof T]>;
 
 declare type CoerceSchema<T extends Schema> = {
   [Key in keyof T]: Key extends "positionals"
