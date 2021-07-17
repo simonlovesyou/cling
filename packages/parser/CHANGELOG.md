@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.6.0](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.5.2...@cling/parser@0.6.0) (2021-07-17)
+
+
+### Features
+
+* **parser:** Export common types ([97cd10d](https://github.com/simonlovesyou/cling/commit/97cd10d4d43955324ee42c466e2749abe2af4bac))
+
+
+
+
+
 ## [0.5.2](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.5.1...@cling/parser@0.5.2) (2021-07-17)
 
 

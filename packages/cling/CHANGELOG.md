@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.4.2...@cling/cling@0.5.0) (2021-07-17)
+
+
+### Features
+
+* **cling:** Export common types ([ad3879b](https://github.com/simonlovesyou/cling/commit/ad3879bb561f190dadc96a507a5a528b9c4b77fc))
+
+
+
+
+
 ## [0.4.2](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.4.1...@cling/cling@0.4.2) (2021-07-17)
 
 
