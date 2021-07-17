@@ -2,7 +2,7 @@ import Schema, {
   Argument,
   Options,
   CommandSchema,
-  EnumableArgument
+  EnumableArgument,
 } from "./types";
 
 declare type CoercedType<T> = T extends "string"
