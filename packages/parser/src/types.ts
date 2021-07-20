@@ -51,8 +51,7 @@ export type Argument =
   | StringArgument;
 
 export interface CommandSchema {
-  // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
-  commands?: { [commandName: string]: Schema | undefined };
+  commands?: Record<string, Schema | undefined>;
 }
 
 export interface Options {
