@@ -1,8 +1,15 @@
 import Schema, {
   Argument,
-  Options,
+  ArrayArgument,
+  BaseArgument,
+  BooleanArgument,
   CommandSchema,
   EnumableArgument,
+  IntegerArgument,
+  NullArgument,
+  NumberArgument,
+  Options,
+  StringArgument,
 } from "./types";
 
 // expands object types recursively
@@ -108,5 +115,19 @@ declare function declarativeCliParser<T extends CommandSchema | Schema>(
       }
     : never
 >;
-export { Schema, Argument };
+
+export {
+  Argument,
+  ArrayArgument,
+  BaseArgument,
+  BooleanArgument,
+  CommandSchema,
+  EnumableArgument,
+  IntegerArgument,
+  NullArgument,
+  NumberArgument,
+  Schema,
+  StringArgument,
+};
+
 export default declarativeCliParser;

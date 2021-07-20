@@ -3,7 +3,7 @@ import Ajv, { ErrorObject } from "ajv";
 import { clone, head } from "ramda";
 import { JSONSchema7 } from "json-schema";
 import addFormats from "ajv-formats";
-import Schema, { Argument, Options, CommandSchema } from "./types";
+import Schema, { Argument, CommandSchema, Options } from "./types";
 
 const mapErrorObjectToError = (keyName: string, errorObject: ErrorObject) =>
   new Error(
@@ -275,7 +275,5 @@ function declarativeCliParser(
     };
   }, {});
 }
-
-export { Schema, Argument };
 
 export default declarativeCliParser;
