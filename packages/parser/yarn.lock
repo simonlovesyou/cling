@@ -311,10 +311,10 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
-"@cling/eslint-config@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@cling/eslint-config/-/eslint-config-1.4.1.tgz#e0b59c8f095554e8ff5d3ca8127d599a9df0da95"
-  integrity sha512-WlGhuiXYyLwUzGTbPloEjVJybb9gTM4W071A3fSTPKN6k7rnrG+ljtSE+yG7ONyZetRNQFwZTjfvwESj4vLAQg==
+"@cling/eslint-config@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@cling/eslint-config/-/eslint-config-1.5.0.tgz#5e8d861be88e5daf1316fa17e23b7a17d12b5390"
+  integrity sha512-nisKbj6b+mZIk+3LiVxrZWWyHrZWGDhmT3kWjLe9rtyYZK2rGCTjkSODIVPOiycVfwUXX22QYAEXzXQoa6AEQQ==
   dependencies:
     "@babel/eslint-parser" "^7.14.7"
     "@ridedott/eslint-plugin" "^1.6.211"
