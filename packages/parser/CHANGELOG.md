@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.4](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.6.3...@cling/parser@0.6.4) (2021-07-23)
+
+**Note:** Version bump only for package @cling/parser
+
+
+
+
+
 ## [0.6.3](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.6.2...@cling/parser@0.6.3) (2021-07-23)
 
 **Note:** Version bump only for package @cling/parser

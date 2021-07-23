@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.4.1](https://github.com/simonlovesyou/cling/compare/@cling/eslint-config@1.4.0...@cling/eslint-config@1.4.1) (2021-07-23)
+
+
+### Bug Fixes
+
+* **eslint-config:** Add missing prettier dependency ([39e8075](https://github.com/simonlovesyou/cling/commit/39e80750417377e17e927af3ff4661a52eb27036))
+
+
+
+
+
 # 1.4.0 (2021-07-23)
 
 
