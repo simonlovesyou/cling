@@ -1,4 +1,3 @@
-
 interface Schema {
   description?: string;
   positionals?: readonly Argument[];
@@ -7,7 +6,13 @@ interface Schema {
   commands?: undefined;
 }
 
-export type TypeName = "array" | "boolean" | "integer" | "null" | "number" | "string";
+export type TypeName =
+  | "array"
+  | "boolean"
+  | "integer"
+  | "null"
+  | "number"
+  | "string";
 
 export interface BaseArgument<TType extends TypeName> {
   type: TType;
@@ -28,13 +33,14 @@ export interface EnumableArgument<TEnumType extends number | string> {
   enum?: readonly TEnumType[];
 }
 
-export type StringArgument = BaseArgument<'string'> & EnumableArgument<string>;
+export type StringArgument = BaseArgument<"string"> & EnumableArgument<string>;
 
-export type NumberArgument = BaseArgument<'number'> & EnumableArgument<number>;
+export type NumberArgument = BaseArgument<"number"> & EnumableArgument<number>;
 
-export type IntegerArgument = BaseArgument<'integer'> & EnumableArgument<number>;
+export type IntegerArgument = BaseArgument<"integer"> &
+  EnumableArgument<number>;
 
-export type NullArgument = BaseArgument<'null'>;
+export type NullArgument = BaseArgument<"null">;
 
 export type BooleanArgument = BaseArgument<"boolean">;
 

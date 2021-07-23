@@ -6,8 +6,7 @@ import declarativeCliParser from ".";
 // eslint-disable-next-line @typescript-eslint/ban-types
 const mergeAllDeep = reduce(mergeDeepRight, {} as object);
 
-const mergeArrays = <T extends unknown[][]>(arrs: T) =>
-  arrs.flat();
+const mergeArrays = <T extends unknown[][]>(arrs: T) => arrs.flat();
 
 const SCHEMAS = {
   "single argument": {
@@ -20,8 +19,8 @@ const SCHEMAS = {
   "single argument with enums": {
     arguments: {
       role: {
-        type: 'string',
-        enum: ['user', 'admin'],
+        type: "string",
+        enum: ["user", "admin"],
       },
     },
   },
@@ -56,8 +55,8 @@ const ARGVS = {
     "not provided": [] as string[],
   },
   "single argument with enums": {
-    valid: ['--role user'],
-    invalid: ['--role bar'],
+    valid: ["--role user"],
+    invalid: ["--role bar"],
     "not provided": [] as string[],
   },
   "single boolean option": {
@@ -138,7 +137,10 @@ const TEST_CASES = {
     },
   },
   "single argument with enums": {
-    valid: (schema: typeof SCHEMAS["single argument with enums"], argv: string[]) => {
+    valid: (
+      schema: typeof SCHEMAS["single argument with enums"],
+      argv: string[]
+    ) => {
       describe("argument provided", () => {
         describe("correct type", () => {
           it("should return the argument", () => {
@@ -160,7 +162,10 @@ const TEST_CASES = {
         });
       });
     },
-    invalid: (schema: typeof SCHEMAS["single argument with enums"], argv: string[]) => {
+    invalid: (
+      schema: typeof SCHEMAS["single argument with enums"],
+      argv: string[]
+    ) => {
       describe("incorrect type", () => {
         it("should return that the argument is not valid", () => {
           const result = declarativeCliParser(schema, { argv });
@@ -169,7 +174,9 @@ const TEST_CASES = {
         it("should return an error for the property", () => {
           const result = declarativeCliParser(schema, { argv });
           expect(result.arguments!.role?.error).toStrictEqual(
-            new Error("role: enum must be equal to one of the allowed values: user, admin")
+            new Error(
+              "role: enum must be equal to one of the allowed values: user, admin"
+            )
           );
         });
       });
@@ -411,7 +418,11 @@ runTestScenarios(["single option", "single argument"]);
 runTestScenarios(["single boolean option", "single argument"]);
 runTestScenarios(["single boolean option", "single argument with enums"]);
 runTestScenarios(["single positional", "single option", "single argument"]);
-runTestScenarios(["single positional", "single option", "single argument with enums"]);
+runTestScenarios([
+  "single positional",
+  "single option",
+  "single argument with enums",
+]);
 runTestScenarios([
   "single positional",
   "single boolean option",

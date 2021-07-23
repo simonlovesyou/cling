@@ -112,15 +112,15 @@ interface CommandResults {
   commands: Record<string, SchemaResults>;
 }
 
-function declarativeCliParser (
+function declarativeCliParser(
   inputSchema: Schema,
   libraryOptions: Options
 ): SchemaResults;
-function declarativeCliParser (
+function declarativeCliParser(
   inputSchema: CommandSchema,
   libraryOptions: Options
 ): CommandResults;
-function declarativeCliParser (
+function declarativeCliParser(
   schema: CommandSchema | Schema,
   libraryOptions: Options = {}
 ): CommandResults | SchemaResults {
