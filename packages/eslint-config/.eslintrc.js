@@ -1,6 +1,6 @@
 module.exports = {
   extends: ["prettier"],
-  plugins: ["@typescript-eslint", "import", "unicorn", "@ridedott", "jest", "fp"],
+  plugins: ["@typescript-eslint", "prettier", "import", "unicorn", "@ridedott", "jest", "fp"],
   env: {
     jest: true,
     node: true,
@@ -21,6 +21,7 @@ module.exports = {
   },
   parser: "@typescript-eslint/parser",
   rules: {
+    "prettier/prettier": ["error"],
     // # [`eslint`](https://eslint.org/docs/rules/)
     // ## Possible errors
     // These rules relate to possible syntax or logic errors in JavaScript code:
