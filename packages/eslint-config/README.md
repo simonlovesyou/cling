@@ -274,7 +274,6 @@ These rules relate to style guidelines, and are therefore quite subjective:
 * Warns for any two overloads that could be unified into one by using a union or an optional/rest parameter [(`@typescript-eslint/unified-signatures`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/unified-signatures.md)
 // ## Extension Rules
 * Enforce consistent brace style for blocks  [(`@typescript-eslint/brace-style`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/brace-style.md)
-* Require or disallow trailing comma  [(`@typescript-eslint/comma-dangle`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/comma-dangle.md)
 * Enforces consistent spacing before and after commas  [(`@typescript-eslint/comma-spacing`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/comma-spacing.md)
 * Enforce default parameters to be last [(`@typescript-eslint/default-param-last`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/default-param-last.md)
 * enforce dot notation whenever possible 	💭[(`@typescript-eslint/dot-notation`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/dot-notation.md)
