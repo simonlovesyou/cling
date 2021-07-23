@@ -19,8 +19,7 @@ const exit = jest
   .spyOn(process, "exit")
   .mockImplementation(() => undefined as never);
 
-const mergeArrays = <T extends unknown[][]>(arrs: T) =>
-  arrs.flat();
+const mergeArrays = <T extends unknown[][]>(arrs: T) => arrs.flat();
 
 const SCHEMAS = {
   "single argument": {
@@ -158,7 +157,7 @@ const TEST_CASES = {
             const restoreConsole = mockConsole();
             cling(schema, { argv });
             expect(console.error).toHaveBeenCalledWith(
-              "email: format must match format \"email\""
+              'email: format must match format "email"'
             );
             restoreConsole();
           });
@@ -181,7 +180,10 @@ const TEST_CASES = {
     },
   },
   "single argument with enums": {
-    valid: (schema: typeof SCHEMAS["single argument with enums"], argv: string[]) => {
+    valid: (
+      schema: typeof SCHEMAS["single argument with enums"],
+      argv: string[]
+    ) => {
       describe("argument provided", () => {
         describe("correct type", () => {
           it("should return the argument", () => {
@@ -198,7 +200,10 @@ const TEST_CASES = {
         });
       });
     },
-    invalid: (schema: typeof SCHEMAS["single argument with enums"], argv: string[]) => {
+    invalid: (
+      schema: typeof SCHEMAS["single argument with enums"],
+      argv: string[]
+    ) => {
       describe("incorrect type", () => {
         it("should exit the process with 1", () => {
           cling(schema, { argv });
@@ -226,7 +231,9 @@ const TEST_CASES = {
         it("should log the error to stdout", () => {
           const restoreConsole = mockConsole();
           cling(schema, { argv });
-          expect(console.error).toHaveBeenCalledWith("exitCode: value not provided");
+          expect(console.error).toHaveBeenCalledWith(
+            "exitCode: value not provided"
+          );
           restoreConsole();
         });
       });
@@ -353,7 +360,9 @@ describe("commands with positional", () => {
       it(`commands.bar.positionals.value should be valid & ${Number(
         value
       )}`, () => {
-        expect(result.commands[command].positionals).toStrictEqual([Number(value)]);
+        expect(result.commands[command].positionals).toStrictEqual([
+          Number(value),
+        ]);
       });
     });
   });

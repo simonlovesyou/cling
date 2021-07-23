@@ -8,15 +8,16 @@ declare module "@cling/parser" {
     options?: Record<string, Argument>;
   }
 
-  export type ValueRepresentation<T = unknown> = 
-    {
-      valid: true;
-      value: T;
-    } | {
-    error: Error;
-    valid: false;
-    value: T;
-  };
+  export type ValueRepresentation<T = unknown> =
+    | {
+        error: Error;
+        valid: false;
+        value: T;
+      }
+    | {
+        valid: true;
+        value: T;
+      };
 
   export interface CommandSchema {
     commands: Record<string, Schema>;
@@ -53,7 +54,7 @@ declare module "@cling/parser" {
     commands?: undefined;
   }
 
-  function declarativeCliParser<T extends CommandSchema | Schema> (
+  function declarativeCliParser<T extends CommandSchema | Schema>(
     inputSchema: T,
     libraryOptions?: Options
   ): T extends Schema ? ArgumentResult : CommandSchema;

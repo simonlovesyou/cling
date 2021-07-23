@@ -2,7 +2,7 @@
 // eslint-disable-next-line import/named
 import parser, { ValueRepresentation } from "@cling/parser";
 import commandLineUsage from "command-line-usage";
-import { EXIT_FAILURE, EXIT_SUCCESS } from '@eropple/exit-codes';
+import { EXIT_FAILURE, EXIT_SUCCESS } from "@eropple/exit-codes";
 import { mapObjIndexed, assocPath, pipe } from "ramda";
 import Schema, { Options, CommandSchema } from "./types";
 import mapSchemaUsageToHelp from "./utils/mapSchemaToUsageHelp";
@@ -23,7 +23,7 @@ const addHelpOption = (schema: Readonly<Schema>): Schema =>
 const mergeTruthy =
   (objectValue: Record<string, unknown> | undefined) =>
   (object: Record<string, unknown>): Record<string, unknown> => ({
-    ...objectValue ? objectValue : {},
+    ...(objectValue ? objectValue : {}),
     ...object,
   });
 
@@ -39,22 +39,26 @@ const mapValueRepresentationToDeclaration = (
     }
   }, argument);
 };
-function cling (schema: Readonly<Schema>, libraryOptions: Readonly<Options>): SchemaResult;
-function cling (
+function cling(
+  schema: Readonly<Schema>,
+  libraryOptions: Readonly<Options>
+): SchemaResult;
+function cling(
   schema: Readonly<CommandSchema>,
   libraryOptions: Readonly<Options>
 ): CommandSchemaResults;
-function cling (
+function cling(
   schema: Readonly<CommandSchema | Schema>,
   libraryOptions: Readonly<Options>
 ): CommandSchemaResults | SchemaResult {
   if (schema.commands) {
-
     const commandSchemaResults: CommandSchemaResults = {
       commands: mapObjIndexed((command: Readonly<Schema>, commandName) => {
         return cling(command, {
           ...libraryOptions,
-          argv: libraryOptions.argv?.filter((argument: string) => argument !== commandName),
+          argv: libraryOptions.argv?.filter(
+            (argument: string) => argument !== commandName
+          ),
         });
       })(schema.commands),
     };

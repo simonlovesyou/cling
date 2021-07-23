@@ -20,14 +20,14 @@ declare type CoercedType<T> = T extends "string"
 declare type CoerceArrayType<
   T extends Argument & {
     type: "array";
-  },
+  }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 > = T["items"] extends readonly any[]
   ? CoercedTupleOf<T["items"]>
   : T["items"] extends Argument
   ? CoercedTypeObject<T["items"]>[]
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  : any[];
+  : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    any[];
 
 declare type CoercedTypeObject<T extends Argument> = T["type"] extends "array"
   ? CoerceArrayType<
@@ -35,13 +35,18 @@ declare type CoercedTypeObject<T extends Argument> = T["type"] extends "array"
         type: "array";
       }
     >
-  : T extends EnumableArgument<number | string> ? CoerceEnumType<T> : CoercedType<T[keyof T]>;
+  : T extends EnumableArgument<number | string>
+  ? CoerceEnumType<T>
+  : CoercedType<T[keyof T]>;
 
 declare type CoercedTupleOf<T extends readonly Argument[]> = {
-    [Key in keyof T]: T[Key] extends Argument ? T[Key]['type'] : never
+  [Key in keyof T]: T[Key] extends Argument ? T[Key]["type"] : never;
 };
 
-declare type CoerceEnumType<T extends EnumableArgument<number | string>> = T['enum'] extends readonly (number | string)[] ? T['enum'][number] : CoercedType<T[keyof T]>;
+declare type CoerceEnumType<T extends EnumableArgument<number | string>> =
+  T["enum"] extends readonly (number | string)[]
+    ? T["enum"][number]
+    : CoercedType<T[keyof T]>;
 
 declare type CoerceSchema<T extends Schema> = {
   [Key in keyof T]: Key extends "positionals"

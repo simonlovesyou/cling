@@ -84,9 +84,11 @@ describe("single argument", () => {
 
 describe("single positional", () => {
   const schemaFixture = testFixture({
-    positionals: [{
-      type: "string",
-    }],
+    positionals: [
+      {
+        type: "string",
+      },
+    ],
   } as const);
   it("should return the correct usage guide", () => {
     expect(mapSchemaUsageToHelp(schemaFixture.get(), "lol")).toStrictEqual([

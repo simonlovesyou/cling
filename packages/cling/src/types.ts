@@ -31,13 +31,14 @@ export interface EnumableArgument<TEnumType extends number | string> {
   enum?: readonly TEnumType[];
 }
 
-export type StringArgument = BaseArgument<'string'> & EnumableArgument<string>;
+export type StringArgument = BaseArgument<"string"> & EnumableArgument<string>;
 
-export type NumberArgument = BaseArgument<'number'> & EnumableArgument<number>;
+export type NumberArgument = BaseArgument<"number"> & EnumableArgument<number>;
 
-export type IntegerArgument = BaseArgument<'integer'> & EnumableArgument<number>;
+export type IntegerArgument = BaseArgument<"integer"> &
+  EnumableArgument<number>;
 
-export type NullArgument = BaseArgument<'null'>;
+export type NullArgument = BaseArgument<"null">;
 
 export type BooleanArgument = BaseArgument<"boolean">;
 
