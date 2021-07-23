@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.5](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.5.4...@cling/cling@0.5.5) (2021-07-23)
+
+
+### Bug Fixes
+
+* **cling:** Fix so that positional arguments are correctly presented in the help output ([9894742](https://github.com/simonlovesyou/cling/commit/98947423deafaa1ad0a52cd14f46a8cb01082f84))
+
+
+
+
+
 ## [0.5.4](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.5.3...@cling/cling@0.5.4) (2021-07-17)
 
 

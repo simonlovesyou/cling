@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.4.0 (2021-07-23)
+
+
+### Features
+
+* **eslint-config:** Add prettier ([5c12577](https://github.com/simonlovesyou/cling/commit/5c12577a95ad0c86fce5b85594fc61c22b7b02d4))
+
+
+
+
+
 ## 1.3.1 (2021-07-17)
 
 **Note:** Version bump only for package @cling/eslint-config
