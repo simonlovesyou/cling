@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.5.0 (2021-07-23)
+
+
+### Features
+
+* **eslint-config:** Remove @typescript-eslint/space-before-function-paren rule ([21f442a](https://github.com/simonlovesyou/cling/commit/21f442ab835a218d86ea0f5453fa2cc763d33a08))
+
+
+
+
+
 ## [1.4.1](https://github.com/simonlovesyou/cling/compare/@cling/eslint-config@1.4.0...@cling/eslint-config@1.4.1) (2021-07-23)
 
 

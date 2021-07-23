@@ -1,6 +1,6 @@
 {
   "name": "@cling/cling",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "Cling is a declarative argument parser",
   "main": "dist/index.js",
   "author": "Simon Johansson <simonljohansson92@gmail.com>",
@@ -24,7 +24,7 @@
     "prepublish": "rm -rf ./dist && yarn build"
   },
   "devDependencies": {
-    "@cling/eslint-config": "^1.4.1",
+    "@cling/eslint-config": "^1.5.0",
     "@tsconfig/node14": "^1.0.0",
     "@types/command-line-usage": "^5.0.2",
     "@types/dedent": "^0.7.0",
@@ -41,7 +41,7 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "@cling/parser": "^0.6.5",
+    "@cling/parser": "^0.6.6",
     "@eropple/exit-codes": "^1.0.0",
     "command-line-usage": "^6.1.1",
     "ramda": "^0.27.1"
