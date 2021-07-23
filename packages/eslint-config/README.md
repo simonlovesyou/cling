@@ -307,5 +307,4 @@ In some cases, ESLint provides a rule itself, but it doesn't support TypeScript 
 * Disallow async functions which have no await expression [(`@typescript-eslint/require-await`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/require-await.md)
 * Enforces consistent returning of awaited values [(`@typescript-eslint/return-await`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/return-await.md)
 * Require or disallow semicolons instead of ASI  [(`@typescript-eslint/semi`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/semi.md)
-* Enforces consistent spacing before function parenthesis  [(`@typescript-eslint/space-before-function-paren`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/space-before-function-paren.md)
 * This rule is aimed at ensuring there are spaces around infix operators. [(`@typescript-eslint/space-infix-ops`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/space-infix-ops.md)

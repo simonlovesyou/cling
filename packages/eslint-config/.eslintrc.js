@@ -336,7 +336,6 @@ module.exports = {
     "@typescript-eslint/require-await": ["error"], // Disallow async functions which have no await expression [(`@typescript-eslint/require-await`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/require-await.md)
     "@typescript-eslint/return-await": ["error"], // Enforces consistent returning of awaited values 💭[(`@typescript-eslint/return-await`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/return-await.md)
     "@typescript-eslint/semi": ["error"], // Require or disallow semicolons instead of ASI [(`@typescript-eslint/semi`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/semi.md)
-    "@typescript-eslint/space-before-function-paren": ["error"], // Enforces consistent spacing before function parenthesis [(`@typescript-eslint/space-before-function-paren`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/space-before-function-paren.md)
     "@typescript-eslint/space-infix-ops": ["error"], // This rule is aimed at ensuring there are spaces around infix operators. [(`@typescript-eslint/space-infix-ops`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/space-infix-ops.md)
     // ## [`eslint-plugin-fp`](https://github.com/jfmengels/eslint-plugin-fp)
     'fp/no-class': ['error'], // Forbid the use of class.
