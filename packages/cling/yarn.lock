@@ -331,10 +331,10 @@
     prettier "^2.3.2"
     typescript "^4.3.5"
 
-"@cling/parser@^0.6.5":
-  version "0.6.5"
-  resolved "https://registry.yarnpkg.com/@cling/parser/-/parser-0.6.5.tgz#40d576705bfdc1924ccbb4a7b4b783514ecf5615"
-  integrity sha512-Y1QkPfnrpgs0v3kn/A+w8T1homq+nCe0acyKS3R/7XjuFuMDKZi0XOtldpZjVu4/fems0YDNAgO7exUQAwiGWQ==
+"@cling/parser@^0.6.6":
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/@cling/parser/-/parser-0.6.6.tgz#3fdf97191d65b9fcf3d11e6d01ba750f19a162e6"
+  integrity sha512-McAZlckVQ3E/2Na129KmlHF3AmPk3hXy3nhW+quplnnhwzvVzESQs0U/uCJG8hZo7eN0GHTCqTCRI2GzTgF3vA==
   dependencies:
     ajv "^8.1.0"
     ajv-formats "^2.1.0"
