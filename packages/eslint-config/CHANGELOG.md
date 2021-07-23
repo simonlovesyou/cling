@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.6.0](https://github.com/simonlovesyou/cling/compare/@cling/eslint-config@1.5.0...@cling/eslint-config@1.6.0) (2021-07-23)
+
+
+### Features
+
+* **eslint-config:** Remove @typescript-eslint/no-extra-parens rule ([878a2c9](https://github.com/simonlovesyou/cling/commit/878a2c9230cad6fe7ac6e3d4972e66f8623a1e39))
+* **eslint-config:** Remove @typescript-eslint/no-extra-parens rule ([c7f2825](https://github.com/simonlovesyou/cling/commit/c7f2825e00a75f11fa4689121d24128f86f61849))
+
+
+
+
+
 # 1.5.0 (2021-07-23)
 
 
