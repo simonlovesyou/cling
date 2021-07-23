@@ -286,7 +286,6 @@ These rules relate to style guidelines, and are therefore quite subjective:
 * Disallow duplicate class members [(`@typescript-eslint/no-dupe-class-members`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-dupe-class-members.md)
 * Disallow duplicate imports [(`@typescript-eslint/no-duplicate-imports`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-duplicate-imports.md)
 * Disallow empty functions  [(`@typescript-eslint/no-empty-function`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-empty-function.md)
-* Disallow unnecessary parentheses  [(`@typescript-eslint/no-extra-parens`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-extra-parens.md)
 * Disallow unnecessary semicolons [(`@typescript-eslint/no-extra-semi`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-extra-semi.md)
 * Disallow the use of eval()-like methods  [(`@typescript-eslint/no-implied-eval`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-implied-eval.md)
 * Disallow this keywords outside of classes or class-like objects [(`@typescript-eslint/no-invalid-this`)](https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-invalid-this.md)
