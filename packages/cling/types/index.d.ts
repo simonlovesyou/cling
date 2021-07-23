@@ -1,13 +1,6 @@
+import { CommandSchema, Schema } from "@cling/parser";
+
 declare module "@cling/parser" {
-  type TypeName = "boolean" | "integer" | "null" | "number" | "string";
-
-  interface Schema {
-    description?: string;
-    positionals?: readonly Argument[];
-    arguments?: Record<string, Argument>;
-    options?: Record<string, Argument>;
-  }
-
   export type ValueRepresentation<T = unknown> =
     | {
         error: Error;
@@ -19,34 +12,6 @@ declare module "@cling/parser" {
         value: T;
       };
 
-  export interface CommandSchema {
-    commands: Record<string, Schema>;
-  }
-
-  interface ArrayArgument {
-    alias?: string;
-    description?: string;
-    items?: Argument | readonly Argument[];
-    maxItems?: number;
-    minItems?: number;
-    type: "array";
-    uniqueItems?: boolean;
-  }
-
-  interface RegularArgument {
-    alias?: string;
-    description?: string;
-    type: TypeName;
-  }
-
-  export type Argument = ArrayArgument | RegularArgument;
-
-  export interface Options {
-    positionals?: boolean;
-    argv?: string[];
-    coerceTypes?: boolean;
-  }
-
   export interface ArgumentResult {
     arguments?: Record<string, ValueRepresentation>;
     options?: Record<string, ValueRepresentation<unknown | undefined>>;
@@ -54,10 +19,18 @@ declare module "@cling/parser" {
     commands?: undefined;
   }
 
-  function declarativeCliParser<T extends CommandSchema | Schema>(
+  export interface CommandResult {
+    commands: Record<string, ArgumentResult>;
+  }
+
+  export interface Options {
+    positionals?: boolean;
+    argv?: string[];
+    coerceTypes?: boolean;
+  }
+
+  export function declarativeCliParser<T extends CommandSchema | Schema>(
     inputSchema: T,
     libraryOptions?: Options
-  ): T extends Schema ? ArgumentResult : CommandSchema;
-
-  export default declarativeCliParser;
+  ): T extends Schema ? ArgumentResult : CommandResult;
 }
