@@ -1,5 +1,4 @@
 interface Schema {
-  description?: string;
   positionals?: readonly Argument[];
   arguments?: Record<string, Argument>;
   options?: Record<string, Argument>;
@@ -16,7 +15,6 @@ export type TypeName =
 
 export interface BaseArgument<TType extends TypeName> {
   type: TType;
-  description?: string;
   alias?: string;
   format?: string;
   name?: string;
@@ -53,8 +51,7 @@ export type Argument =
   | StringArgument;
 
 export interface CommandSchema {
-  // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
-  commands?: { [commandName: string]: Schema | undefined };
+  commands?: Record<string, Schema | undefined>;
 }
 
 export interface Options {

@@ -3,14 +3,14 @@ import Ajv, { ErrorObject } from "ajv";
 import { clone, head } from "ramda";
 import { JSONSchema7 } from "json-schema";
 import addFormats from "ajv-formats";
-import Schema, { Argument, Options, CommandSchema } from "./types";
+import Schema, { Argument, CommandSchema, Options } from "./types";
 
 const mapErrorObjectToError = (keyName: string, errorObject: ErrorObject) =>
   new Error(
     `${keyName}: ${errorObject.keyword} ${errorObject.message ?? ""}`.trim()
   );
 
-interface ValueRepresentation<TValue = unknown> {
+interface ValidatedValue<TValue = unknown> {
   valid: boolean;
   errors: ErrorObject[];
   value: TValue;
@@ -18,7 +18,7 @@ interface ValueRepresentation<TValue = unknown> {
 
 const validateType =
   <TValue>(schema: JSONSchema7) =>
-  (value: TValue): ValueRepresentation<TValue> => {
+  (value: TValue): ValidatedValue<TValue> => {
     const mutateableInstance = { value: clone(value) };
     const ajv = new Ajv({ coerceTypes: true, allErrors: true });
     addFormats(ajv);
@@ -53,11 +53,11 @@ const validateType =
   };
 
 interface ParsedArguments {
-  options?: Record<string, ValueRepresentation>;
-  arguments?: Record<string, ValueRepresentation>;
-  _positionals_?: (ValueRepresentation | undefined)[];
+  options?: Record<string, ValidatedValue>;
+  arguments?: Record<string, ValidatedValue>;
+  _positionals_?: (ValidatedValue | undefined)[];
   _all?: {
-    _positionals_?: (ValueRepresentation | undefined)[];
+    _positionals_?: (ValidatedValue | undefined)[];
   };
 }
 
@@ -78,7 +78,7 @@ const validateItemPosition = (
   };
 };
 
-type ResultValue<TValue = unknown> =
+type Value<TValue = unknown> =
   | {
       valid: false;
       value: TValue;
@@ -92,8 +92,8 @@ type ResultValue<TValue = unknown> =
 
 const formatValue = <TValue>(
   keyName: string,
-  argument: ValueRepresentation<TValue>
-): ResultValue<TValue> =>
+  argument: ValidatedValue<TValue>
+): Value<TValue> =>
   argument.valid
     ? { valid: true as const, value: argument.value }
     : {
@@ -103,9 +103,9 @@ const formatValue = <TValue>(
       };
 
 interface SchemaResults {
-  arguments?: Record<string, ResultValue>;
-  options?: Record<string, ResultValue>;
-  positionals?: ResultValue<readonly unknown[]>;
+  arguments?: Record<string, Value>;
+  options?: Record<string, Value>;
+  positionals?: Value<readonly unknown[]>;
 }
 
 interface CommandResults {
@@ -196,7 +196,7 @@ function declarativeCliParser(
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         [key]: argumentSchema.positionals!.reduce(
           (
-            accumulator_: ResultValue<readonly unknown[]>,
+            accumulator_: Value<readonly unknown[]>,
             value: Argument,
             index: number
           ) => {
@@ -275,7 +275,5 @@ function declarativeCliParser(
     };
   }, {});
 }
-
-export { Schema, Argument };
 
 export default declarativeCliParser;
