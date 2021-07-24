@@ -1,6 +1,6 @@
 {
   "name": "@cling/cling",
-  "version": "0.5.10",
+  "version": "0.5.11",
   "description": "Cling is a declarative argument parser",
   "main": "dist/index.js",
   "author": "Simon Johansson <simonljohansson92@gmail.com>",
