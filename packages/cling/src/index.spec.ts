@@ -397,12 +397,16 @@ describe("schema without --help argument", () => {
     expect(stripAnsi(mockCalls[0][0] as string)).toStrictEqual(dedent`
     test
 
-      Usage: test [--bar | -b]  <integer> <integer> 
+    Usage: test [--bar | -b] <integer> <integer>
 
+  Positionals
 
-    Arguments
+    --integer integer
+    --integer integer
 
-      -b, --bar string   Foo bar
+  Arguments
+
+    -b, --bar string   Foo bar
     `);
   });
 });

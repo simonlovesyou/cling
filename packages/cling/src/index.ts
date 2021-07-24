@@ -3,7 +3,7 @@
 import parser, { ValueRepresentation } from "@cling/parser";
 import commandLineUsage from "command-line-usage";
 import { EXIT_FAILURE, EXIT_SUCCESS } from "@eropple/exit-codes";
-import { mapObjIndexed, assocPath, pipe } from "ramda";
+import { mapObjIndexed, assocPath, pipe, trim, split, map, join } from "ramda";
 import Schema, { Options, CommandSchema } from "./types";
 import mapSchemaUsageToHelp from "./utils/mapSchemaToUsageHelp";
 
@@ -16,6 +16,15 @@ interface SchemaResult {
 interface CommandSchemaResults {
   commands: Record<string, SchemaResult>;
 }
+
+const formatHelpMessage = (helpMessage: string): string => {
+  return pipe(
+    trim,
+    split("\n"),
+    map((line) => line.trimEnd()),
+    join("\n")
+  )(helpMessage);
+};
 
 const addHelpOption = (schema: Readonly<Schema>): Schema =>
   assocPath(["options", "help"], { alias: "h", type: "boolean" }, schema);
@@ -71,9 +80,15 @@ function cling(
 
   if (parsedArguments.options?.help?.value === true) {
     console.log(
-      commandLineUsage(
-        mapSchemaUsageToHelp(actualSchema, "test") as commandLineUsage.Section[]
-      ).trim()
+      pipe(
+        () =>
+          mapSchemaUsageToHelp(
+            actualSchema,
+            "test"
+          ) as commandLineUsage.Section[],
+        commandLineUsage,
+        formatHelpMessage
+      )()
     );
     return process.exit(EXIT_SUCCESS);
   }
