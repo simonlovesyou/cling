@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0](https://github.com/simonlovesyou/cling/compare/@cling/utils@0.0.35...@cling/utils@0.1.0) (2021-07-25)
+
+
+### Features
+
+* **utils:** Add function for removing extraneous json schema properties ([#18](https://github.com/simonlovesyou/cling/issues/18)) ([9ce47b8](https://github.com/simonlovesyou/cling/commit/9ce47b8ca7d2d28884d7908fe66b978dd516f485))
+
+
+
+
+
 ## [0.0.35](https://github.com/simonlovesyou/cling/compare/@cling/utils@0.0.34...@cling/utils@0.0.35) (2021-07-25)
 
 **Note:** Version bump only for package @cling/utils
