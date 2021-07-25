@@ -16,11 +16,23 @@ interface ValidatedValue<TValue = unknown> {
   value: TValue;
 }
 
+const COMMON_KEYS = ["type", "description", "format", "enum", "items"] as const;
+
+/**
+ * Utility function to convert a cling compatible Argument to a compatible JSON Schema
+ */
+const convertArgumentToJSONSchema = (
+  argument: Argument | (Argument & Record<string, unknown>)
+): JSONSchema7 => {
+  return pick(COMMON_KEYS, argument);
+};
+
 const validateType =
-  <TValue>(schema: JSONSchema7) =>
+  <TValue>(argument: Argument) =>
   (value: TValue): ValidatedValue<TValue> => {
     const mutateableInstance = { value: clone(value) };
     const ajv = new Ajv({ coerceTypes: true, allErrors: true });
+    const schema = convertArgumentToJSONSchema(argument);
     addFormats(ajv);
     const validate = ajv.compile({
       type: "object",
@@ -62,14 +74,16 @@ interface ParsedArguments {
 }
 
 const validateItemPosition = (
-  schemas: JSONSchema7 | readonly JSONSchema7[]
+  argumentSchemas: Argument | readonly Argument[]
 ) => {
   // eslint-disable-next-line fp/no-let
   let currentPosition = 0;
   return (value: unknown) => {
     const schema = (
-      Array.isArray(schemas) ? schemas[currentPosition] : schemas
-    ) as JSONSchema7;
+      Array.isArray(argumentSchemas)
+        ? argumentSchemas[currentPosition]
+        : argumentSchemas
+    ) as Argument;
 
     const validatedType = validateType(schema)(value);
     // eslint-disable-next-line fp/no-mutation
@@ -158,21 +172,19 @@ function declarativeCliParser(
       name: "_positionals_",
       defaultOption: true,
       multiple: true,
-      type: validateItemPosition(
-        positionalDefinitions as unknown as JSONSchema7
-      ),
+      type: validateItemPosition(positionalDefinitions),
     },
     ...Object.entries(options ?? {}).map(([optionName, option]) => ({
       name: optionName,
       alias: option.alias,
       group: "options",
-      type: validateType(option as unknown as JSONSchema7),
+      type: validateType(option),
     })),
     ...Object.entries(arguments_ ?? {}).map(([argumentName, argument]) => ({
       name: argumentName,
       alias: argument.alias,
       group: "arguments",
-      type: validateType(argument as unknown as JSONSchema7),
+      type: validateType(argument),
     })),
   ].filter((definition) => definition) as OptionDefinition[];
 
@@ -276,15 +288,6 @@ function declarativeCliParser(
   }, {});
 }
 
-const COMMON_KEYS = ["type", "description", "format", "enum", "items"] as const;
-
-/**
- * Utility function to convert a cling compatible Argument to a compatible JSON Schema
- */
-export const convertArgumentToJSONSchema = (
-  argument: Argument & Record<string, unknown>
-): JSONSchema7 => {
-  return pick(COMMON_KEYS, argument);
-};
+export { convertArgumentToJSONSchema };
 
 export default declarativeCliParser;
