@@ -1,5 +1,5 @@
-import { convertJSONSchemaToArgument } from ".";
 import { JSONSchema7 } from "json-schema";
+import { convertJSONSchemaToArgument } from ".";
 
 describe("convertJSONSchemaToArgument", () => {
   describe("when there's multiple types", () => {
@@ -7,52 +7,56 @@ describe("convertJSONSchemaToArgument", () => {
       type: ["integer", "number"],
     };
     it("should throw", () => {
-      expect(() => convertJSONSchemaToArgument(schema)).toThrowError("Cannot convert JSON Schema to cling Argument with multiple types");
+      expect(() => convertJSONSchemaToArgument(schema)).toThrowError(
+        "Cannot convert JSON Schema to cling Argument with multiple types"
+      );
     });
   });
   describe("when there's a single type", () => {
     const schema: JSONSchema7 = {
       type: "number",
-      description: "foo bar"
+      description: "foo bar",
     };
     it("should not throw", () => {
-      expect(() => convertJSONSchemaToArgument(schema)).not.toThrowError("Cannot convert JSON Schema to cling Argument with multiple types");
+      expect(() => convertJSONSchemaToArgument(schema)).not.toThrowError(
+        "Cannot convert JSON Schema to cling Argument with multiple types"
+      );
     });
-    it('should return the expected corresponding argument', () => {
+    it("should return the expected corresponding argument", () => {
       expect(convertJSONSchemaToArgument(schema)).toStrictEqual({
-        type: 'number',
-        description: 'foo bar'
+        type: "number",
+        description: "foo bar",
       });
     });
-    describe('array type', () => {
+    describe("array type", () => {
       const arraySchema: JSONSchema7 = {
         type: "array",
         items: {
-          type: 'string'
-        }
+          type: "string",
+        },
       };
-      it('should return the expected corresponding array argument', () => {
+      it("should return the expected corresponding array argument", () => {
         expect(convertJSONSchemaToArgument(arraySchema)).toStrictEqual({
-          type: 'array',
+          type: "array",
           items: {
-            type: 'string'
-          }
+            type: "string",
+          },
         });
       });
-    })
-    describe('string type', () => {
-      describe('enum property', () => {
+    });
+    describe("string type", () => {
+      describe("enum property", () => {
         const stringSchema: JSONSchema7 = {
           type: "string",
-          enum: ['lol']
+          enum: ["lol"],
         };
-        it('should return the expected corresponding array argument', () => {
+        it("should return the expected corresponding array argument", () => {
           expect(convertJSONSchemaToArgument(stringSchema)).toStrictEqual({
-            type: 'string',
-            enum: ['lol']
+            type: "string",
+            enum: ["lol"],
           });
         });
-      })
-    })
+      });
+    });
   });
 });
