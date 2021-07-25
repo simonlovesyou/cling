@@ -44,3 +44,9 @@ export const convertJSONSchemaToArgument = (
     convertBaseArgumentProperties(dereferencedSchema);
   return argument;
 };
+
+export const convertArgumentToJSONSchema = (
+  argument: Argument
+): JSONSchema7 => {
+  return pick(COMMON_KEYS, argument)
+}
