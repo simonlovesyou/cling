@@ -1,6 +1,6 @@
 import { OptionList } from "command-line-usage";
 import { append, identity, pipe } from "ramda";
-import Schema, { Argument } from "../types";
+import { Argument, Schema } from "../types";
 
 interface Header {
   header: string;

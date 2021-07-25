@@ -1,4 +1,45 @@
-interface Schema {
+import {
+  ArrayArgument as ParserArrayArgument,
+  BooleanArgument as ParserBooleanArgument,
+  CommandSchema as ParserCommandSchema,
+  IntegerArgument as ParserIntegerArgument,
+  EnumableArgument as ParserEnumableArgument,
+  NullArgument as ParserNullArgument,
+  NumberArgument as ParserNumberArgument,
+  Schema as ParserSchema,
+  StringArgument as ParserStringArgument,
+} from "@cling/parser";
+
+export type TypeName = "boolean" | "integer" | "null" | "number" | "string";
+
+export interface MetaProperties {
+  description?: string;
+}
+
+export type ArrayArgument = MetaProperties & ParserArrayArgument;
+
+export type StringArgument = MetaProperties & ParserStringArgument;
+
+export type NumberArgument = MetaProperties & ParserNumberArgument;
+
+export type IntegerArgument = MetaProperties & ParserIntegerArgument;
+
+export type NullArgument = MetaProperties & ParserNullArgument;
+
+export type BooleanArgument = MetaProperties & ParserBooleanArgument;
+
+export type EnumableArgument<TEnumType extends number | string> =
+  MetaProperties & ParserEnumableArgument<TEnumType>;
+
+export type Argument =
+  | ArrayArgument
+  | BooleanArgument
+  | IntegerArgument
+  | NullArgument
+  | NumberArgument
+  | StringArgument;
+
+export interface Schema extends ParserSchema {
   /** Description of the CLI */
   description?: string;
   /** Positional arguments. Needs to be provided in order */
@@ -10,48 +51,10 @@ interface Schema {
   commands?: undefined;
 }
 
-export type TypeName = "boolean" | "integer" | "null" | "number" | "string";
-
-export interface BaseArgument<TType extends TypeName | "array"> {
-  type: TType;
+export interface CommandSchema extends ParserCommandSchema {
   description?: string;
-  alias?: string;
-  format?: string;
-  name?: string;
-}
-
-export interface ArrayArgument extends BaseArgument<"array"> {
-  items?: Argument | readonly Argument[];
-  minItems?: number;
-  maxItems?: number;
-  uniqueItems?: boolean;
-}
-
-export interface EnumableArgument<TEnumType extends number | string> {
-  enum?: readonly TEnumType[];
-}
-
-export type StringArgument = BaseArgument<"string"> & EnumableArgument<string>;
-
-export type NumberArgument = BaseArgument<"number"> & EnumableArgument<number>;
-
-export type IntegerArgument = BaseArgument<"integer"> &
-  EnumableArgument<number>;
-
-export type NullArgument = BaseArgument<"null">;
-
-export type BooleanArgument = BaseArgument<"boolean">;
-
-export type Argument =
-  | ArrayArgument
-  | BooleanArgument
-  | IntegerArgument
-  | NullArgument
-  | NumberArgument
-  | StringArgument;
-
-export interface CommandSchema {
   commands?: Record<string, Schema>;
+  options?: Record<string, Argument>;
 }
 
 export interface Options {
@@ -59,5 +62,3 @@ export interface Options {
   argv?: string[];
   coerceTypes?: boolean;
 }
-
-export default Schema;

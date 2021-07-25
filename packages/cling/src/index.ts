@@ -1,11 +1,19 @@
 #!/usr/bin/env node
 // eslint-disable-next-line import/named
-import parser, { ValueRepresentation } from "@cling/parser";
+import clingParser, {
+  // eslint-disable-next-line import/named
+  declarativeCliParser,
+  // eslint-disable-next-line import/named
+  ValueRepresentation,
+} from "@cling/parser";
 import commandLineUsage from "command-line-usage";
 import { EXIT_FAILURE, EXIT_SUCCESS } from "@eropple/exit-codes";
 import { mapObjIndexed, assocPath, pipe, trim, split, map, join } from "ramda";
-import Schema, { Options, CommandSchema } from "./types";
+import { Options, Schema, CommandSchema } from "./types";
 import mapSchemaUsageToHelp from "./utils/mapSchemaToUsageHelp";
+
+// Hack to override the native function signature of @cling/parser
+const parser = clingParser as typeof declarativeCliParser;
 
 interface SchemaResult {
   options?: Record<string, unknown>;

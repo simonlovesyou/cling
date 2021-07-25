@@ -1,8 +1,9 @@
-import Schema, {
+import {
   Argument,
-  Options,
   CommandSchema,
   EnumableArgument,
+  Options,
+  Schema,
 } from "./types";
 
 declare type CoercedType<T> = T extends "string"
