@@ -1,21 +1,11 @@
 import { JSONSchema7 } from "json-schema";
-import type {
-  Argument,
-} from "@cling/parser/dist/types";
+import type { Argument } from "@cling/parser/dist/types";
 import deref from "json-schema-deref-sync";
 import { pick } from "ramda";
 
-const COMMON_KEYS = [
-  "type",
-  "description",
-  "format",
-  "enum",
-  "items",
-] as const;
+const COMMON_KEYS = ["type", "description", "format", "enum", "items"] as const;
 
-const convertBaseArgumentProperties = (
-  jsonSchema: JSONSchema7
-): Argument => {
+const convertBaseArgumentProperties = (jsonSchema: JSONSchema7): Argument => {
   if (Array.isArray(jsonSchema.type)) {
     throw new TypeError(
       "Cannot convert JSON Schema to cling Argument with multiple types"
@@ -40,13 +30,12 @@ export const convertJSONSchemaToArgument = (
       "Cannot convert a JSON schema with missing type to cling argument"
     );
   }
-  const argument =
-    convertBaseArgumentProperties(dereferencedSchema);
+  const argument = convertBaseArgumentProperties(dereferencedSchema);
   return argument;
 };
 
 export const convertArgumentToJSONSchema = (
   argument: Argument
 ): JSONSchema7 => {
-  return pick(COMMON_KEYS, argument)
-}
+  return pick(COMMON_KEYS, argument);
+};
