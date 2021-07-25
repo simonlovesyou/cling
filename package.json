@@ -7,6 +7,9 @@
   "author": "simonlovesyou <simonljohansson92@gmail.com>",
   "license": "MIT",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "bootstrap": "yarn lerna exec yarn install",
     "publish": "yarn lerna publish --conventional-commits",
