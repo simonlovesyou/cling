@@ -1,55 +1,66 @@
-import { JSONSchema7 } from "json-schema";
-import type { Argument, BaseArgument, TypeName } from "@cling/parser/dist/types";
+import { JSONSchema7, JSONSchema7TypeName } from "json-schema";
+import type {
+  Argument,
+  BaseArgument,
+  TypeName,
+} from "@cling/parser/dist/types";
 import deref from "json-schema-deref-sync";
-import { pick, merge } from 'ramda'
-import {Overwrite, Required} from 'utility-types'
+import { pick, equals, anyPass } from "ramda";
+import { Required, Overwrite } from "utility-types";
 
-type RequiredProp <TObject extends Record<any, any>, TProp extends string> = {
-  [Prop in keyof TObject]: Prop extends TProp ? NonNullable<TObject[Prop]> : TObject[Prop]
-}
-
-type Lol = RequiredProp<{
-  lol?: string
-}, 'lol'>
-
-const convertBaseArgumentProperties = (jsonSchema: JSONSchema7): BaseArgument<any> => {
+const isEnumableSchema = (
+  jsonSchema: Required<JSONSchema7, "type">
+): boolean => {
   if (Array.isArray(jsonSchema.type)) {
-    throw new Error(
+    throw new TypeError(
+      "Cannot convert JSON Schema to cling Argument with multiple types"
+    );
+  }
+  const type = jsonSchema.type;
+  return anyPass([equals("number"), equals("integer"), equals("string")])(type);
+};
+
+const convertBaseArgumentProperties = <TTypeName extends TypeName>(
+  jsonSchema: JSONSchema7
+): BaseArgument<TTypeName> => {
+  if (Array.isArray(jsonSchema.type)) {
+    throw new TypeError(
       "Cannot convert JSON Schema to cling Argument with multiple types"
     );
   }
   if (!jsonSchema.type) {
     throw new Error("Cannot convert a JSON Schema without a type");
   }
-  if (jsonSchema.type === 'object') {
+  if (jsonSchema.type === "object") {
     throw new Error("Cannot convert a JSON Schema with an `object` type");
   }
 
-  const commonKeys = ['type', 'description', 'format'] as const
+  const validatedSchema = jsonSchema as Overwrite<
+    JSONSchema7,
+    { type: JSONSchema7TypeName }
+  >;
 
-  const validatedSchema = jsonSchema as Required<JSONSchema7, 'type'>
+  const commonKeys: string[] = [
+    "type",
+    "description",
+    "format",
+    isEnumableSchema(validatedSchema) ? "enum" : "",
+    validatedSchema.type === "array" ? "items" : "",
+  ].filter((key) => key);
 
-  return pick(commonKeys, validatedSchema)
-}
-
+  return pick(commonKeys, jsonSchema) as BaseArgument<TTypeName>;
+};
+// eslint-disable-next-line import/prefer-default-export
 export const convertJSONSchemaToArgument = (
   jsonSchema: JSONSchema7
 ): Argument => {
   const dereferencedSchema = deref(jsonSchema);
-  const baseArgument = convertBaseArgumentProperties(dereferencedSchema)
-  /* "Enumable" types */
-  if(jsonSchema.type! === 'string') {
-    return merge(baseArgument, pick(['enum'], jsonSchema))
+  if (jsonSchema.type === undefined) {
+    throw new Error(
+      "Cannot convert a JSON schema with missing type to cling argument"
+    );
   }
-  if(jsonSchema.type! === 'number') {
-    return merge(baseArgument, pick(['enum'], jsonSchema))
-  }
-  if(jsonSchema.type! === 'integer') {
-    return merge(baseArgument, pick(['enum'], jsonSchema))
-  }
-  /* Arrays */
-  if(jsonSchema.type! === 'array') {
-    return merge(baseArgument, pick(['items'], jsonSchema))
-  }
-  return baseArgument
+  const baseArgument =
+    convertBaseArgumentProperties<"string">(dereferencedSchema);
+  return baseArgument;
 };
