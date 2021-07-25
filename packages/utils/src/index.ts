@@ -21,6 +21,9 @@ const convertBaseArgumentProperties = (jsonSchema: JSONSchema7): Argument => {
   return pick(COMMON_KEYS, jsonSchema) as Argument;
 };
 
+/**
+ * Utility function to convert a compatible JSON Schema to a cling compatible Argument
+ */
 export const convertJSONSchemaToArgument = (
   jsonSchema: JSONSchema7
 ): Argument => {
@@ -34,6 +37,9 @@ export const convertJSONSchemaToArgument = (
   return argument;
 };
 
+/**
+ * Utility function to convert a cling compatible Argument to a compatible JSON Schema
+ */
 export const convertArgumentToJSONSchema = (
   argument: Argument
 ): JSONSchema7 => {
