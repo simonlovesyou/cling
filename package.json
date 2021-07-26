@@ -13,8 +13,8 @@
   "scripts": {
     "publish": "yarn lerna publish --conventional-commits",
     "build": "yarn lerna run build",
-    "test": "yarn lerna run test",
-    "lint": "yarn lerna run lint"
+    "test": "yarn workspaces run test",
+    "lint": "yarn workspaces run lint"
   },
   "devDependencies": {
     "lerna": "^4.0.0"
