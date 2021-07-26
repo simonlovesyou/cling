@@ -13,7 +13,10 @@
   },
   "description": "ESLint configuration for @cling related packages",
   "main": ".eslintrc.js",
-  "scripts": {},
+  "scripts": {
+    "lint": "(:)",
+    "test": "(:);"
+  },
   "author": "Simon Johansson <simonljohansson92@gmail.com>",
   "license": "MIT",
   "dependencies": {
