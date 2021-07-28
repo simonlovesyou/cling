@@ -8,7 +8,10 @@
   "license": "MIT",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/parser",
+    "packages/utils",
+    "packages/eslint-config",
+    "packages/cling"
   ],
   "scripts": {
     "publish": "yarn lerna publish --conventional-commits",
