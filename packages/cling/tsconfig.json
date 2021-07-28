@@ -4,8 +4,8 @@
     "moduleResolution": "node",
     "lib": ["ES2020"],
     "allowSyntheticDefaultImports": true,
-    "typeRoots": ["node_modules/@types", "./types"],
-    "rootDir": ".",
+    "typeRoots": ["node_modules/@types", "../../node_modules/@types", "./types"],
+    "rootDir": "src",
     "baseUrl": "."
   },
   "include": ["src/**/*", "examples/**/*", "types/*"]
