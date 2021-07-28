@@ -5,6 +5,7 @@
     "lib": ["ES2020"],
     "allowSyntheticDefaultImports": true,
     "typeRoots": ["node_modules/@types", "./types"],
+    "rootDir": ".",
     "baseUrl": "."
   },
   "include": ["src/**/*", "examples/**/*", "types/*"]
