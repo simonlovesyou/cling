@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "publish": "yarn lerna publish --conventional-commits",
-    "build": "yarn lerna run build",
+    "build": "yarn workspaces run build",
     "test": "yarn workspaces run test",
     "lint": "yarn workspaces run lint"
   },
