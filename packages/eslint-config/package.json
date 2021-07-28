@@ -15,7 +15,8 @@
   "main": ".eslintrc.js",
   "scripts": {
     "lint": "(:)",
-    "test": "(:);"
+    "test": "(:)",
+    "build": "(:)"
   },
   "author": "Simon Johansson <simonljohansson92@gmail.com>",
   "license": "MIT",
