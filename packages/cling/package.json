@@ -29,6 +29,7 @@
     "@types/command-line-usage": "^5.0.2",
     "@types/dedent": "^0.7.0",
     "@types/jest": "^26.0.23",
+    "@types/node": "^16.4.6",
     "@types/ramda": "^0.27.40",
     "@types/randomstring": "^1.1.6",
     "dedent": "^0.7.0",
