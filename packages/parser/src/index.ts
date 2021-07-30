@@ -1,6 +1,6 @@
 import commandLineArgs, { OptionDefinition } from "command-line-args";
 import Ajv, { ErrorObject } from "ajv";
-import { clone, head } from "ramda";
+import { clone, head, pick } from "ramda";
 import { JSONSchema7 } from "json-schema";
 import addFormats from "ajv-formats";
 import Schema, { Argument, CommandSchema, Options } from "./types";
@@ -275,5 +275,16 @@ function declarativeCliParser(
     };
   }, {});
 }
+
+const COMMON_KEYS = ["type", "description", "format", "enum", "items"] as const;
+
+/**
+ * Utility function to convert a cling compatible Argument to a compatible JSON Schema
+ */
+export const convertArgumentToJSONSchema = (
+  argument: Argument & Record<string, unknown>
+): JSONSchema7 => {
+  return pick(COMMON_KEYS, argument);
+};
 
 export default declarativeCliParser;

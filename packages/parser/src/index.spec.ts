@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { pick, values, reduce, mergeDeepRight } from "ramda";
 import randomstring from "randomstring";
-import declarativeCliParser from ".";
+import { Argument } from "./types";
+import declarativeCliParser, { convertArgumentToJSONSchema } from ".";
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 const mergeAllDeep = reduce(mergeDeepRight, {} as object);
@@ -466,6 +467,56 @@ describe("commands with positional", () => {
         expect(result.commands[command].positionals!.value).toStrictEqual([
           Number(value),
         ]);
+      });
+    });
+  });
+});
+
+describe("convertArgumentToJSONSchema", () => {
+  describe("when there's a single type", () => {
+    const argument: Argument & Record<string, unknown> = {
+      type: "number",
+      description: "foo bar",
+    };
+    it("should not throw", () => {
+      expect(() => convertArgumentToJSONSchema(argument)).not.toThrowError(
+        "Cannot convert JSON Schema to cling Argument with multiple types"
+      );
+    });
+    it("should return the expected corresponding argument", () => {
+      expect(convertArgumentToJSONSchema(argument)).toStrictEqual({
+        type: "number",
+        description: "foo bar",
+      });
+    });
+    describe("array type", () => {
+      const arrayArgument = {
+        type: "array",
+        items: {
+          type: "string",
+        },
+      } as const;
+      it("should return the expected corresponding array argument", () => {
+        expect(convertArgumentToJSONSchema(arrayArgument)).toStrictEqual({
+          type: "array",
+          items: {
+            type: "string",
+          },
+        });
+      });
+    });
+    describe("string type", () => {
+      describe("enum property", () => {
+        const stringArgument = {
+          type: "string",
+          enum: ["lol"],
+        } as const;
+        it("should return the expected corresponding array argument", () => {
+          expect(convertArgumentToJSONSchema(stringArgument)).toStrictEqual({
+            type: "string",
+            enum: ["lol"],
+          });
+        });
       });
     });
   });
