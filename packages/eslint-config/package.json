@@ -4,8 +4,7 @@
   "files": [
     ".eslintrc.js",
     "package.json",
-    "README.md",
-    "yarn.lock"
+    "README.md"
   ],
   "private": false,
   "publishConfig": {
