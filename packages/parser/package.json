@@ -1,6 +1,6 @@
 {
   "name": "@cling/parser",
-  "version": "0.6.9",
+  "version": "0.7.0",
   "main": "dist/index.js",
   "license": "MIT",
   "private": false,
@@ -30,7 +30,7 @@
     "ramda": "^0.27.1"
   },
   "devDependencies": {
-    "@cling/eslint-config": "^1.6.0",
+    "@cling/eslint-config": "^1.6.1",
     "@tsconfig/node14": "^1.0.0",
     "@types/ajv": "^1.0.0",
     "@types/command-line-args": "^5.0.0",

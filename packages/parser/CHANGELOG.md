@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.7.0 (2021-07-30)
+
+
+### Features
+
+* **parser:** Add/Move `convertArgumentToJSONSchema` utility function from @cling/utils` ([b2dc2ed](https://github.com/simonlovesyou/cling/commit/b2dc2edf05658e8391c4628e8997782dc6bc1d68))
+
+
+
+
+
 ## 0.6.9 (2021-07-24)
 
 **Note:** Version bump only for package @cling/parser
