@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.17](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.5.16...@cling/cling@0.5.17) (2021-07-30)
+
+
+### Bug Fixes
+
+* **cling:** Fix type inferrence for positionals & tuples ([0b98c25](https://github.com/simonlovesyou/cling/commit/0b98c251a3b5f626713baad8dff3c0dea67538c3))
+
+
+
+
+
 ## [0.5.16](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.5.15...@cling/cling@0.5.16) (2021-07-30)
 
 **Note:** Version bump only for package @cling/cling
