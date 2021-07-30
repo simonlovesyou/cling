@@ -24,6 +24,7 @@ const convertBaseArgumentProperties = (jsonSchema: JSONSchema7): Argument => {
 /**
  * Utility function to convert a compatible JSON Schema to a cling compatible Argument
  */
+// eslint-disable-next-line import/prefer-default-export
 export const convertJSONSchemaToArgument = (
   jsonSchema: JSONSchema7
 ): Argument => {
@@ -35,13 +36,4 @@ export const convertJSONSchemaToArgument = (
   }
   const argument = convertBaseArgumentProperties(dereferencedSchema);
   return argument;
-};
-
-/**
- * Utility function to convert a cling compatible Argument to a compatible JSON Schema
- */
-export const convertArgumentToJSONSchema = (
-  argument: Argument
-): JSONSchema7 => {
-  return pick(COMMON_KEYS, argument);
 };
