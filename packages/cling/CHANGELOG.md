@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.15](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.5.14...@cling/cling@0.5.15) (2021-07-30)
+
+
+### Bug Fixes
+
+* **parser:** Convert Argument schemas to JSON schemas for validation ([#19](https://github.com/simonlovesyou/cling/issues/19)) ([6014edf](https://github.com/simonlovesyou/cling/commit/6014edf8708b6b690ee002d773a8e27db985f514))
+
+
+
+
+
 ## 0.5.14 (2021-07-30)
 
 **Note:** Version bump only for package @cling/cling

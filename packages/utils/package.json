@@ -1,6 +1,6 @@
 {
   "name": "@cling/utils",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A collection of utilities to ease the use of cling",
   "main": "dist/index.js",
   "author": "@simonlovesyou",
@@ -25,8 +25,8 @@
     "prepublish": "rm -rf ./dist/ && yarn build"
   },
   "devDependencies": {
-    "@cling/eslint-config": "^1.6.1",
-    "@cling/parser": "^0.7.0",
+    "@cling/eslint-config": "^1.6.2",
+    "@cling/parser": "^0.7.1",
     "@tsconfig/node14": "^1.0.0",
     "@types/jest": "^26.0.23",
     "@types/json-schema": "^7.0.7",
