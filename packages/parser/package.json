@@ -9,8 +9,7 @@
     "dist",
     "README.md",
     "CHANGELOG.md",
-    "package.json",
-    "yarn.lock"
+    "package.json"
   ],
   "publishConfig": {
     "access": "public"
