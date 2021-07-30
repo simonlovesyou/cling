@@ -9,8 +9,7 @@
   "files": [
     "dist",
     "README.md",
-    "CHANGELOG.md",
-    "yarn.lock"
+    "CHANGELOG.md"
   ],
   "private": false,
   "publishConfig": {
