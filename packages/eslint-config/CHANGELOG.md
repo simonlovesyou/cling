@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.6.3](https://github.com/simonlovesyou/cling/compare/@cling/eslint-config@1.6.2...@cling/eslint-config@1.6.3) (2021-07-30)
+
+**Note:** Version bump only for package @cling/eslint-config
+
+
+
+
+
 ## [1.6.2](https://github.com/simonlovesyou/cling/compare/@cling/eslint-config@1.6.1...@cling/eslint-config@1.6.2) (2021-07-30)
 
 

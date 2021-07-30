@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.16](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.5.15...@cling/cling@0.5.16) (2021-07-30)
+
+**Note:** Version bump only for package @cling/cling
+
+
+
+
+
 ## [0.5.15](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.5.14...@cling/cling@0.5.15) (2021-07-30)
 
 
