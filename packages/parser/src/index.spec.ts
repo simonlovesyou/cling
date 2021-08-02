@@ -17,6 +17,16 @@ const SCHEMAS = {
       },
     },
   },
+  "single array argument (integers)": {
+    arguments: {
+      integers: {
+        type: "array",
+        items: {
+          type: "integer",
+        },
+      },
+    },
+  },
   "single argument with enums": {
     arguments: {
       role: {
@@ -53,6 +63,11 @@ const ARGVS = {
   "single argument": {
     valid: ["--age 25"],
     invalid: ["--age Bar"],
+    "not provided": [] as string[],
+  },
+  "single array argument (integers)": {
+    valid: ["--integers 5 4"],
+    invalid: ["--integers Foo Bar"],
     "not provided": [] as string[],
   },
   "single argument with enums": {
@@ -132,6 +147,73 @@ const TEST_CASES = {
           const result = declarativeCliParser(schema, { argv });
           expect(result.arguments!.age.error).toStrictEqual(
             new Error("age: value not provided")
+          );
+        });
+      });
+    },
+  },
+  "single array argument (integers)": {
+    valid: (
+      schema: typeof SCHEMAS["single array argument (integers)"],
+      argv: string[]
+    ) => {
+      describe("argument provided", () => {
+        describe("correct type", () => {
+          it("should return the argument", () => {
+            const result = declarativeCliParser(schema, { argv });
+            expect(result.arguments!.integers).not.toBeUndefined();
+          });
+          it("should consider the argument valid", () => {
+            const result = declarativeCliParser(schema, { argv });
+            console.log(result);
+            expect(result.arguments!.integers.valid).toBe(true);
+          });
+          it("should coerce the type", () => {
+            const result = declarativeCliParser(schema, { argv });
+            expect(result.arguments!.integers.value).toStrictEqual([5, 4]);
+          });
+          it("should not return any errors for the property", () => {
+            const result = declarativeCliParser(schema, { argv });
+            expect(result.arguments!.integers?.error).toBe(undefined);
+          });
+        });
+      });
+    },
+    invalid: (
+      schema: typeof SCHEMAS["single array argument (integers)"],
+      argv: string[]
+    ) => {
+      describe("incorrect type", () => {
+        it("should return that the argument is not valid", () => {
+          const result = declarativeCliParser(schema, { argv });
+          expect(result.arguments!.integers.valid).toBe(false);
+        });
+        it("should return an error for the property", () => {
+          const result = declarativeCliParser(schema, { argv });
+          expect(result.arguments!.integers?.error).toStrictEqual(
+            new Error("integers: type must be integer")
+          );
+        });
+      });
+    },
+    "not provided": (
+      schema: typeof SCHEMAS["single array argument (integers)"],
+      argv: string[]
+    ) => {
+      describe("argument not provided", () => {
+        it("should return the argument", () => {
+          const result = declarativeCliParser(schema, { argv });
+          expect(result.arguments!.integers).not.toBeUndefined();
+        });
+        it("the argument should not be valid", () => {
+          const result = declarativeCliParser(schema, { argv });
+          expect(result.arguments!.integers.valid).toBe(false);
+        });
+        it("has an argument error", () => {
+          const result = declarativeCliParser(schema, { argv });
+          // TODO ()
+          expect(result.arguments!.integers.error).toStrictEqual(
+            new Error("integers: value not provided")
           );
         });
       });
@@ -411,10 +493,12 @@ const runTestScenarios = (keys: (keyof typeof SCHEMAS)[]) => {
 };
 
 runTestScenarios(["single argument"]);
+runTestScenarios(["single array argument (integers)"]);
 runTestScenarios(["single argument with enums"]);
 runTestScenarios(["single option"]);
 runTestScenarios(["single boolean option"]);
 runTestScenarios(["single positional"]);
+runTestScenarios(["single array argument (integers)", "single option"]);
 runTestScenarios(["single option", "single argument"]);
 runTestScenarios(["single boolean option", "single argument"]);
 runTestScenarios(["single boolean option", "single argument with enums"]);

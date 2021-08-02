@@ -222,15 +222,23 @@ function declarativeCliParser(
     },
     ...Object.entries(options ?? {}).map(([optionName, option]) => ({
       name: optionName,
+      multiple: option.type === "array",
       alias: option.alias,
       group: "options",
-      type: validateType(option),
+      type:
+        option.type === "array"
+          ? validateItemPosition(option.items ?? { type: "string" })
+          : validateType(option),
     })),
     ...Object.entries(arguments_ ?? {}).map(([argumentName, argument]) => ({
       name: argumentName,
+      multiple: argument.type === "array",
       alias: argument.alias,
       group: "arguments",
-      type: validateType(argument),
+      type:
+        argument.type === "array"
+          ? validateItemPosition(argument.items ?? { type: "string" })
+          : validateType(argument),
     })),
   ].filter((definition) => definition) as OptionDefinition[];
 
@@ -260,10 +268,9 @@ function declarativeCliParser(
       [key]: Object.entries(argumentSchema[key]!).reduce(
         (nestedAccumulator, [name]) => {
           const commandValue = commandArguments[key]![name];
-          if (
-            commandValue === null &&
-            argumentSchema[key]![name].type === "boolean"
-          ) {
+
+          const argument = argumentSchema[key]![name];
+          if (commandValue === null && argument.type === "boolean") {
             return {
               ...nestedAccumulator,
               [name]: formatValue(name, {
@@ -285,6 +292,34 @@ function declarativeCliParser(
                 value: null,
               },
             };
+          }
+          if (Array.isArray(commandValue) && argument.type === "array") {
+            if (argument.items === undefined) {
+              const itemSchema = Array.from<Readonly<Argument>>({
+                length: commandValue.length,
+              }).fill({
+                type: "string",
+              });
+              return {
+                [name]: formatArrayValue(itemSchema, commandValue, name),
+              };
+            }
+            if (Array.isArray(argument.items)) {
+              return {
+                [name]: formatArrayValue(argument.items, commandValue, name),
+              };
+            } else {
+              const arrayItems = argument.items as Argument;
+              return {
+                [name]: formatArrayValue(
+                  Array.from<Readonly<Argument>>({
+                    length: commandValue.length,
+                  }).fill(arrayItems),
+                  commandValue,
+                  name
+                ),
+              };
+            }
           }
           return {
             ...nestedAccumulator,
