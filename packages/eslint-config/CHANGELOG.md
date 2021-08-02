@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.7.0 (2021-08-02)
+
+
+### Features
+
+* **eslint-config:** Add `"only-single-line"` option to `unicorn/prefer-ternary` rule ([70b77f7](https://github.com/simonlovesyou/cling/commit/70b77f7c6ca7b0a3c4af7958ab244a7cb210ef36))
+
+
+
+
+
 ## [1.6.3](https://github.com/simonlovesyou/cling/compare/@cling/eslint-config@1.6.2...@cling/eslint-config@1.6.3) (2021-07-30)
 
 **Note:** Version bump only for package @cling/eslint-config
