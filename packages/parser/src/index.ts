@@ -104,6 +104,52 @@ type Value<TValue = unknown> =
       error?: undefined;
     };
 
+const formatArrayValue = (
+  argumentSchemas: readonly Argument[],
+  arguments_: (ValidatedValue | undefined)[],
+  argumentName?: string
+): Value<readonly unknown[]> => {
+  return argumentSchemas.reduce(
+    (
+      accumulator_: Value<readonly unknown[]>,
+      value: Argument,
+      index: number
+    ) => {
+      const argument = arguments_[index];
+
+      if (!argument || argument.value === "") {
+        const argumentResult: Value<readonly unknown[]> = {
+          valid: false as const,
+          error: new Error(`${value.type}: value not provided`),
+          value: [...accumulator_.value, null],
+        };
+        return argumentResult;
+      }
+      if (!argument.valid || !accumulator_.valid) {
+        return {
+          valid: false as const,
+          error:
+            accumulator_.valid === true
+              ? mapErrorObjectToError(
+                  argumentName ?? value.type,
+                  head(argument.errors)!
+                )
+              : accumulator_.error,
+          value: [...accumulator_.value, argument.value],
+        };
+      }
+      return {
+        valid: true as const,
+        value: [...accumulator_.value, argument.value],
+      };
+    },
+    {
+      valid: true,
+      value: [],
+    }
+  );
+};
+
 const formatValue = <TValue>(
   keyName: string,
   argument: ValidatedValue<TValue>
@@ -203,47 +249,10 @@ function declarativeCliParser(
         commandArguments._positionals_ ??
         commandArguments._all?._positionals_ ??
         [];
+
       return {
         ...accumulator,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        [key]: argumentSchema.positionals!.reduce(
-          (
-            accumulator_: Value<readonly unknown[]>,
-            value: Argument,
-            index: number
-          ) => {
-            const positional = positionals[index];
-
-            if (!positional || positional.value === "") {
-              return {
-                valid: false as const,
-                error: new Error(`${value.type}: value not provided`),
-                value: [...accumulator_.value, null],
-              };
-            }
-            if (!positional.valid || !accumulator_.valid) {
-              return {
-                valid: false as const,
-                error:
-                  accumulator_.valid === true
-                    ? mapErrorObjectToError(
-                        value.type,
-                        head(positional.errors)!
-                      )
-                    : accumulator_.error,
-                value: [...accumulator_.value, positional.value],
-              };
-            }
-            return {
-              valid: true as const,
-              value: [...accumulator_.value, positional.value],
-            };
-          },
-          {
-            valid: true,
-            value: [],
-          }
-        ),
+        [key]: formatArrayValue(argumentSchema.positionals!, positionals),
       };
     }
     return {
