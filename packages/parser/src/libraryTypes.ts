@@ -30,15 +30,13 @@ declare type CoercedType<T> = T extends "string"
   : T extends "null"
   ? null
   : never;
-declare type CoerceArrayType<
-  T extends Argument & {
-    type: "array";
-  }
-> = T["items"] extends readonly Argument[]
-  ? CoercedTupleOf<T["items"]>
-  : T["items"] extends Argument
-  ? CoercedTypeObject<T["items"]>[]
-  : unknown[];
+declare type CoerceArrayType<T extends ArrayArgument> =
+  T["items"] extends readonly Argument[]
+    ? CoercedTupleOf<T["items"]>
+    : T["items"] extends Argument
+    ? CoercedTypeObject<T["items"]>[]
+    : unknown[];
+
 declare type CoercedTypeObject<T extends Argument> = T["type"] extends "array"
   ? CoerceArrayType<
       T & {
