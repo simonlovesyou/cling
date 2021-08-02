@@ -201,7 +201,7 @@ module.exports = {
     "unicorn/prefer-string-starts-ends-with": ["error"], // Prefer `String#startsWith()` & `String#endsWith()` over `RegExp#test()`. [(`unicorn/prefer-string-starts-ends-with`)](https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/prefer-string-starts-ends-with.md)
     "unicorn/prefer-string-trim-start-end": ["error"], // Prefer `String#trimStart()` / `String#trimEnd()` over `String#trimLeft()` / `String#trimRight()`. [(`unicorn/prefer-string-trim-start-end`)](https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/prefer-string-trim-start-end.md)
     "unicorn/prefer-switch": ["error"], // Prefer `switch` over multiple `else-if`. [(`unicorn/prefer-switch`)](https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/prefer-switch.md)
-    "unicorn/prefer-ternary": ["error"], // Prefer ternary expressions over simple `if-else` statements. [(`unicorn/prefer-ternary`)](https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/prefer-ternary.md)
+    "unicorn/prefer-ternary": ["error", "only-single-line"], // Prefer ternary expressions over simple `if-else` statements. [(`unicorn/prefer-ternary`)](https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/prefer-ternary.md)
     "unicorn/prefer-type-error": ["error"], // Enforce throwing `Typeerror` in type checking conditions. [(`unicorn/prefer-type-error`)](https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/docs/rules/prefer-type-error.md)
     "unicorn/prevent-abbreviations": [
       "error",
