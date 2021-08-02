@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.8.0](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.7.3...@cling/parser@0.8.0) (2021-08-02)
+
+
+### Features
+
+* **parser:** Add support for parsing array types ([3173266](https://github.com/simonlovesyou/cling/commit/31732660dea333a07981e54df6f7f0b46dfa5efa))
+* **parser:** Remove `format` property from Array arguments ([1248fc2](https://github.com/simonlovesyou/cling/commit/1248fc220d05230878f659a8a74e7a67db17b49e))
+
+
+
+
+
 ## 0.7.3 (2021-08-02)
 
 **Note:** Version bump only for package @cling/parser
