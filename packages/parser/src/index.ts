@@ -27,6 +27,25 @@ const convertArgumentToJSONSchema = (
   return pick(COMMON_KEYS, argument);
 };
 
+const validateItemPosition = (
+  argumentSchemas: Argument | readonly Argument[]
+) => {
+  // eslint-disable-next-line fp/no-let
+  let currentPosition = 0;
+  return (value: unknown) => {
+    const schema = (
+      Array.isArray(argumentSchemas)
+        ? argumentSchemas[currentPosition]
+        : argumentSchemas
+    ) as Argument;
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    const validatedType = validateType(schema)(value);
+    // eslint-disable-next-line fp/no-mutation
+    currentPosition++;
+    return validatedType;
+  };
+};
+
 const validateType =
   <TValue>(argument: Argument) =>
   (value: TValue): ValidatedValue<TValue> => {
@@ -72,25 +91,6 @@ interface ParsedArguments {
     _positionals_?: (ValidatedValue | undefined)[];
   };
 }
-
-const validateItemPosition = (
-  argumentSchemas: Argument | readonly Argument[]
-) => {
-  // eslint-disable-next-line fp/no-let
-  let currentPosition = 0;
-  return (value: unknown) => {
-    const schema = (
-      Array.isArray(argumentSchemas)
-        ? argumentSchemas[currentPosition]
-        : argumentSchemas
-    ) as Argument;
-
-    const validatedType = validateType(schema)(value);
-    // eslint-disable-next-line fp/no-mutation
-    currentPosition++;
-    return validatedType;
-  };
-};
 
 type Value<TValue = unknown> =
   | {
