@@ -37,20 +37,17 @@ declare type CoerceArrayType<T extends ArrayArgument> =
     ? CoercedTypeObject<T["items"]>[]
     : unknown[];
 
-declare type CoercedTypeObject<T extends Argument> = T["type"] extends "array"
-  ? CoerceArrayType<
-      T & {
-        type: "array";
-      }
-    >
-  : T extends EnumableArgument<number | string>
+declare type CoercedTypeObject<T extends Argument> = T extends ArrayArgument
+  ? CoerceArrayType<T>
+  : T extends IntegerArgument | NumberArgument | StringArgument
   ? CoerceEnumType<T>
   : CoercedType<T[keyof T]>;
 
-declare type CoerceEnumType<T extends EnumableArgument<number | string>> =
-  T["enum"] extends readonly (number | string)[]
-    ? T["enum"][number]
-    : CoercedType<T[keyof T]>;
+declare type CoerceEnumType<
+  T extends IntegerArgument | NumberArgument | StringArgument
+> = T["enum"] extends readonly (number | string)[]
+  ? T["enum"][number]
+  : CoercedType<T[keyof T]>;
 
 declare type CoercedTupleOf<T extends readonly Argument[]> = {
   [Key in keyof T]: T[Key] extends Argument
