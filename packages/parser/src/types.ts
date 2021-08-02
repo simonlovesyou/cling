@@ -13,6 +13,10 @@ export type TypeName =
   | "number"
   | "string";
 
+export interface FormattableArgument {
+  format?: string;
+}
+
 export interface BaseArgument<TType extends TypeName> {
   type: TType;
   alias?: string;
@@ -31,12 +35,17 @@ export interface EnumableArgument<TEnumType extends number | string> {
   enum?: readonly TEnumType[];
 }
 
-export type StringArgument = BaseArgument<"string"> & EnumableArgument<string>;
+export type StringArgument = BaseArgument<"string"> &
+  EnumableArgument<string> &
+  FormattableArgument;
 
-export type NumberArgument = BaseArgument<"number"> & EnumableArgument<number>;
+export type NumberArgument = BaseArgument<"number"> &
+  EnumableArgument<string> &
+  FormattableArgument;
 
 export type IntegerArgument = BaseArgument<"integer"> &
-  EnumableArgument<number>;
+  EnumableArgument<number> &
+  FormattableArgument;
 
 export type NullArgument = BaseArgument<"null">;
 
