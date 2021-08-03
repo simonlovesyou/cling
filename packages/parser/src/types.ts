@@ -40,7 +40,7 @@ export type StringArgument = BaseArgument<"string"> &
   FormattableArgument;
 
 export type NumberArgument = BaseArgument<"number"> &
-  EnumableArgument<string> &
+  EnumableArgument<number> &
   FormattableArgument;
 
 export type IntegerArgument = BaseArgument<"integer"> &
