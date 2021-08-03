@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.1](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.8.0...@cling/parser@0.8.1) (2021-08-03)
+
+
+### Bug Fixes
+
+* **parser:** Fix expected type for `enum` property when type is `"number"` ([29c16eb](https://github.com/simonlovesyou/cling/commit/29c16eb7841b8b8e40c371d9be41678be0c42c9b))
+
+
+
+
+
 # [0.8.0](https://github.com/simonlovesyou/cling/compare/@cling/parser@0.7.3...@cling/parser@0.8.0) (2021-08-02)
 
 
