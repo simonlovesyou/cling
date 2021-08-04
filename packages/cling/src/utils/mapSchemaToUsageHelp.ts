@@ -41,12 +41,14 @@ const schemaToUsageDescription = (
   return [
     cliName,
     schema.arguments &&
-      Object.entries(schema.arguments).map(([name, argument]) =>
-        mapArgumentToLabel({
-          ...argument,
-          name: argument.name ?? name,
-        })
-      ),
+      Object.entries(schema.arguments)
+        .map(([name, argument]) =>
+          mapArgumentToLabel({
+            ...argument,
+            name: argument.name ?? name,
+          })
+        )
+        .join(" "),
     schema.options &&
       Object.entries(schema.options).map(([name, argument]) =>
         mapArgumentToLabel({
