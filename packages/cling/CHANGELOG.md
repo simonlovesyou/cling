@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.21](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.5.20...@cling/cling@0.5.21) (2021-08-04)
+
+
+### Bug Fixes
+
+* **cling:** Fix argument list concatenation in usage description ([ed8b573](https://github.com/simonlovesyou/cling/commit/ed8b573e8ee432e3d12658b9c12d9ba4df5c12b3))
+* **cling:** Fix option list concatenation in usage description ([ecea0c9](https://github.com/simonlovesyou/cling/commit/ecea0c9f44bc0ef64aa5ecd288671cf64afb61b3))
+
+
+
+
+
 ## [0.5.20](https://github.com/simonlovesyou/cling/compare/@cling/cling@0.5.19...@cling/cling@0.5.20) (2021-08-03)
 
 **Note:** Version bump only for package @cling/cling
