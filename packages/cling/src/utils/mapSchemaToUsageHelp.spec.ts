@@ -82,6 +82,70 @@ describe("single argument", () => {
   });
 });
 
+describe("multiple arguments", () => {
+  const schemaFixture = testFixture({
+    arguments: {
+      email: {
+        type: "string",
+      },
+      name: {
+        type: "string",
+      },
+    },
+  } as const);
+  it("should return the correct usage guide", () => {
+    console.log(schemaFixture.get());
+    expect(mapSchemaUsageToHelp(schemaFixture.get(), "lol")).toStrictEqual([
+      { content: "Usage: lol [--email] [--name]", header: "lol" },
+      {
+        header: "Arguments",
+        optionList: [
+          {
+            alias: undefined,
+            description: undefined,
+            name: "email",
+            typeLabel: "string",
+          },
+          {
+            alias: undefined,
+            description: undefined,
+            name: "name",
+            typeLabel: "string",
+          },
+        ],
+      },
+    ]);
+  });
+  describe("with alias", () => {
+    const schema = schemaFixture.addValueAtPath(
+      ["arguments", "email", "alias"],
+      "e"
+    );
+    it("should return the correct usage guide", () => {
+      expect(mapSchemaUsageToHelp(schema.get(), "lol")).toStrictEqual([
+        { content: "Usage: lol [--email | -e] [--name]", header: "lol" },
+        {
+          header: "Arguments",
+          optionList: [
+            {
+              alias: "e",
+              description: undefined,
+              name: "email",
+              typeLabel: "string",
+            },
+            {
+              alias: undefined,
+              description: undefined,
+              name: "name",
+              typeLabel: "string",
+            },
+          ],
+        },
+      ]);
+    });
+  });
+});
+
 describe("single positional", () => {
   const schemaFixture = testFixture({
     positionals: [
