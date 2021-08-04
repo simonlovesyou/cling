@@ -146,6 +146,41 @@ describe("multiple arguments", () => {
   });
 });
 
+describe("muliple options", () => {
+  const schemaFixture = testFixture({
+    options: {
+      help: {
+        type: "boolean",
+      },
+      version: {
+        type: "boolean",
+      },
+    },
+  } as const);
+  it("should return the correct usage guide", () => {
+    expect(mapSchemaUsageToHelp(schemaFixture.get(), "lol")).toStrictEqual([
+      { content: "Usage: lol [--help] [--version]", header: "lol" },
+      {
+        header: "Options",
+        optionList: [
+          {
+            alias: undefined,
+            description: undefined,
+            name: "help",
+            typeLabel: "boolean",
+          },
+          {
+            alias: undefined,
+            description: undefined,
+            name: "version",
+            typeLabel: "boolean",
+          },
+        ],
+      },
+    ]);
+  });
+});
+
 describe("single positional", () => {
   const schemaFixture = testFixture({
     positionals: [
