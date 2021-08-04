@@ -36,23 +36,23 @@ describe("single option", () => {
 
 describe("single argument", () => {
   const schemaFixture = testFixture({
-    options: {
-      help: {
-        type: "boolean",
+    arguments: {
+      email: {
+        type: "string",
       },
     },
   } as const);
   it("should return the correct usage guide", () => {
     expect(mapSchemaUsageToHelp(schemaFixture.get(), "lol")).toStrictEqual([
-      { content: "Usage: lol [--help]", header: "lol" },
+      { content: "Usage: lol [--email]", header: "lol" },
       {
-        header: "Options",
+        header: "Arguments",
         optionList: [
           {
             alias: undefined,
             description: undefined,
-            name: "help",
-            typeLabel: "boolean",
+            name: "email",
+            typeLabel: "string",
           },
         ],
       },
@@ -60,20 +60,20 @@ describe("single argument", () => {
   });
   describe("with alias", () => {
     const schema = schemaFixture.addValueAtPath(
-      ["options", "help", "alias"],
-      "h"
+      ["arguments", "email", "alias"],
+      "e"
     );
     it("should return the correct usage guide", () => {
       expect(mapSchemaUsageToHelp(schema.get(), "lol")).toStrictEqual([
-        { content: "Usage: lol [--help | -h]", header: "lol" },
+        { content: "Usage: lol [--email | -e]", header: "lol" },
         {
-          header: "Options",
+          header: "Arguments",
           optionList: [
             {
-              alias: "h",
+              alias: "e",
               description: undefined,
-              name: "help",
-              typeLabel: "boolean",
+              name: "email",
+              typeLabel: "string",
             },
           ],
         },
